@@ -1,0 +1,22 @@
+{
+  "name": "ChordLab — Chord Gitar",
+  "short_name": "ChordLab",
+  "description": "Chord gitar dengan transpose real-time, auto scroll, dan diagram chord.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "id",
+  "dir": "ltr",
+  "background_color": "#101014",
+  "theme_color": "#101014",
+  "categories": ["music", "education", "entertainment"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+# Cloudflare Pages routing (SPA fallback).
+/chord        /search         301
+/artist       /artists        301
+/*            /             200
