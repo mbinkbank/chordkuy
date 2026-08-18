@@ -1,5 +1,6 @@
 /**
  * Chord engine supporting standard chords-above-lyrics sheets, bar symbols (|), and bracketed chords.
+ * Implements strict character-based line wrapping (max 35 characters) at word boundaries.
  */
 
 export const SHARP_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -85,7 +86,6 @@ export type SheetLine =
   | { type: "line"; segments: Segment[] };
 
 function isChordLine(line: string): boolean {
-  // Ignore measure separators (|), repeat symbols (%), and whitespace
   const tokens = line.trim().split(/\s+/).filter((t) => t !== "|" && t !== "%" && t !== "||" && t !== "/");
   if (tokens.length === 0) return false;
   const chordCount = tokens.filter(isChordToken).length;
@@ -93,9 +93,108 @@ function isChordLine(line: string): boolean {
 }
 
 /**
- * Universal sheet parser:
- * Handles chords-above-lyrics, measure lines with | and %, section labels, etc.
+ * Wraps a pair of (chord_row, lyric_row) into lines of max `maxLen` characters
+ * splitting only at word boundaries (spaces) without breaking words.
  */
+function wrapPairToSegments(chordRow: string, lyricRow: string, maxLen = 35): Segment[][] {
+  const maxW = Math.max(chordRow.length, lyricRow.length);
+  let cLine = chordRow.padEnd(maxW, " ");
+  let lLine = lyricRow.padEnd(maxW, " ");
+
+  const linesSegments: Segment[][] = [];
+
+  while (lLine.length > 0) {
+    if (lLine.length <= maxLen) {
+      linesSegments.push(buildSegmentsFromRaw(cLine.trimEnd(), lLine.trimEnd()));
+      break;
+    }
+
+    // Find split index at space at or before maxLen
+    let splitIdx = -1;
+    for (let i = maxLen; i > 0; i--) {
+      if (lLine[i] === " ") {
+        splitIdx = i;
+        break;
+      }
+    }
+
+    if (splitIdx === -1) {
+      // Find first space after maxLen if no space before
+      for (let i = maxLen; i < lLine.length; i++) {
+        if (lLine[i] === " ") {
+          splitIdx = i;
+          break;
+        }
+      }
+      if (splitIdx === -1) {
+        splitIdx = lLine.length;
+      }
+    }
+
+    const chunkC = cLine.slice(0, splitIdx);
+    const chunkL = lLine.slice(0, splitIdx);
+    linesSegments.push(buildSegmentsFromRaw(chunkC.trimEnd(), chunkL.trimEnd()));
+
+    let remC = cLine.slice(splitIdx);
+    let remL = lLine.slice(splitIdx);
+
+    // Trim leading spaces from next wrapped line
+    const leadSpaces = remL.length - remL.trimStart().length;
+    if (leadSpaces > 0) {
+      remL = remL.slice(leadSpaces);
+      remC = remC.length >= leadSpaces ? remC.slice(leadSpaces) : "";
+    }
+
+    cLine = remC;
+    lLine = remL;
+  }
+
+  return linesSegments;
+}
+
+function buildSegmentsFromRaw(chordRow: string, lyricRow: string): Segment[] {
+  const segments: Segment[] = [];
+  const regex = /(\([A-G][#b]?[^\s()]*\)|[A-G][#b]?[^\s|%()]*|\||%|\/)/g;
+  let match;
+  let chordMatches: { token: string; index: number; isChord: boolean }[] = [];
+
+  while ((match = regex.exec(chordRow)) !== null) {
+    const tok = match[0];
+    chordMatches.push({ token: tok, index: match.index, isChord: isChordToken(tok) });
+  }
+
+  if (chordMatches.length === 0) {
+    return [{ chord: null, text: lyricRow }];
+  }
+
+  let currPos = 0;
+  for (let j = 0; j < chordMatches.length; j++) {
+    const cm = chordMatches[j];
+    const nextCm = j + 1 < chordMatches.length ? chordMatches[j + 1] : null;
+
+    if (cm.index > currPos) {
+      const preText = lyricRow.slice(currPos, cm.index);
+      segments.push({ chord: null, text: preText });
+      currPos = cm.index;
+    }
+
+    const endPos = nextCm ? nextCm.index : lyricRow.length;
+    const textUnder = lyricRow.slice(currPos, endPos);
+    if (cm.isChord) {
+      segments.push({ chord: cm.token, text: textUnder });
+    } else {
+      segments.push({ chord: null, text: cm.token + (textUnder ? " " + textUnder : "") });
+    }
+    currPos = endPos;
+  }
+
+  if (currPos < lyricRow.length) {
+    segments.push({ chord: null, text: lyricRow.slice(currPos) });
+  }
+
+  return segments;
+}
+
 export function parseSheet(raw: string): SheetLine[] {
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
@@ -109,7 +208,7 @@ export function parseSheet(raw: string): SheetLine[] {
       continue;
     }
 
-    // Section header (e.g. [Verse 1], Intro:, [Chorus], OUTRO, INTERLUDE)
+    // Section header (e.g. [Verse 1], Intro:, [Chorus])
     if (
       (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
       /^(intro|verse|chorus|bridge|outro|interlude|solo|reff|hook|coda)/i.test(trimmed)
@@ -118,71 +217,32 @@ export function parseSheet(raw: string): SheetLine[] {
       continue;
     }
 
-    // Check if this row is a Chord/Progression line (e.g. "| (G) | G | Em | % |" or "C   G   Am   F")
     if (isChordLine(row)) {
       const nextRow = i + 1 < rows.length ? rows[i + 1] : "";
       const isNextChordOrSection = !nextRow.trim() || isChordLine(nextRow) || /^(intro|verse|chorus|bridge|outro|interlude|solo|reff|hook|coda|\[)/i.test(nextRow.trim());
 
       if (isNextChordOrSection) {
-        // Measure line / chord only progression
-        const segments: Segment[] = [];
-        const regex = /(\([A-G][#b]?[^\s()]*\)|[A-G][#b]?[^\s|%()]*|\||%|\/)/g;
-        let match;
-        let lastIdx = 0;
-
-        while ((match = regex.exec(row)) !== null) {
-          const spaceBefore = row.slice(lastIdx, match.index);
-          if (spaceBefore) segments.push({ chord: null, text: spaceBefore });
-
-          const token = match[0];
-          if (isChordToken(token)) {
-            segments.push({ chord: token, text: "" });
-          } else {
-            segments.push({ chord: null, text: token });
-          }
-          lastIdx = match.index + token.length;
+        // Measure line / chord only progression -> wrap if longer than 35 chars
+        const wrapped = wrapPairToSegments(row, "", 35);
+        for (const segs of wrapped) {
+          out.push({ type: "line", segments: segs });
         }
-        const spaceAfter = row.slice(lastIdx);
-        if (spaceAfter) segments.push({ chord: null, text: spaceAfter });
-
-        out.push({ type: "line", segments });
       } else {
-        // Chord above lyrics pairing: split by words to allow flex-wrap on word boundaries
+        // Chord above lyrics pairing -> wrap at max 35 chars at word boundary
         i++; // Consume next lyric row
-        const lyric = nextRow;
-        const segments: Segment[] = [];
-        
-        // Find all word boundaries in lyric or chord positions
-        const words = lyric.split(/(\s+)/);
-        let currIdx = 0;
-
-        for (const word of words) {
-          if (!word) continue;
-          const wordStart = currIdx;
-          const wordEnd = currIdx + word.length;
-          currIdx = wordEnd;
-
-          // Find if there is a chord starting within or near this word space
-          const chordMatches = [];
-          const regex = /(\([A-G][#b]?[^\s()]*\)|[A-G][#b]?[^\s|%()]*)/g;
-          let m;
-          while ((m = regex.exec(row)) !== null) {
-            if (m.index >= wordStart && m.index < wordEnd) {
-              chordMatches.push(m[0]);
-            }
-          }
-
-          const chordAttr = chordMatches.length > 0 && isChordToken(chordMatches[0]) ? chordMatches[0] : null;
-          segments.push({ chord: chordAttr, text: word });
+        const wrapped = wrapPairToSegments(row, nextRow, 35);
+        for (const segs of wrapped) {
+          out.push({ type: "line", segments: segs });
         }
-
-        out.push({ type: "line", segments });
       }
       continue;
     }
 
-    // Plain text / lyric only row
-    out.push({ type: "line", segments: [{ chord: null, text: row }] });
+    // Plain text / lyric only row -> wrap if longer than 35 chars
+    const wrapped = wrapPairToSegments("", row, 35);
+    for (const segs of wrapped) {
+      out.push({ type: "line", segments: segs });
+    }
   }
 
   return out;
