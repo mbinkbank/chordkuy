@@ -34,16 +34,21 @@ export function mapDbRowToSong(row: any): Song {
   if (rawDiff === "novice" || rawDiff === "pemula") difficulty = "Pemula";
   else if (rawDiff === "advanced" || rawDiff === "mahir") difficulty = "Mahir";
 
+  // Ambil chord pertama dari isi lagu jika key_name bawaan tidak cocok dengan chord pembuka
+  const contentChords = extractChords(row.content || "");
+  const firstChord = contentChords.length > 0 ? contentChords[0] : null;
+  const originalKey = firstChord || row.key_name || "C";
+
   return {
     id: String(row.id),
     title: title,
     slug: slug,
     artist: artist,
     artistSlug: artistSlug,
-    originalKey: row.key_name || "C",
+    originalKey: originalKey,
     capo: capoNum,
     lyrics: row.content || "",
-    chords: extractChords(row.content || ""),
+    chords: contentChords,
     genre: "Pop",
     thumbnail: null,
     createdAt: new Date().toISOString(),
