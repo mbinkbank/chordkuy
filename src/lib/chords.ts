@@ -147,42 +147,33 @@ export function parseSheet(raw: string): SheetLine[] {
 
         out.push({ type: "line", segments });
       } else {
-        // Chord above lyrics pairing
+        // Chord above lyrics pairing: split by words to allow flex-wrap on word boundaries
         i++; // Consume next lyric row
         const lyric = nextRow;
         const segments: Segment[] = [];
-        const regex = /(\([A-G][#b]?[^\s()]*\)|[A-G][#b]?[^\s|%()]*|\||%|\/)/g;
-        let match;
-        let chordMatches: { token: string; index: number; isChord: boolean }[] = [];
+        
+        // Find all word boundaries in lyric or chord positions
+        const words = lyric.split(/(\s+)/);
+        let currIdx = 0;
 
-        while ((match = regex.exec(row)) !== null) {
-          const tok = match[0];
-          chordMatches.push({ token: tok, index: match.index, isChord: isChordToken(tok) });
-        }
+        for (const word of words) {
+          if (!word) continue;
+          const wordStart = currIdx;
+          const wordEnd = currIdx + word.length;
+          currIdx = wordEnd;
 
-        let currLyricPos = 0;
-        for (let j = 0; j < chordMatches.length; j++) {
-          const cm = chordMatches[j];
-          const nextCm = j + 1 < chordMatches.length ? chordMatches[j + 1] : null;
-
-          if (cm.index > currLyricPos) {
-            const preText = lyric.slice(currLyricPos, cm.index);
-            segments.push({ chord: null, text: preText });
-            currLyricPos = cm.index;
+          // Find if there is a chord starting within or near this word space
+          const chordMatches = [];
+          const regex = /(\([A-G][#b]?[^\s()]*\)|[A-G][#b]?[^\s|%()]*)/g;
+          let m;
+          while ((m = regex.exec(row)) !== null) {
+            if (m.index >= wordStart && m.index < wordEnd) {
+              chordMatches.push(m[0]);
+            }
           }
 
-          const endPos = nextCm ? nextCm.index : lyric.length;
-          const textUnder = lyric.slice(currLyricPos, endPos);
-          if (cm.isChord) {
-            segments.push({ chord: cm.token, text: textUnder });
-          } else {
-            segments.push({ chord: null, text: cm.token + (textUnder ? " " + textUnder : "") });
-          }
-          currLyricPos = endPos;
-        }
-
-        if (currLyricPos < lyric.length) {
-          segments.push({ chord: null, text: lyric.slice(currLyricPos) });
+          const chordAttr = chordMatches.length > 0 && isChordToken(chordMatches[0]) ? chordMatches[0] : null;
+          segments.push({ chord: chordAttr, text: word });
         }
 
         out.push({ type: "line", segments });

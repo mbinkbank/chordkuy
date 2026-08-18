@@ -991,15 +991,19 @@ a.card:focus-visible {
   margin-top: 0;
 }
 .line {
-  white-space: pre;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
   min-height: calc(var(--sheet-size) * 1.5);
-  margin-bottom: 0.2em;
+  margin-bottom: 0.3em;
 }
 .line-blank {
   height: calc(var(--sheet-size) * 0.9);
 }
 .seg {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
   vertical-align: bottom;
   white-space: pre;
 }
