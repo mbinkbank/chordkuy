@@ -969,7 +969,6 @@ a.card:focus-visible {
   font-size: var(--sheet-size);
   line-height: 1.5;
   color: var(--lyric-color);
-  overflow-x: auto;
   padding-block: var(--s2);
 }
 .sheet .section-label {
@@ -987,8 +986,10 @@ a.card:focus-visible {
   margin-top: 0;
 }
 .line {
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-word;
   min-height: calc(var(--sheet-size) * 1.5);
+  margin-bottom: 0.4em;
 }
 .line-blank {
   height: calc(var(--sheet-size) * 0.9);
@@ -996,7 +997,8 @@ a.card:focus-visible {
 .seg {
   display: inline-block;
   vertical-align: bottom;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .seg .ch {
   display: block;
