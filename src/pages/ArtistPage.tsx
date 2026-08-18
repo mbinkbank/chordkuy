@@ -1,14 +1,26 @@
+import { useEffect, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import SongCard from "../components/SongCard";
 import ShareButton from "../components/ShareButton";
-import type { Artist } from "../data/types";
+import type { Artist, Song } from "../data/types";
 import { getSongsByArtist } from "../lib/api";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, itemListSchema, useSeo } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
 
 export default function ArtistPage({ artist }: { artist: Artist }) {
-  const songs = getSongsByArtist(artist.slug);
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadSongs() {
+      const data = await getSongsByArtist(artist.slug);
+      setSongs(data);
+      setLoading(false);
+    }
+    loadSongs();
+  }, [artist.slug]);
+
   const path = `/artist/${artist.slug}`;
   const description = `${songs.length} chord gitar ${artist.name}: kunci lengkap, transpose real-time, dan auto scroll. ${artist.bio}`.slice(
     0,
@@ -46,10 +58,10 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
     ],
   });
 
-  const initials = artist.name
+  const initials = (artist.name || "")
     .split(" ")
     .slice(0, 2)
-    .map((word) => word[0])
+    .map((word) => word[0] || "")
     .join("");
 
   return (
@@ -94,7 +106,9 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
           <span className="caption">Diurutkan berdasarkan popularitas</span>
         </div>
 
-        {songs.length === 0 ? (
+        {loading ? (
+          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu artis...</p>
+        ) : songs.length === 0 ? (
           <div className="empty">Belum ada chord untuk artis ini.</div>
         ) : (
           <div className="grid grid-auto">

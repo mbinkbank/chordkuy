@@ -1,11 +1,25 @@
+import { useEffect, useState } from "react";
+import type { Artist, Genre } from "../data/types";
 import { getGenres, getPopularArtists } from "../lib/api";
 import { Link } from "../lib/router";
 import { SITE } from "../lib/site";
 
 export default function Footer() {
-  const artists = getPopularArtists(4);
-  const genres = getGenres().slice(0, 5);
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const year = new Date().getFullYear();
+
+  useEffect(() => {
+    async function loadFooter() {
+      const [artData, genData] = await Promise.all([
+        getPopularArtists(4),
+        getGenres(),
+      ]);
+      setArtists(artData || []);
+      setGenres((genData || []).slice(0, 5));
+    }
+    loadFooter();
+  }, []);
 
   return (
     <footer className="site-footer">

@@ -15,7 +15,6 @@ import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
 
-/** "3:52" -> "PT3M52S" (schema.org duration). */
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
   const parts = value.split(":").map(Number);
@@ -29,7 +28,16 @@ export default function ChordPage({ song }: { song: Song }) {
   const [fontSize, setFontSize] = useStoredState<number>("chordlab:font-size", 16);
   const [speed, setSpeed] = useStoredState<number>("chordlab:scroll-speed", 3);
   const [lyricsOnly, setLyricsOnly] = useState(false);
+  const [related, setRelated] = useState<Song[]>([]);
   const { playing, toggle, stop } = useAutoScroll(speed);
+
+  useEffect(() => {
+    async function loadRelated() {
+      const data = await getRelatedSongs(song, 5);
+      setRelated(data);
+    }
+    loadRelated();
+  }, [song]);
 
   const preferFlat = keyPrefersFlat(song.originalKey);
   const baseLines = useMemo(() => parseSheet(song.lyrics), [song.lyrics]);
@@ -39,7 +47,6 @@ export default function ChordPage({ song }: { song: Song }) {
   );
   const currentKey = transposeKey(song.originalKey, transpose, preferFlat);
   const chordList = useMemo(() => uniqueChords(lines), [lines]);
-  const related = getRelatedSongs(song, 5);
   const path = `/chord/${song.slug}`;
 
   useEffect(() => stop, [stop]);
@@ -50,23 +57,23 @@ export default function ChordPage({ song }: { song: Song }) {
     "-": () => setTranspose((v) => Math.max(-11, v - 1)),
     "0": () => setTranspose(0),
     " ": toggle,
-    "]": () => setFontSize(Math.min(26, fontSize + 1)),
-    "[": () => setFontSize(Math.max(12, fontSize - 1)),
+    "]": () => setFontSize((v) => Math.min(26, v + 1)),
+    "[": () => setFontSize((v) => Math.max(12, v + 1)),
     l: () => setLyricsOnly((v) => !v),
   });
 
-  const title = `Chord ${song.title} - ${song.artist} | ${SITE.name}`;
-  const description = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.originalKey}${
+  const pageTitle = `Chord ${song.title} - ${song.artist} | ${SITE.name}`;
+  const pageDescription = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.originalKey}${
     song.capo ? `, capo fret ${song.capo}` : ", tanpa capo"
   }. Lengkap dengan lirik, transpose real-time, diagram chord, dan auto scroll.`;
 
   useSeo({
-    title,
-    description,
+    title: pageTitle,
+    description: pageDescription,
     path,
     type: "article",
     jsonLd: [
-      webPageSchema(`Chord ${song.title} - ${song.artist}`, description, path),
+      webPageSchema(`Chord ${song.title} - ${song.artist}`, pageDescription, path),
       breadcrumbSchema([
         { name: "Beranda", href: "/" },
         { name: "Artis", href: "/artists" },
@@ -112,6 +119,7 @@ export default function ChordPage({ song }: { song: Song }) {
                 — {song.artist}
               </span>
             </h1>
+
             <div className="row">
               <span className="badge">Key {currentKey}</span>
               <span className="badge badge-muted">
@@ -123,6 +131,7 @@ export default function ChordPage({ song }: { song: Song }) {
                 Semua lagu {song.artist} →
               </Link>
             </div>
+
             <div className="row">
               <ShareButton title={`Chord ${song.title} - ${song.artist}`} />
               <button
@@ -164,7 +173,7 @@ export default function ChordPage({ song }: { song: Song }) {
           </section>
 
           <p className="caption" style={{ marginTop: "var(--s4)" }}>
-            Pintasan: <span className="kbd">+</span> / <span className="kbd">−</span> transpose ·{" "}
+            Pintasan: <span className="kbd">+</span> / <span className="kbd">-</span> transpose ·{" "}
             <span className="kbd">0</span> reset · <span className="kbd">Space</span> auto scroll ·{" "}
             <span className="kbd">[</span> <span className="kbd">]</span> ukuran teks ·{" "}
             <span className="kbd">L</span> mode lirik.
@@ -183,8 +192,8 @@ export default function ChordPage({ song }: { song: Song }) {
               <div className="empty">Belum ada lagu terkait.</div>
             ) : (
               <div className="grid grid-auto">
-                {related.map((item) => (
-                  <SongCard key={item.id} song={item} />
+                {related.map((song) => (
+                  <SongCard key={song.id} song={song} />
                 ))}
               </div>
             )}
