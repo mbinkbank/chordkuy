@@ -255,6 +255,52 @@ a:focus-visible {
   margin-inline: auto;
   padding-inline: var(--s3);
   overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-inline: 12px;
+  }
+  .grid-auto {
+    grid-template-columns: 1fr;
+  }
+  .h-page {
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .toolbar {
+    position: relative !important;
+    bottom: auto !important;
+    top: auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-inline: 0 !important;
+    border-radius: var(--radius-card) !important;
+    border: 1px solid var(--border) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .toolgroup {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    padding: 6px 10px !important;
+  }
+  .toolgroup > .lbl {
+    display: inline-block !important;
+    font-size: 11px !important;
+  }
+  .card, .panel, .sidebar {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 @media (min-width: 641px) {
   .container {
@@ -897,22 +943,15 @@ a.card:focus-visible {
 }
 @media (max-width: 640px) {
   .toolbar {
-    position: sticky;
-    top: auto;
-    bottom: 0;
-    border-radius: var(--radius-card) var(--radius-card) 0 0;
-    margin-inline: calc(var(--s3) * -1);
-    border-left: 0;
-    border-right: 0;
-    border-bottom: 0;
-    justify-content: center;
+    margin-inline: 0;
+    border-radius: var(--radius-card);
   }
   .toolgroup {
     flex: 1 1 auto;
-    justify-content: center;
+    justify-content: space-between;
   }
   .sheet {
-    padding-bottom: 96px;
+    padding-bottom: 24px;
   }
 }
 @media (max-width: 480px) {
