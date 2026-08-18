@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { getArtistBySlug, getSongBySlug } from "./lib/api";
@@ -11,9 +12,22 @@ import HomePage from "./pages/HomePage";
 import { PrivacyPage, TermsPage } from "./pages/LegalPages";
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchPage from "./pages/SearchPage";
+import type { Artist, Song } from "./data/types";
 
 function View() {
   const route = useRoute();
+  const [artist, setArtist] = useState<Artist | null | undefined>(undefined);
+  const [song, setSong] = useState<Song | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (route.name === "artist") {
+      setArtist(undefined);
+      getArtistBySlug(route.params.slug).then(setArtist);
+    } else if (route.name === "chord") {
+      setSong(undefined);
+      getSongBySlug(route.params.slug).then(setSong);
+    }
+  }, [route.name, route.params.slug]);
 
   switch (route.name) {
     case "home":
@@ -23,11 +37,15 @@ function View() {
     case "artists":
       return <ArtistsPage />;
     case "artist": {
-      const artist = getArtistBySlug(route.params.slug);
+      if (artist === undefined) {
+        return <div className="container" style={{ padding: "40px 0" }}>Memuat artis...</div>;
+      }
       return artist ? <ArtistPage key={artist.slug} artist={artist} /> : <NotFoundPage />;
     }
     case "chord": {
-      const song = getSongBySlug(route.params.slug);
+      if (song === undefined) {
+        return <div className="container" style={{ padding: "40px 0" }}>Memuat chord...</div>;
+      }
       return song ? <ChordPage key={song.slug} song={song} /> : <NotFoundPage />;
     }
     case "about":

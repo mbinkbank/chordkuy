@@ -1,20 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ArtistCard from "../components/ArtistCard";
 import Breadcrumb from "../components/Breadcrumb";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
-import { getGenres, getPopularSongs, searchCatalogue } from "../lib/api";
-import { Link, navigate, useQueryParam } from "../lib/router";
+import type { Song, Artist } from "../data/types";
+import { searchCatalogue } from "../lib/api";
+import { navigate, useQueryParam } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 export default function SearchPage() {
   const initialQuery = useQueryParam("q");
   const [query, setQuery] = useState(initialQuery);
+  const [results, setResults] = useState<{ songs: Song[]; artists: Artist[] }>({ songs: [], artists: [] });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => setQuery(initialQuery), [initialQuery]);
 
-  /* Keep the URL shareable without spamming history entries. */
   useEffect(() => {
     const id = window.setTimeout(() => {
       const next = query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : "/search";
@@ -25,7 +27,20 @@ export default function SearchPage() {
     return () => window.clearTimeout(id);
   }, [query]);
 
-  const results = useMemo(() => searchCatalogue(query), [query]);
+  useEffect(() => {
+    async function performSearch() {
+      if (!query.trim()) {
+        setResults({ songs: [], artists: [] });
+        return;
+      }
+      setLoading(true);
+      const res = await searchCatalogue(query);
+      setResults(res);
+      setLoading(false);
+    }
+    performSearch();
+  }, [query]);
+
   const hasQuery = query.trim().length > 0;
   const total = results.songs.length + results.artists.length;
 
@@ -59,94 +74,58 @@ export default function SearchPage() {
         ]}
       />
 
-      <header className="stack stack-3" style={{ paddingBottom: "var(--s4)" }}>
-        <h1 className="h-page">Cari chord</h1>
-        <p className="small muted" style={{ maxWidth: "60ch" }}>
-          Ketik judul lagu, nama artis, genre, atau chord (misal <span className="kbd">Am7</span>). Hasil
-          diperbarui langsung saat mengetik.
-        </p>
-        <SearchBar initialValue={initialQuery} onQueryChange={setQuery} autoFocus size="lg" />
-      </header>
+      <section className="section stack stack-4" style={{ paddingTop: "var(--s3)" }}>
+        <header className="stack stack-2">
+          <h1 className="h-display" style={{ fontSize: "clamp(24px, 4vw, 36px)" }}>
+            {hasQuery ? `Hasil untuk "${query.trim()}"` : "Cari Chord & Artis"}
+          </h1>
+          <p className="lead" style={{ fontSize: "15px" }}>
+            Ketik nama artis atau judul lagu yang ingin kamu cari.
+          </p>
+        </header>
 
-      {!hasQuery && (
-        <>
-          <section className="section" aria-labelledby="browse-genre">
-            <div className="section-head">
-              <h2 className="h-section" id="browse-genre">
-                Telusuri genre
-              </h2>
-            </div>
-            <div className="keylist">
-              {getGenres().map((genre) => (
-                <button key={genre.slug} type="button" className="chip" onClick={() => setQuery(genre.name)}>
-                  {genre.name}
-                </button>
-              ))}
-            </div>
-          </section>
+        <SearchBar
+          size="lg"
+          defaultValue={query}
+          onInput={setQuery}
+          placeholder="Cari lagu, artis, atau chord..."
+        />
 
-          <section className="section" aria-labelledby="search-popular">
-            <div className="section-head">
-              <h2 className="h-section" id="search-popular">
-                Paling sering dicari
-              </h2>
-            </div>
-            <div className="grid grid-auto">
-              {getPopularSongs(6).map((song, index) => (
-                <SongCard key={song.id} song={song} index={index} />
-              ))}
-            </div>
-          </section>
-        </>
-      )}
-
-      {hasQuery && (
-        <section className="section" aria-live="polite" aria-labelledby="results-heading">
-          <div className="section-head">
-            <h2 className="h-section" id="results-heading">
-              {total} hasil untuk “{query.trim()}”
-            </h2>
-            {total > 0 && <span className="caption">Lagu {results.songs.length} · Artis {results.artists.length}</span>}
+        {loading ? (
+          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Mencari di database...</p>
+        ) : !hasQuery ? (
+          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Ketik kata kunci untuk memulai pencarian.</p>
+        ) : total === 0 ? (
+          <div className="card text-center stack stack-2" style={{ padding: "var(--s6) var(--s4)" }}>
+            <p className="lead">Tidak ditemukan hasil untuk "{query.trim()}"</p>
+            <p className="caption">Coba kata kunci lain atau periksa ejaanmu.</p>
           </div>
-
-          {total === 0 ? (
-            <div className="empty">
-              <p style={{ marginBottom: "var(--s2)" }}>Tidak ada hasil yang cocok.</p>
-              <p className="caption">
-                Coba kata kunci lain, atau <Link href="/artists">lihat daftar artis</Link>.
-              </p>
-            </div>
-          ) : (
-            <div className="stack stack-5">
-              {results.songs.length > 0 && (
-                <div>
-                  <h3 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-                    Lagu
-                  </h3>
-                  <div className="grid grid-auto">
-                    {results.songs.map((song) => (
-                      <SongCard key={song.id} song={song} />
-                    ))}
-                  </div>
+        ) : (
+          <div className="stack stack-6">
+            {results.artists.length > 0 && (
+              <section className="stack stack-3">
+                <h2 className="h-section">Artis ({results.artists.length})</h2>
+                <div className="grid grid-auto">
+                  {results.artists.map((artist) => (
+                    <ArtistCard key={artist.id} artist={artist} />
+                  ))}
                 </div>
-              )}
+              </section>
+            )}
 
-              {results.artists.length > 0 && (
-                <div>
-                  <h3 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-                    Artis
-                  </h3>
-                  <div className="grid grid-auto">
-                    {results.artists.map((artist) => (
-                      <ArtistCard key={artist.id} artist={artist} />
-                    ))}
-                  </div>
+            {results.songs.length > 0 && (
+              <section className="stack stack-3">
+                <h2 className="h-section">Lagu ({results.songs.length})</h2>
+                <div className="grid grid-auto">
+                  {results.songs.map((song, index) => (
+                    <SongCard key={song.id} song={song} index={index} />
+                  ))}
                 </div>
-              )}
-            </div>
-          )}
-        </section>
-      )}
+              </section>
+            )}
+          </div>
+        )}
+      </section>
     </main>
   );
 }

@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import ArtistCard from "../components/ArtistCard";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
+import type { Artist, Genre, Song } from "../data/types";
 import {
   countSongsInGenre,
   formatDate,
@@ -15,11 +17,31 @@ import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib
 import { SITE } from "../lib/site";
 
 export default function HomePage() {
-  const popular = getPopularSongs(8);
-  const artists = getPopularArtists(6);
-  const recent = getRecentSongs(6);
-  const genres = getGenres();
-  const stats = getStats();
+  const [popular, setPopular] = useState<Song[]>([]);
+  const [recent, setRecent] = useState<Song[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [stats, setStats] = useState({ songCount: 0, artistCount: 0, genreCount: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      const [popData, recData, artData, genData, statData] = await Promise.all([
+        getPopularSongs(8),
+        getRecentSongs(6),
+        getPopularArtists(6),
+        getGenres(),
+        getStats(),
+      ]);
+      setPopular(popData);
+      setRecent(recData);
+      setArtists(artData);
+      setGenres(genData);
+      setStats(statData);
+      setLoading(false);
+    }
+    loadData();
+  }, []);
 
   useSeo({
     title: `${SITE.name} — Chord Gitar Lengkap, Transpose & Auto Scroll`,
@@ -38,7 +60,7 @@ export default function HomePage() {
         <div className="container hero-grid">
           <div className="stack stack-4">
             <p className="eyebrow">
-              Chord library · {stats.songs} lagu · {stats.artists} artis
+              Chord library · {stats.songCount} lagu · {stats.artistCount} artis
             </p>
             <h1 className="h-display">
               Chord gitar yang bersih,
@@ -54,7 +76,7 @@ export default function HomePage() {
 
             <div className="row">
               <span className="caption">Populer:</span>
-              {["Senja Kolektif", "Folk", "Am", "Rana Astari"].map((term) => (
+              {["Oasis", "Dewa 19", "Green Day", "Slank"].map((term) => (
                 <Link key={term} className="chip" href={`/search?q=${encodeURIComponent(term)}`}>
                   {term}
                 </Link>
@@ -65,15 +87,15 @@ export default function HomePage() {
           <div className="stack stack-3">
             <div className="stat-grid">
               <div className="stat">
-                <div className="n">{stats.songs}</div>
+                <div className="n">{stats.songCount}</div>
                 <div className="l">Lagu</div>
               </div>
               <div className="stat">
-                <div className="n">{stats.artists}</div>
+                <div className="n">{stats.artistCount}</div>
                 <div className="l">Artis</div>
               </div>
               <div className="stat">
-                <div className="n">{stats.genres}</div>
+                <div className="n">{stats.genreCount}</div>
                 <div className="l">Genre</div>
               </div>
             </div>
@@ -104,11 +126,17 @@ export default function HomePage() {
               Lihat semua →
             </Link>
           </div>
-          <div className="grid grid-auto">
-            {popular.map((song, index) => (
-              <SongCard key={song.id} song={song} index={index} />
-            ))}
-          </div>
+          {loading ? (
+            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu...</p>
+          ) : popular.length === 0 ? (
+            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Belum ada lagu tersedia.</p>
+          ) : (
+            <div className="grid grid-auto">
+              {popular.map((song, index) => (
+                <SongCard key={song.id} song={song} index={index} />
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="container section" aria-labelledby="popular-artists">
@@ -120,33 +148,15 @@ export default function HomePage() {
               Semua artis →
             </Link>
           </div>
-          <div className="grid grid-auto">
-            {artists.map((artist) => (
-              <ArtistCard key={artist.id} artist={artist} />
-            ))}
-          </div>
-        </section>
-
-        <section className="container section" aria-labelledby="genres">
-          <div className="section-head">
-            <h2 className="h-section" id="genres">
-              Genre
-            </h2>
-            <span className="caption">Telusuri berdasarkan gaya musik</span>
-          </div>
-          <div className="grid grid-auto-sm">
-            {genres.map((genre) => (
-              <Link key={genre.slug} className="card" href={`/search?q=${encodeURIComponent(genre.name)}`}>
-                <span className="row" style={{ justifyContent: "space-between" }}>
-                  <strong style={{ fontSize: 13 }}>{genre.name}</strong>
-                  <span className="badge badge-muted">{countSongsInGenre(genre.slug)}</span>
-                </span>
-                <span className="caption" style={{ display: "block", marginTop: 4 }}>
-                  {genre.description}
-                </span>
-              </Link>
-            ))}
-          </div>
+          {loading ? (
+            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat artis...</p>
+          ) : (
+            <div className="grid grid-auto">
+              {artists.map((artist) => (
+                <ArtistCard key={artist.id} artist={artist} />
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="container section" aria-labelledby="recent">
@@ -156,22 +166,26 @@ export default function HomePage() {
             </h2>
             <span className="caption">Diperbarui berkala</span>
           </div>
-          <div className="list-rows">
-            {recent.map((song) => (
-              <Link key={song.id} className="card song-card" href={`/chord/${song.slug}`}>
-                <span className="thumb" aria-hidden="true">
-                  {song.originalKey}
-                </span>
-                <span style={{ minWidth: 0 }}>
-                  <span className="title">{song.title}</span>
-                  <span className="sub">
-                    {song.artist} · {song.genre}
+          {loading ? (
+            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu baru...</p>
+          ) : (
+            <div className="list-rows">
+              {recent.map((song) => (
+                <Link key={song.id} className="card song-card" href={`/chord/${song.slug}`}>
+                  <span className="thumb" aria-hidden="true">
+                    {song.originalKey}
                   </span>
-                </span>
-                <span className="meta">{formatDate(song.updatedAt)}</span>
-              </Link>
-            ))}
-          </div>
+                  <span style={{ minWidth: 0 }}>
+                    <span className="title">{song.title}</span>
+                    <span className="sub">
+                      {song.artist} · {song.genre}
+                    </span>
+                  </span>
+                  <span className="meta">{formatDate(song.createdAt)}</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </>

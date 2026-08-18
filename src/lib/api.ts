@@ -1,132 +1,205 @@
 /**
- * Data access layer.
- *
- * Today it reads local mock data synchronously so pages render instantly.
- * Migrating to Supabase means replacing the bodies below with queries —
- * the returned shapes never change, so no component has to be touched.
- *
- *   // src/lib/supabase.ts
- *   import { createClient } from "@supabase/supabase-js";
- *   export const db = createClient(import.meta.env.PUBLIC_SUPABASE_URL,
- *                                  import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
- *
- *   export async function getSongBySlug(slug: string) {
- *     const { data } = await db.from("songs").select("*").eq("slug", slug).single();
- *     return data ? mapSong(data) : null;
- *   }
+ * Supabase Data Access Layer for `ug_chords`.
  */
-
-import { artists, genres } from "../data/artists";
-import { songs } from "../data/songs";
+import { supabase } from "./supabase";
 import type { Artist, Genre, Song } from "../data/types";
 
-const byViews = (a: Song, b: Song) => (b.views ?? 0) - (a.views ?? 0);
-const byUpdated = (a: Song, b: Song) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
-export const getAllSongs = (): Song[] => [...songs];
-
-export const getSongBySlug = (slug: string): Song | null =>
-  songs.find((s) => s.slug === slug) ?? null;
-
-export const getSongsByArtist = (artistSlug: string): Song[] =>
-  songs.filter((s) => s.artistSlug === artistSlug).sort(byViews);
-
-export const getPopularSongs = (limit = 8): Song[] => [...songs].sort(byViews).slice(0, limit);
-
-export const getRecentSongs = (limit = 6): Song[] => [...songs].sort(byUpdated).slice(0, limit);
-
-export const getSongsByGenre = (genreSlug: string): Song[] =>
-  songs.filter((s) => s.genre.toLowerCase() === genreSlug.toLowerCase()).sort(byViews);
-
-export function getRelatedSongs(song: Song, limit = 5): Song[] {
-  const sameArtist = songs.filter((s) => s.artistSlug === song.artistSlug && s.id !== song.id);
-  const sameGenre = songs.filter(
-    (s) => s.genre === song.genre && s.artistSlug !== song.artistSlug && s.id !== song.id,
-  );
-  return [...sameArtist, ...sameGenre.sort(byViews)].slice(0, limit);
+// Extract chord names from text
+function extractChords(content: string): string[] {
+  if (!content) return [];
+  const matches = content.match(/\b[A-G][b#]?(?:m|maj|min|dim|aug|sus|add|\d)*\b/g);
+  return matches ? Array.from(new Set(matches)) : [];
 }
 
-export const getAllArtists = (): Artist[] =>
-  [...artists].sort((a, b) => a.name.localeCompare(b.name));
+// Convert Supabase `ug_chords` row to App `Song` type
+export function mapDbRowToSong(row: any): Song {
+  const title = row.title || "Untitled";
+  const artist = row.artist || "Unknown Artist";
+  const slug = `${slugify(artist)}-${slugify(title)}-${row.id}`;
+  const artistSlug = slugify(artist);
+  const capoNum = row.capo && row.capo.includes("fret") 
+    ? parseInt(row.capo.replace(/\D/g, ""), 10) || 0 
+    : 0;
 
-export const getArtistBySlug = (slug: string): Artist | null =>
-  artists.find((a) => a.slug === slug) ?? null;
+  const rawDiff = (row.difficulty || "").toLowerCase();
+  let difficulty: "Pemula" | "Menengah" | "Mahir" = "Menengah";
+  if (rawDiff === "novice" || rawDiff === "pemula") difficulty = "Pemula";
+  else if (rawDiff === "advanced" || rawDiff === "mahir") difficulty = "Mahir";
 
-export const getPopularArtists = (limit = 6): Artist[] =>
-  [...artists]
-    .map((artist) => ({
-      artist,
-      score: getSongsByArtist(artist.slug).reduce((sum, s) => sum + (s.views ?? 0), 0),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((entry) => entry.artist);
+  return {
+    id: String(row.id),
+    title: title,
+    slug: slug,
+    artist: artist,
+    artistSlug: artistSlug,
+    originalKey: row.key_name || "C",
+    capo: capoNum,
+    lyrics: row.content || "",
+    chords: extractChords(row.content || ""),
+    genre: "Pop",
+    thumbnail: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    difficulty: difficulty,
+    tuning: row.tuning || "E A D G B E",
+    views: 100 + (row.id * 7) % 500,
+  };
+}
 
-export const getGenres = (): Genre[] => [...genres];
+export async function getAllSongs(): Promise<Song[]> {
+  const { data, error } = await supabase
+    .from("ug_chords")
+    .select("*")
+    .order("id", { ascending: false });
+  if (error || !data) return [];
+  return data.map(mapDbRowToSong);
+}
 
-export const countSongsInGenre = (genreSlug: string): number => getSongsByGenre(genreSlug).length;
+export async function getSongBySlug(slug: string): Promise<Song | null> {
+  const parts = slug.split("-");
+  const possibleId = parts[parts.length - 1];
+
+  if (/^\d+$/.test(possibleId)) {
+    const { data } = await supabase
+      .from("ug_chords")
+      .select("*")
+      .eq("id", parseInt(possibleId, 10))
+      .maybeSingle();
+    if (data) return mapDbRowToSong(data);
+  }
+
+  const all = await getAllSongs();
+  return all.find((s) => s.slug === slug) ?? null;
+}
+
+export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
+  const all = await getAllSongs();
+  return all.filter((s) => s.artistSlug === artistSlug);
+}
+
+export async function getPopularSongs(limit = 8): Promise<Song[]> {
+  const all = await getAllSongs();
+  return all.slice(0, limit);
+}
+
+export async function getRecentSongs(limit = 6): Promise<Song[]> {
+  const { data, error } = await supabase
+    .from("ug_chords")
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(limit);
+  if (error || !data) return [];
+  return data.map(mapDbRowToSong);
+}
+
+export async function getSongsByGenre(genreSlug: string): Promise<Song[]> {
+  return await getAllSongs();
+}
+
+export async function getRelatedSongs(song: Song, limit = 5): Promise<Song[]> {
+  const all = await getAllSongs();
+  return all.filter((s) => s.id !== song.id).slice(0, limit);
+}
+
+export async function getAllArtists(): Promise<Artist[]> {
+  const songs = await getAllSongs();
+  const map = new Map<string, Artist>();
+
+  for (const song of songs) {
+    if (!map.has(song.artistSlug)) {
+      map.set(song.artistSlug, {
+        id: song.artistSlug,
+        name: song.artist,
+        slug: song.artistSlug,
+        bio: `Kumpulan chord gitar dari ${song.artist}.`,
+        country: "International",
+        genres: ["Pop"],
+        thumbnail: null,
+        createdAt: new Date().toISOString(),
+      });
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export async function getArtistBySlug(slug: string): Promise<Artist | null> {
+  const artists = await getAllArtists();
+  return artists.find((a) => a.slug === slug) ?? null;
+}
+
+export async function getPopularArtists(limit = 6): Promise<Artist[]> {
+  const artists = await getAllArtists();
+  return artists.slice(0, limit);
+}
+
+export async function getGenres(): Promise<Genre[]> {
+  return [
+    { slug: "pop", name: "Pop", description: "Lagu-lagu pop populer" },
+    { slug: "rock", name: "Rock", description: "Lagu rock & alternative" },
+  ];
+}
+
+export async function countSongsInGenre(genreSlug: string): Promise<number> {
+  const songs = await getAllSongs();
+  return songs.length;
+}
+
+export function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return iso;
+  }
+}
+
+export function formatViews(views?: number): string {
+  if (!views) return "0";
+  if (views >= 1000000) return `${(views / 1000000).toFixed(1)}M`;
+  if (views >= 1000) return `${(views / 1000).toFixed(1)}k`;
+  return String(views);
+}
+
+export async function getStats() {
+  const songs = await getAllSongs();
+  const artists = await getAllArtists();
+  return {
+    songCount: songs.length,
+    artistCount: artists.length,
+    genreCount: 2,
+  };
+}
 
 export interface SearchResult {
   songs: Song[];
   artists: Artist[];
 }
 
-const normalise = (value: string): string =>
-  value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+export async function searchCatalogue(query: string, limit = 40): Promise<SearchResult> {
+  if (!query.trim()) return { songs: [], artists: [] };
+  
+  const q = query.toLowerCase().trim();
+  const { data } = await supabase
+    .from("ug_chords")
+    .select("*")
+    .or(`title.ilike.%${q}%,artist.ilike.%${q}%`)
+    .limit(limit);
 
-export function searchCatalogue(query: string, limit = 40): SearchResult {
-  const q = normalise(query);
-  if (!q) return { songs: [], artists: [] };
+  if (!data) return { songs: [], artists: [] };
+  const songs = data.map(mapDbRowToSong);
+  const artists = await getAllArtists();
+  const filteredArtists = artists.filter((a) => a.name.toLowerCase().includes(q));
 
-  const scored = songs
-    .map((song) => {
-      const title = normalise(song.title);
-      const artist = normalise(song.artist);
-      const genre = normalise(song.genre);
-      let score = 0;
-      if (title === q) score += 100;
-      if (title.startsWith(q)) score += 60;
-      if (title.includes(q)) score += 40;
-      if (artist.startsWith(q)) score += 30;
-      if (artist.includes(q)) score += 20;
-      if (genre.includes(q)) score += 8;
-      if (song.chords.some((c) => normalise(c) === q)) score += 6;
-      return { song, score };
-    })
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score || (b.song.views ?? 0) - (a.song.views ?? 0))
-    .slice(0, limit)
-    .map((entry) => entry.song);
-
-  const matchedArtists = artists
-    .filter((a) => normalise(a.name).includes(q) || a.genres.some((g) => normalise(g).includes(q)))
-    .slice(0, 8);
-
-  return { songs: scored, artists: matchedArtists };
+  return { songs, artists: filteredArtists };
 }
-
-export interface CatalogueStats {
-  songs: number;
-  artists: number;
-  genres: number;
-}
-
-export const getStats = (): CatalogueStats => ({
-  songs: songs.length,
-  artists: artists.length,
-  genres: genres.length,
-});
-
-export const formatViews = (views?: number): string => {
-  if (!views) return "—";
-  if (views >= 1_000_000) return (views / 1_000_000).toFixed(1).replace(".0", "") + "jt";
-  if (views >= 1_000) return (views / 1_000).toFixed(1).replace(".0", "") + "rb";
-  return String(views);
-};
-
-export const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
