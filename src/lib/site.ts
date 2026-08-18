@@ -1,16 +1,16 @@
 /** Global site constants — no secrets here, safe for the client bundle. */
 export const SITE = {
-  name: "ChordLab",
-  shortName: "ChordLab",
+  name: "Chordkuy",
+  shortName: "Chordkuy",
   tagline: "Chord gitar bersih, cepat, dan mudah dibaca",
-  url: "https://chordlab.pages.dev",
+  url: "https://chordkuy.id",
   locale: "id-ID",
   lang: "id",
   description:
     "Kumpulan chord gitar dengan transpose real-time, auto scroll, dan diagram chord. Ringan, tanpa iklan mengganggu, dan nyaman dibaca di ponsel maupun desktop.",
-  twitter: "@chordlab",
-  publisher: "ChordLab",
-  email: "halo@chordlab.dev",
+  twitter: "@chordkuy",
+  publisher: "Chordkuy",
+  email: "halo@chordkuy.id",
 } as const;
 
 export const NAV_ITEMS = [
