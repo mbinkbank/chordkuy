@@ -249,11 +249,32 @@ export default function ChordPage({ song }: { song: Song }) {
                 </span>
               ))}
             </div>
-            <div className="grid grid-2" style={{ gap: "var(--s2)" }}>
-              {chordList.slice(0, 4).map((chord) => (
-                <figure key={chord} style={{ margin: 0, textAlign: "center" }}>
-                  <ChordDiagram chord={chord} size={104} />
-                  <figcaption className="caption">{chord}</figcaption>
+            <div
+              style={{
+                display: "flex",
+                gap: "var(--s3)",
+                overflowX: "auto",
+                paddingBottom: "var(--s2)",
+                scrollbarWidth: "thin",
+              }}
+            >
+              {chordList.map((chord) => (
+                <figure
+                  key={chord}
+                  style={{
+                    margin: 0,
+                    textAlign: "center",
+                    flex: "0 0 110px",
+                    background: "var(--surface-2)",
+                    padding: "8px 4px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--border)",
+                  }}
+                >
+                  <ChordDiagram chord={chord} size={100} />
+                  <figcaption className="caption" style={{ fontWeight: 600, marginTop: 4 }}>
+                    {chord}
+                  </figcaption>
                 </figure>
               ))}
             </div>
