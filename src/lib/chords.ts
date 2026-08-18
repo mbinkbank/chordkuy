@@ -1,22 +1,17 @@
 /**
- * Chord engine — zero dependencies.
- * Parses inline-bracket chord sheets and transposes complex symbols
- * (Am7, Cmaj7, D/F#, Gsus4, Em9, Bb, C#dim…) without losing quality info.
+ * Chord engine supporting standard chords-above-lyrics sheets and bracketed chords.
  */
 
 export const SHARP_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 export const FLAT_NOTES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 
 const BASE_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-
-/** Keys that are conventionally written with flats. */
 const FLAT_KEYS = new Set(["F", "Bb", "Eb", "Ab", "Db", "Gb", "Dm", "Gm", "Cm", "Fm", "Bbm", "Ebm"]);
 
 export function keyPrefersFlat(key: string): boolean {
   return FLAT_KEYS.has(key.trim());
 }
 
-/** "C#" -> 1, "Bb" -> 10, invalid -> null */
 export function noteToPitchClass(note: string): number | null {
   const m = /^([A-G])([#b]?)/.exec(note);
   if (!m) return null;
@@ -31,7 +26,7 @@ export function pitchClassToNote(pc: number, preferFlat = false): string {
   return preferFlat ? FLAT_NOTES[i] : SHARP_NOTES[i];
 }
 
-const CHORD_RE = /^([A-G][#b]?)([^/\s]*)(?:\/([A-G][#b]?))?$/;
+const CHORD_TOKEN_RE = /^([A-G][#b]?)(m|min|maj|dim|aug|sus|add|\d|M)*(?:\/([A-G][#b]?))?$/;
 
 export interface ParsedChord {
   root: string;
@@ -40,40 +35,39 @@ export interface ParsedChord {
 }
 
 export function parseChord(symbol: string): ParsedChord | null {
-  const m = CHORD_RE.exec(symbol.trim());
+  const m = CHORD_TOKEN_RE.exec(symbol.trim());
   if (!m) return null;
   return { root: m[1], quality: m[2] ?? "", bass: m[3] };
 }
 
-/** Transpose a single chord symbol by `semitones`. Unknown tokens pass through. */
+export function isChordToken(token: string): boolean {
+  if (!token) return false;
+  return CHORD_TOKEN_RE.test(token.trim());
+}
+
 export function transposeChord(symbol: string, semitones: number, preferFlat = false): string {
   const raw = symbol.trim();
   if (!raw) return symbol;
-  const parsed = parseChord(raw);
-  if (!parsed) return symbol;
-  const rootPc = noteToPitchClass(parsed.root);
+  const m = CHORD_TOKEN_RE.exec(raw);
+  if (!m) return symbol;
+
+  const rootPc = noteToPitchClass(m[1]);
   if (rootPc === null) return symbol;
 
   const root = pitchClassToNote(rootPc + semitones, preferFlat);
-  let out = root + parsed.quality;
-  if (parsed.bass) {
-    const bassPc = noteToPitchClass(parsed.bass);
+  let out = root + (m[2] || "");
+  if (m[3]) {
+    const bassPc = noteToPitchClass(m[3]);
     if (bassPc !== null) out += "/" + pitchClassToNote(bassPc + semitones, preferFlat);
   }
   return out;
 }
 
-/** Human label for the current key after N semitones. */
 export function transposeKey(key: string, semitones: number, preferFlat = false): string {
   return transposeChord(key, semitones, preferFlat);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Sheet parsing                                                              */
-/* -------------------------------------------------------------------------- */
-
 export interface Segment {
-  /** Chord printed above this text chunk (null = plain lyric). */
   chord: string | null;
   text: string;
 }
@@ -83,55 +77,107 @@ export type SheetLine =
   | { type: "blank" }
   | { type: "line"; segments: Segment[] };
 
-const BRACKET_RE = /\[([^\]]+)\]/g;
+function isChordLine(line: string): boolean {
+  const tokens = line.trim().split(/\s+/);
+  if (tokens.length === 0) return false;
+  const chordCount = tokens.filter(isChordToken).length;
+  return chordCount / tokens.length >= 0.7;
+}
 
 /**
- * Turn raw sheet text into renderable lines.
- * `# Verse 1` -> section label. `[Am]lyric` -> chord + lyric segments.
+ * Universal sheet parser:
+ * Handles Ultimate-Guitar text format (chords on top of lyrics), section headers, and inline [Chord] formats.
  */
-export function parseSheet(lyrics: string): SheetLine[] {
-  const rows = lyrics.replace(/\r\n/g, "\n").split("\n");
+export function parseSheet(raw: string): SheetLine[] {
+  const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
 
-  for (const row of rows) {
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
     const trimmed = row.trim();
+
     if (!trimmed) {
       out.push({ type: "blank" });
       continue;
     }
-    if (trimmed.startsWith("#")) {
-      out.push({ type: "section", label: trimmed.replace(/^#+\s*/, "") });
+
+    // Section header (e.g. [Verse 1], Intro:, [Chorus])
+    if (
+      (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
+      /^(intro|verse|chorus|bridge|outro|interlude|solo|reff|hook)/i.test(trimmed)
+    ) {
+      out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
       continue;
     }
 
-    const segments: Segment[] = [];
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-    BRACKET_RE.lastIndex = 0;
+    // Check if this row is a Chord line (e.g. "C   G   Am   F")
+    if (isChordLine(row)) {
+      const nextRow = i + 1 < rows.length ? rows[i + 1] : "";
+      const isNextChordOrSection = !nextRow.trim() || isChordLine(nextRow) || /^(intro|verse|chorus|bridge|outro|\[)/i.test(nextRow.trim());
 
-    while ((match = BRACKET_RE.exec(row)) !== null) {
-      const before = row.slice(lastIndex, match.index);
-      if (before) {
-        if (segments.length === 0) segments.push({ chord: null, text: before });
-        else segments[segments.length - 1].text += before;
+      // If next line is not lyric line, display chord line directly
+      if (isNextChordOrSection) {
+        const segments: Segment[] = [];
+        const regex = /\S+/g;
+        let match;
+        let lastIdx = 0;
+
+        while ((match = regex.exec(row)) !== null) {
+          const spaceBefore = row.slice(lastIdx, match.index);
+          if (spaceBefore) segments.push({ chord: null, text: spaceBefore });
+          segments.push({ chord: match[0], text: "" });
+          lastIdx = match.index + match[0].length;
+        }
+        const spaceAfter = row.slice(lastIdx);
+        if (spaceAfter) segments.push({ chord: null, text: spaceAfter });
+
+        out.push({ type: "line", segments });
+      } else {
+        // Chord above lyrics pairing
+        i++; // Consume next lyric row
+        const lyric = nextRow;
+        const segments: Segment[] = [];
+        const regex = /\S+/g;
+        let match;
+        let chordMatches: { chord: string; index: number; length: number }[] = [];
+
+        while ((match = regex.exec(row)) !== null) {
+          chordMatches.push({ chord: match[0], index: match.index, length: match[0].length });
+        }
+
+        let currLyricPos = 0;
+        for (let j = 0; j < chordMatches.length; j++) {
+          const cm = chordMatches[j];
+          const nextCm = j + 1 < chordMatches.length ? chordMatches[j + 1] : null;
+
+          if (cm.index > currLyricPos) {
+            const preText = lyric.slice(currLyricPos, cm.index);
+            segments.push({ chord: null, text: preText });
+            currLyricPos = cm.index;
+          }
+
+          const endPos = nextCm ? nextCm.index : lyric.length;
+          const textUnder = lyric.slice(currLyricPos, endPos);
+          segments.push({ chord: cm.chord, text: textUnder });
+          currLyricPos = endPos;
+        }
+
+        if (currLyricPos < lyric.length) {
+          segments.push({ chord: null, text: lyric.slice(currLyricPos) });
+        }
+
+        out.push({ type: "line", segments });
       }
-      segments.push({ chord: match[1].trim(), text: "" });
-      lastIndex = match.index + match[0].length;
+      continue;
     }
 
-    const tail = row.slice(lastIndex);
-    if (tail) {
-      if (segments.length === 0) segments.push({ chord: null, text: tail });
-      else segments[segments.length - 1].text += tail;
-    }
-
-    out.push({ type: "line", segments: segments.length ? segments : [{ chord: null, text: row }] });
+    // Plain text / lyric only row
+    out.push({ type: "line", segments: [{ chord: null, text: row }] });
   }
 
   return out;
 }
 
-/** Apply transposition to already parsed lines (cheap, pure). */
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
   if (semitones === 0) return lines;
   return lines.map((line) =>
@@ -147,44 +193,17 @@ export function transposeLines(lines: SheetLine[], semitones: number, preferFlat
   );
 }
 
-/** Distinct chords in order of appearance. */
 export function uniqueChords(lines: SheetLine[]): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const line of lines) {
     if (line.type !== "line") continue;
     for (const seg of line.segments) {
-      if (seg.chord && !seen.has(seg.chord)) {
+      if (seg.chord && isChordToken(seg.chord) && !seen.has(seg.chord)) {
         seen.add(seg.chord);
         out.push(seg.chord);
       }
     }
   }
   return out;
-}
-
-/** Plain-text export (chord above lyric, monospace aligned). */
-export function sheetToPlainText(lines: SheetLine[]): string {
-  const rows: string[] = [];
-  for (const line of lines) {
-    if (line.type === "blank") {
-      rows.push("");
-      continue;
-    }
-    if (line.type === "section") {
-      rows.push(`[${line.label}]`);
-      continue;
-    }
-    let chordRow = "";
-    let lyricRow = "";
-    for (const seg of line.segments) {
-      const chord = seg.chord ?? "";
-      const width = Math.max(chord.length + (seg.chord ? 1 : 0), seg.text.length);
-      chordRow += chord.padEnd(width, " ");
-      lyricRow += seg.text.padEnd(width, " ");
-    }
-    if (chordRow.trim()) rows.push(chordRow.trimEnd());
-    if (lyricRow.trim()) rows.push(lyricRow.trimEnd());
-  }
-  return rows.join("\n");
 }

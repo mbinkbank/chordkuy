@@ -40,7 +40,7 @@ export default function SongCard({ song, index, showArtist = true }: Props) {
           {song.originalKey}
         </span>
         <br />
-        <span>{formatViews(song.views)} views</span>
+        <span>{song.originalKey}</span>
       </span>
     </Link>
   );

@@ -142,9 +142,6 @@ export default function ChordPage({ song }: { song: Song }) {
               >
                 {lyricsOnly ? "Tampilkan chord" : "Lirik saja"}
               </button>
-              <span className="caption">
-                {formatViews(song.views)} dilihat · diperbarui {formatDate(song.updatedAt)}
-              </span>
             </div>
           </header>
 
