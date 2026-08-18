@@ -34,10 +34,11 @@ export function mapDbRowToSong(row: any): Song {
   if (rawDiff === "novice" || rawDiff === "pemula") difficulty = "Pemula";
   else if (rawDiff === "advanced" || rawDiff === "mahir") difficulty = "Mahir";
 
-  // Ambil chord pertama dari isi lagu jika key_name bawaan tidak cocok dengan chord pembuka
-  const contentChords = extractChords(row.content || "");
-  const firstChord = contentChords.length > 0 ? contentChords[0] : null;
-  const originalKey = firstChord || row.key_name || "C";
+  // Hitung Kunci Jari = Nada Konser (key_name) - Capo
+  let originalKey = row.key_name || "C";
+  if (row.key_name && capoNum > 0) {
+    originalKey = transposeChord(row.key_name, -capoNum, keyPrefersFlat(row.key_name));
+  }
 
   return {
     id: String(row.id),
