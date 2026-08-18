@@ -1,0 +1,2 @@
+# Specify node version for Cloudflare Pages
+NODE_VERSION=22
