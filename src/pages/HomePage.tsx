@@ -4,7 +4,6 @@ import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
 import type { Artist, Genre, Song } from "../data/types";
 import {
-  countSongsInGenre,
   formatDate,
   getGenres,
   getPopularArtists,
@@ -23,22 +22,29 @@ export default function HomePage() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [stats, setStats] = useState({ songCount: 0, artistCount: 0, genreCount: 0 });
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
-      const [popData, recData, artData, genData, statData] = await Promise.all([
-        getPopularSongs(8),
-        getRecentSongs(6),
-        getPopularArtists(6),
-        getGenres(),
-        getStats(),
-      ]);
-      setPopular(popData);
-      setRecent(recData);
-      setArtists(artData);
-      setGenres(genData);
-      setStats(statData);
-      setLoading(false);
+      try {
+        const [popData, recData, artData, genData, statData] = await Promise.all([
+          getPopularSongs(8),
+          getRecentSongs(6),
+          getPopularArtists(6),
+          getGenres(),
+          getStats(),
+        ]);
+        setPopular(popData || []);
+        setRecent(recData || []);
+        setArtists(artData || []);
+        setGenres(genData || []);
+        setStats(statData || { songCount: 0, artistCount: 0, genreCount: 0 });
+      } catch (err: any) {
+        console.error("Failed to load home page data:", err);
+        setErrorMsg(String(err?.message || err));
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, []);
@@ -117,6 +123,12 @@ export default function HomePage() {
       </section>
 
       <main id="main">
+        {errorMsg && (
+          <div className="container" style={{ padding: "20px 0", color: "#ff6b6b" }}>
+            Error memuat data: {errorMsg}
+          </div>
+        )}
+
         <section className="container section" aria-labelledby="popular-songs">
           <div className="section-head">
             <h2 className="h-section" id="popular-songs">
