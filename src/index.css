@@ -967,7 +967,7 @@ a.card:focus-visible {
 }
 
 .sheet {
-  --sheet-size: 15px;
+  --sheet-size: 16px;
   font-family: var(--font-mono);
   font-size: var(--sheet-size);
   line-height: 1.5;
@@ -1010,7 +1010,7 @@ a.card:focus-visible {
 
 @media (max-width: 640px) {
   .sheet {
-    --sheet-size: 13px;
+    --sheet-size: 13px !important;
   }
   .h-page {
     word-break: break-word;
