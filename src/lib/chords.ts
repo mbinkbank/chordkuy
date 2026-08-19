@@ -136,14 +136,13 @@ export function parseSheet(raw: string): SheetLine[] {
     const prefixMatch = /^(intro\s*:?|musik\s*:?|music\s*:?|outro\s*:?|int\.\s*|interlude\s*:?|solo\s*:?)/i.exec(trimmed);
     if (prefixMatch && trimmed.length > prefixMatch[0].length) {
       const labelText = prefixMatch[0];
-      const restText = row.slice(row.indexOf(labelText) + labelText.length);
+      const restText = row.slice(row.indexOf(labelText) + labelText.length).trimStart();
 
-      // Baris 1: Judul Bagian (Section Header dengan jarak atas-bawah)
+      // Baris 1: Judul Bagian
       out.push({ type: "section", label: labelText });
 
-      // Re-align chord line under the label with indentation offset
-      const indent = " ".repeat(labelText.length);
-      out.push({ type: "line", segments: parseLineInplace(indent + restText) });
+      // Baris 2: Chord langsung di awal baris (tanpa indentasi)
+      out.push({ type: "line", segments: parseLineInplace(restText) });
       continue;
     }
 
