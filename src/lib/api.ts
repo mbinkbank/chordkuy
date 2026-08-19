@@ -1,6 +1,3 @@
-/**
- * Supabase Data Access Layer for `ug_chords`.
- */
 import { supabase } from "./supabase";
 import type { Artist, Genre, Song } from "../data/types";
 
@@ -12,14 +9,12 @@ const slugify = (text: string) =>
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-// Extract chord names from text
 function extractChords(content: string): string[] {
   if (!content) return [];
   const matches = content.match(/\b[A-G][b#]?(?:m|maj|min|dim|aug|sus|add|\d)*\b/g);
   return matches ? Array.from(new Set(matches)) : [];
 }
 
-// Convert Supabase `ug_chords` row to App `Song` type
 export function mapDbRowToSong(row: any): Song {
   const title = row.title || "Untitled";
   const artist = row.artist || "Unknown Artist";
@@ -35,7 +30,7 @@ export function mapDbRowToSong(row: any): Song {
   else if (rawDiff === "advanced" || rawDiff === "mahir") difficulty = "Mahir";
 
   const contentChords = extractChords(row.content || "");
-  const originalKey = row.key_name || "C";
+  const originalKey = row.key_name || (contentChords.length > 0 ? contentChords[0] : "C");
 
   return {
     id: String(row.id),
@@ -59,7 +54,7 @@ export function mapDbRowToSong(row: any): Song {
 
 export async function getAllSongs(): Promise<Song[]> {
   const { data, error } = await supabase
-    .from("ug_chords")
+    .from("chords")
     .select("*")
     .order("id", { ascending: false });
   if (error || !data) return [];
@@ -72,7 +67,7 @@ export async function getSongBySlug(slug: string): Promise<Song | null> {
 
   if (/^\d+$/.test(possibleId)) {
     const { data } = await supabase
-      .from("ug_chords")
+      .from("chords")
       .select("*")
       .eq("id", parseInt(possibleId, 10))
       .maybeSingle();
@@ -95,7 +90,7 @@ export async function getPopularSongs(limit = 8): Promise<Song[]> {
 
 export async function getRecentSongs(limit = 6): Promise<Song[]> {
   const { data, error } = await supabase
-    .from("ug_chords")
+    .from("chords")
     .select("*")
     .order("id", { ascending: false })
     .limit(limit);
@@ -123,7 +118,7 @@ export async function getAllArtists(): Promise<Artist[]> {
         name: song.artist,
         slug: song.artistSlug,
         bio: `Kumpulan chord gitar dari ${song.artist}.`,
-        country: "International",
+        country: "Indonesia",
         genres: ["Pop"],
         thumbnail: null,
         createdAt: new Date().toISOString(),
@@ -143,16 +138,14 @@ export async function getPopularArtists(limit = 6): Promise<Artist[]> {
   return artists.slice(0, limit);
 }
 
-export async function getGenres(): Promise<Genre[]> {
-  return [
-    { slug: "pop", name: "Pop", description: "Lagu-lagu pop populer" },
-    { slug: "rock", name: "Rock", description: "Lagu rock & alternative" },
-  ];
-}
-
-export async function countSongsInGenre(genreSlug: string): Promise<number> {
+export async function getStats() {
   const songs = await getAllSongs();
-  return songs.length;
+  const artists = await getAllArtists();
+  return {
+    songCount: songs.length,
+    artistCount: artists.length,
+    genreCount: 2,
+  };
 }
 
 export function formatDate(iso: string): string {
@@ -174,14 +167,16 @@ export function formatViews(views?: number): string {
   return String(views);
 }
 
-export async function getStats() {
+export async function getGenres(): Promise<Genre[]> {
+  return [
+    { slug: "pop", name: "Pop", description: "Lagu-lagu pop populer" },
+    { slug: "dangdut", name: "Dangdut", description: "Lagu dangdut & koplo" },
+  ];
+}
+
+export async function countSongsInGenre(genreSlug: string): Promise<number> {
   const songs = await getAllSongs();
-  const artists = await getAllArtists();
-  return {
-    songCount: songs.length,
-    artistCount: artists.length,
-    genreCount: 2,
-  };
+  return songs.length;
 }
 
 export interface SearchResult {
@@ -194,7 +189,7 @@ export async function searchCatalogue(query: string, limit = 40): Promise<Search
   
   const q = query.toLowerCase().trim();
   const { data } = await supabase
-    .from("ug_chords")
+    .from("chords")
     .select("*")
     .or(`title.ilike.%${q}%,artist.ilike.%${q}%`)
     .limit(limit);
