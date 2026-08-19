@@ -53,7 +53,8 @@ export function useAutoScroll(speed: number) {
     const step = (now: number) => {
       const dt = Math.min(now - last.current, 100);
       last.current = now;
-      const pxPerSecond = speedRef.current * 11;
+      // Tingkatkan kecepatan scroll: kecepatan 1 = 20px/s, kecepatan 10 = 260px/s
+      const pxPerSecond = Math.pow(speedRef.current, 1.4) * 12;
       carry.current += (pxPerSecond * dt) / 1000;
       const whole = Math.floor(carry.current);
 
