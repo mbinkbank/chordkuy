@@ -173,7 +173,7 @@ export function parseSheet(raw: string): SheetLine[] {
     // Trim spasi inden pembuka di awal baris jika baris tersebut murni baris chord
     let lineToParse = row;
     if (isChordLine(trimmed)) {
-      lineToParse = trimmed;
+      lineToParse = row.trimStart();
     }
 
     // Preserve exact line and extract inline transposable chords in-place
