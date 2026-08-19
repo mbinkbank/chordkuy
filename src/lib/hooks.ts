@@ -54,9 +54,11 @@ export function useAutoScroll(speed: number) {
       const dt = Math.min(now - last.current, 64);
       last.current = now;
 
-      // Kurva kecepatan natural:
-      // Speed 1: ~12px/s (santai) | Speed 5: ~75px/s (tempo normal) | Speed 10: ~250px/s (tempo cepat)
-      const pxPerSecond = 7 + Math.pow(speedRef.current, 1.55) * 6.5;
+      // Skala kecepatan halus & pelan:
+      // Speed 1: ~4px/s (sangat lambat & santai)
+      // Speed 5: ~30px/s (tempo ballad/normal)
+      // Speed 10: ~90px/s (tempo cepat)
+      const pxPerSecond = 2 + Math.pow(speedRef.current, 1.45) * 3.1;
       carry.current += (pxPerSecond * dt) / 1000;
 
       if (carry.current >= 1) {
