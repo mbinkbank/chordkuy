@@ -132,10 +132,25 @@ export function parseSheet(raw: string): SheetLine[] {
       continue;
     }
 
-    // Explicit section header lines (e.g. [Verse 1], Chorus:)
+    // Format khusus Intro / Musik / Outro / Int. sebaris: (misal "Intro : G Am C G (3x)")
+    const prefixMatch = /^(intro\s*:?|musik\s*:?|music\s*:?|outro\s*:?|int\.\s*|interlude\s*:?|solo\s*:?)/i.exec(trimmed);
+    if (prefixMatch && trimmed.length > prefixMatch[0].length) {
+      const labelText = prefixMatch[0];
+      const restText = row.slice(row.indexOf(labelText) + labelText.length);
+
+      // Baris 1: Judul Bagian (Section Header dengan jarak atas-bawah)
+      out.push({ type: "section", label: labelText });
+
+      // Re-align chord line under the label with indentation offset
+      const indent = " ".repeat(labelText.length);
+      out.push({ type: "line", segments: parseLineInplace(indent + restText) });
+      continue;
+    }
+
+    // Explicit section header lines biasa (e.g. [Verse 1], Chorus:)
     if (
       (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
-      /^(intro\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
+      /^(intro\s*:?|musik\s*:?|music\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
     ) {
       out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
       continue;
