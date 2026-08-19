@@ -36,7 +36,7 @@ export interface ParsedChord {
 }
 
 export function parseChord(symbol: string): ParsedChord | null {
-  const clean = symbol.replace(/[()]/g, "").trim();
+  const clean = symbol.replace(/^[()-]+|[()-]+$/g, "").trim();
   const m = CHORD_TOKEN_RE.exec(clean);
   if (!m) return null;
   return { root: m[1], quality: m[2] ?? "", bass: m[3] };
@@ -52,12 +52,12 @@ export function transposeChord(symbol: string, semitones: number, preferFlat = f
   const raw = symbol.trim();
   if (!raw) return symbol;
 
-  const prefixMatch = raw.match(/^[()-]+/);
-  const prefix = prefixMatch ? prefixMatch[0] : "";
-  const suffixMatch = raw.match(/[()-]+$/);
-  const suffix = suffixMatch ? suffixMatch[0] : "";
+  const mPrefix = raw.match(/^[()-]+/);
+  const prefix = mPrefix ? mPrefix[0] : "";
+  const mSuffix = raw.match(/[()-]+$/);
+  const suffix = mSuffix ? mSuffix[0] : "";
 
-  const clean = raw.replace(/^[()-]+|[()-]+$/g, "").trim();
+  const clean = raw.slice(prefix.length, raw.length - suffix.length).trim();
 
   const m = CHORD_TOKEN_RE.exec(clean);
   if (!m) return symbol;
@@ -95,12 +95,15 @@ export type SheetLine =
  */
 function parseLineInplace(lineStr: string): Segment[] {
   const segments: Segment[] = [];
-  // Regex presisi untuk menangkap chord lengkap termasuk slash chord seperti D/F#
-  const regex = /(-?\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?\b|\([A-G][#b]?[^\s()]*\))/g;
+  // Regex presisi untuk menangkap chord lengkap termasuk slash chord (seperti -D/F# atau D/F#)
+  const regex = /(?:^|\s|-)\K([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?)/g;
   let lastIdx = 0;
+
+  // Manual token match yang aman dari konsumer regex tanpa \K di JS
+  const regexJs = /(-?\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?|-[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?|\([A-G][#b]?[^\s()]*\))/g;
   let match;
 
-  while ((match = regex.exec(lineStr)) !== null) {
+  while ((match = regexJs.exec(lineStr)) !== null) {
     const start = match.index;
     const end = match.index + match[0].length;
     const token = match[0];
