@@ -138,11 +138,14 @@ export function parseSheet(raw: string): SheetLine[] {
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
 
+  let inSection = false;
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     const trimmed = row.trim();
 
     if (!trimmed) {
+      inSection = false;
       out.push({ type: "blank" });
       continue;
     }
@@ -155,6 +158,7 @@ export function parseSheet(raw: string): SheetLine[] {
 
       // Baris 1: Judul Bagian
       out.push({ type: "section", label: labelText });
+      inSection = true;
 
       // Baris 2: Chord langsung di awal baris (tanpa indentasi)
       out.push({ type: "line", segments: parseLineInplace(restText) });
@@ -167,11 +171,18 @@ export function parseSheet(raw: string): SheetLine[] {
       /^(intro\s*:?|musik\s*:?|music\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
     ) {
       out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
+      inSection = true;
       continue;
     }
 
-    // Preserve exact line and extract inline transposable chords in-place (1:1 tanpa menyentuh spasi awal)
-    out.push({ type: "line", segments: parseLineInplace(row) });
+    // Jika sedang di dalam section pembuka (seperti Intro/Musik/Int.), ratakan awal baris chord ke kiri
+    let lineToParse = row;
+    if (inSection && isChordLine(trimmed)) {
+      lineToParse = row.trimStart();
+    }
+
+    // Preserve exact line and extract inline transposable chords in-place
+    out.push({ type: "line", segments: parseLineInplace(lineToParse) });
   }
 
   return out;
