@@ -27,7 +27,7 @@ export default function ChordPage({ song }: { song: Song }) {
   const [transpose, setTranspose] = useState(0);
   const [fontSize, setFontSize] = useStoredState<number>(
     "chordlab:font-size",
-    typeof window !== "undefined" && window.innerWidth <= 640 ? 13 : 16,
+    typeof window !== "undefined" && window.innerWidth <= 640 ? 14 : 16,
   );
   const [speed, setSpeed] = useStoredState<number>("chordlab:scroll-speed", 3);
   const [lyricsOnly, setLyricsOnly] = useState(false);

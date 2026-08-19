@@ -1097,7 +1097,7 @@ a.card:focus-visible {
 
 @media (max-width: 640px) {
   .sheet {
-    --sheet-size: 13px !important;
+    --sheet-size: 14px !important;
   }
   .h-page {
     word-break: break-word;
