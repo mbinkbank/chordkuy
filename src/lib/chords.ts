@@ -1,6 +1,6 @@
 /**
- * Chord engine supporting standard chords-above-lyrics sheets, bar symbols (|), and bracketed chords.
- * Implements strict character-based line wrapping (max 35 characters) at word boundaries.
+ * Chord engine supporting standard chords-above-lyrics sheets, measure symbols (|), and inline chord transposition.
+ * Implements strict character-based line wrapping (max 35 characters) preserving exact monospaced column alignment.
  */
 
 export const SHARP_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -28,12 +28,6 @@ export function pitchClassToNote(pc: number, preferFlat = false): string {
 }
 
 const CHORD_TOKEN_RE = /^([A-G][#b]?)(m|min|maj|dim|aug|sus|add|\d|M)*(?:\/([A-G][#b]?))?$/;
-
-export interface ParsedChord {
-  root: string;
-  quality: string;
-  bass?: string;
-}
 
 export function parseChord(symbol: string): ParsedChord | null {
   const clean = symbol.replace(/[()]/g, "").trim();
@@ -93,8 +87,40 @@ function isChordLine(line: string): boolean {
 }
 
 /**
- * Wraps a pair of (chord_row, lyric_row) into lines of max `maxLen` characters
- * splitting only at word boundaries (spaces) without breaking words.
+ * Parses inline text (like "Intro : G G C G" or "Int. D") 
+ * and extracts chords for transposition while leaving label text intact.
+ */
+function parseInlineChords(text: string): Segment[] {
+  const segments: Segment[] = [];
+  const regex = /(\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?\b|\([A-G][#b]?[^\s()]*\))/g;
+  let lastIdx = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const spaceOrTextBefore = text.slice(lastIdx, match.index);
+    if (spaceOrTextBefore) {
+      segments.push({ chord: null, text: spaceOrTextBefore });
+    }
+    const token = match[0];
+    if (isChordToken(token)) {
+      segments.push({ chord: token, text: "" });
+    } else {
+      segments.push({ chord: null, text: token });
+    }
+    lastIdx = match.index + token.length;
+  }
+
+  const tail = text.slice(lastIdx);
+  if (tail) {
+    segments.push({ chord: null, text: tail });
+  }
+
+  return segments.length ? segments : [{ chord: null, text }];
+}
+
+/**
+ * Wraps (chord_row, lyric_row) into lines of max `maxLen` characters
+ * at word boundaries while preserving exact column positions.
  */
 function wrapPairToSegments(chordRow: string, lyricRow: string, maxLen = 35): Segment[][] {
   const maxW = Math.max(chordRow.length, lyricRow.length);
@@ -109,7 +135,6 @@ function wrapPairToSegments(chordRow: string, lyricRow: string, maxLen = 35): Se
       break;
     }
 
-    // Find split index at space at or before maxLen
     let splitIdx = -1;
     for (let i = maxLen; i > 0; i--) {
       if (lLine[i] === " ") {
@@ -119,7 +144,6 @@ function wrapPairToSegments(chordRow: string, lyricRow: string, maxLen = 35): Se
     }
 
     if (splitIdx === -1) {
-      // Find first space after maxLen if no space before
       for (let i = maxLen; i < lLine.length; i++) {
         if (lLine[i] === " ") {
           splitIdx = i;
@@ -138,7 +162,6 @@ function wrapPairToSegments(chordRow: string, lyricRow: string, maxLen = 35): Se
     let remC = cLine.slice(splitIdx);
     let remL = lLine.slice(splitIdx);
 
-    // Trim leading spaces from next wrapped line
     const leadSpaces = remL.length - remL.trimStart().length;
     if (leadSpaces > 0) {
       remL = remL.slice(leadSpaces);
@@ -208,10 +231,32 @@ export function parseSheet(raw: string): SheetLine[] {
       continue;
     }
 
-    // Section header (e.g. [Verse 1], Intro:, [Chorus])
+    // Check if line is an inline section header or inline chord line (e.g., "Intro : G G C G" or "Int. D")
+    if (/(^intro\s*:|^int\.\s*|^reff\s*:|^chorus\s*:|^bridge\s*:|^outro\s*:)/i.test(trimmed)) {
+      const parts = trimmed.split(/:(.*)/);
+      if (parts.length >= 2) {
+        const label = parts[0].trim();
+        const inlineContent = parts[1].trim();
+        
+        // 1. Output label line as Section
+        out.push({ type: "section", label: `${label} :` });
+
+        // 2. Output inline chords on new line below section label if present
+        if (inlineContent) {
+          out.push({ type: "line", segments: parseInlineChords(inlineContent) });
+        }
+      } else {
+        // e.g. "Int. D"
+        const inlineSegs = parseInlineChords(trimmed);
+        out.push({ type: "line", segments: inlineSegs });
+      }
+      continue;
+    }
+
+    // Section header (e.g. [Verse 1], Intro, Chorus)
     if (
       (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
-      /^(intro|verse|chorus|bridge|outro|interlude|solo|reff|hook|coda)/i.test(trimmed)
+      /^(intro|verse\s*\d*|chorus|bridge|outro|interlude|solo|reff|hook|coda)\s*$/i.test(trimmed)
     ) {
       out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
       continue;
@@ -222,13 +267,11 @@ export function parseSheet(raw: string): SheetLine[] {
       const isNextChordOrSection = !nextRow.trim() || isChordLine(nextRow) || /^(intro|verse|chorus|bridge|outro|interlude|solo|reff|hook|coda|\[)/i.test(nextRow.trim());
 
       if (isNextChordOrSection) {
-        // Measure line / chord only progression -> wrap if longer than 35 chars
         const wrapped = wrapPairToSegments(row, "", 35);
         for (const segs of wrapped) {
           out.push({ type: "line", segments: segs });
         }
       } else {
-        // Chord above lyrics pairing -> wrap at max 35 chars at word boundary
         i++; // Consume next lyric row
         const wrapped = wrapPairToSegments(row, nextRow, 35);
         for (const segs of wrapped) {
@@ -238,14 +281,24 @@ export function parseSheet(raw: string): SheetLine[] {
       continue;
     }
 
-    // Plain text / lyric only row -> wrap if longer than 35 chars
+    // Plain text / lyric line (e.g. "Int. D" or plain lyrics)
     const wrapped = wrapPairToSegments("", row, 35);
     for (const segs of wrapped) {
-      out.push({ type: "line", segments: segs });
+      // Check if row contains transposable inline chords
+      if (reHasChord(row)) {
+        out.push({ type: "line", segments: parseInlineChords(row) });
+      } else {
+        out.push({ type: "line", segments: segs });
+      }
     }
   }
 
   return out;
+}
+
+function reHasChord(text: string): boolean {
+  const matches = text.match(/\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?\b/g);
+  return matches ? matches.some(isChordToken) : false;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
