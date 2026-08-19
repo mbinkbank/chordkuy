@@ -1041,7 +1041,7 @@ a.card:focus-visible {
   --sheet-size: 16px;
   font-family: var(--font-mono);
   font-size: var(--sheet-size);
-  line-height: 1.15;
+  line-height: 1.5em;
   color: var(--lyric-color);
   padding-block: var(--s2);
   overflow-x: auto;
