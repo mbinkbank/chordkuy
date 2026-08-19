@@ -44,7 +44,7 @@ export function parseChord(symbol: string): ParsedChord | null {
 
 export function isChordToken(token: string): boolean {
   if (!token) return false;
-  const clean = token.replace(/[().-]/g, "").trim();
+  const clean = token.replace(/^[()-]+|[()-]+$/g, "").trim();
   return CHORD_TOKEN_RE.test(clean);
 }
 
@@ -52,8 +52,12 @@ export function transposeChord(symbol: string, semitones: number, preferFlat = f
   const raw = symbol.trim();
   if (!raw) return symbol;
 
-  const hasParen = raw.startsWith("(") && raw.endsWith(")");
-  const clean = raw.replace(/[()]/g, "").trim();
+  const prefixMatch = raw.match(/^[()-]+/);
+  const prefix = prefixMatch ? prefixMatch[0] : "";
+  const suffixMatch = raw.match(/[()-]+$/);
+  const suffix = suffixMatch ? suffixMatch[0] : "";
+
+  const clean = raw.replace(/^[()-]+|[()-]+$/g, "").trim();
 
   const m = CHORD_TOKEN_RE.exec(clean);
   if (!m) return symbol;
@@ -68,7 +72,7 @@ export function transposeChord(symbol: string, semitones: number, preferFlat = f
     if (bassPc !== null) out += "/" + pitchClassToNote(bassPc + semitones, preferFlat);
   }
 
-  return hasParen ? `(${out})` : out;
+  return `${prefix}${out}${suffix}`;
 }
 
 export function transposeKey(key: string, semitones: number, preferFlat = false): string {
@@ -91,7 +95,8 @@ export type SheetLine =
  */
 function parseLineInplace(lineStr: string): Segment[] {
   const segments: Segment[] = [];
-  const regex = /\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?\b|\([A-G][#b]?[^\s()]*\)/g;
+  // Regex presisi untuk menangkap chord lengkap termasuk slash chord seperti D/F#
+  const regex = /(-?\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?\b|\([A-G][#b]?[^\s()]*\))/g;
   let lastIdx = 0;
   let match;
 
