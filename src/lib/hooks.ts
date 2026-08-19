@@ -51,20 +51,23 @@ export function useAutoScroll(speed: number) {
     last.current = performance.now();
 
     const step = (now: number) => {
-      const dt = Math.min(now - last.current, 100);
+      const dt = Math.min(now - last.current, 64);
       last.current = now;
-      // Tingkatkan kecepatan scroll: kecepatan 1 = 20px/s, kecepatan 10 = 260px/s
-      const pxPerSecond = Math.pow(speedRef.current, 1.4) * 12;
-      carry.current += (pxPerSecond * dt) / 1000;
-      const whole = Math.floor(carry.current);
 
-      if (whole >= 1) {
-        carry.current -= whole;
+      // Kecepatan tinggi & mulus (Speed 1: 30px/s, Speed 5: 220px/s, Speed 10: 600px/s)
+      const pxPerSecond = 20 + Math.pow(speedRef.current, 1.6) * 15;
+      carry.current += (pxPerSecond * dt) / 1000;
+
+      if (carry.current >= 1) {
+        const delta = Math.floor(carry.current);
+        carry.current -= delta;
+        
         const before = window.scrollY;
-        window.scrollBy(0, whole);
+        window.scrollBy({ top: delta, left: 0, behavior: "instant" });
+
         const atBottom =
           window.scrollY === before &&
-          window.innerHeight + window.scrollY >= document.body.scrollHeight - 2;
+          window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
         if (atBottom) {
           setPlaying(false);
           return;
