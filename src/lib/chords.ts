@@ -124,6 +124,13 @@ function parseLineInplace(lineStr: string): Segment[] {
   return segments.length ? segments : [{ chord: null, text: lineStr }];
 }
 
+export function isChordLine(line: string): boolean {
+  const tokens = line.trim().split(/\s+/).filter((t) => t !== "|" && t !== "%" && t !== "||" && t !== "/");
+  if (tokens.length === 0) return false;
+  const chordCount = tokens.filter(isChordToken).length;
+  return chordCount / tokens.length >= 0.5;
+}
+
 export function parseSheet(raw: string): SheetLine[] {
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
