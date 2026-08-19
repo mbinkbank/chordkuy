@@ -18,7 +18,7 @@ function extractChords(content: string): string[] {
 export function mapDbRowToSong(row: any): Song {
   const title = row.title || "Untitled";
   const artist = row.artist || "Unknown Artist";
-  const slug = `${slugify(artist)}-${slugify(title)}-${row.id}`;
+  const slug = `${slugify(artist)}-${slugify(title)}`;
   const artistSlug = slugify(artist);
   const capoNum = row.capo && row.capo.includes("fret") 
     ? parseInt(row.capo.replace(/\D/g, ""), 10) || 0 
@@ -62,20 +62,8 @@ export async function getAllSongs(): Promise<Song[]> {
 }
 
 export async function getSongBySlug(slug: string): Promise<Song | null> {
-  const parts = slug.split("-");
-  const possibleId = parts[parts.length - 1];
-
-  if (/^\d+$/.test(possibleId)) {
-    const { data } = await supabase
-      .from("chords")
-      .select("*")
-      .eq("id", parseInt(possibleId, 10))
-      .maybeSingle();
-    if (data) return mapDbRowToSong(data);
-  }
-
   const all = await getAllSongs();
-  return all.find((s) => s.slug === slug) ?? null;
+  return all.find((s) => s.slug === slug || s.slug === slug.replace(/-\d+$/, "")) ?? null;
 }
 
 export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
