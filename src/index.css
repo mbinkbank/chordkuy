@@ -1041,7 +1041,7 @@ a.card:focus-visible {
   --sheet-size: 16px;
   font-family: var(--font-mono);
   font-size: var(--sheet-size);
-  line-height: 1.5;
+  line-height: 1.15;
   color: var(--lyric-color);
   padding-block: var(--s2);
   overflow-x: auto;
@@ -1049,8 +1049,8 @@ a.card:focus-visible {
 }
 .sheet .section-label {
   display: inline-block;
-  margin-top: var(--s4);
-  margin-bottom: var(--s1);
+  margin-top: var(--s2);
+  margin-bottom: 2px;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1062,21 +1062,37 @@ a.card:focus-visible {
   margin-top: 0;
 }
 .line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  min-height: calc(var(--sheet-size) * 1.5);
-  margin-bottom: 0.3em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1em;
+  margin-bottom: 0px;
 }
 .line-blank {
-  height: calc(var(--sheet-size) * 0.9);
+  height: 0.5em;
 }
-.seg {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  vertical-align: bottom;
-  white-space: pre;
+.ch-inline {
+  display: inline-block;
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--chord-color);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0;
+  vertical-align: baseline;
+}
+.ch-inline:hover,
+.ch-inline:focus-visible {
+  text-decoration: underline;
+}
+.text-inline {
+  display: inline;
+  color: var(--lyric-color);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 @media (max-width: 640px) {

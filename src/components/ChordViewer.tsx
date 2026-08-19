@@ -1,53 +1,49 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
 
-interface PopState {
+interface ChordViewerProps {
+  lines: SheetLine[];
+  fontSize: number;
+  lyricsOnly?: boolean;
+}
+
+interface PopoverState {
   chord: string;
   x: number;
   y: number;
   pinned: boolean;
 }
 
-interface Props {
-  lines: SheetLine[];
-  fontSize: number;
-  /** Hide chords for lyric-only reading. */
-  lyricsOnly?: boolean;
-}
+const POPOVER_WIDTH = 148;
 
-const POP_W = 148;
-
-/**
- * Semantic chord sheet.
- * Chords sit above the syllable they belong to using inline-block segments,
- * so the sheet never breaks alignment and reflows cleanly on mobile.
- * Every chord is a real <button>: hover on desktop, tap on touch, focusable
- * with the keyboard, dismissable with Escape.
- */
-export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: Props) {
-  const [pop, setPop] = useState<PopState | null>(null);
-  const hideTimer = useRef<number | null>(null);
+export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: ChordViewerProps) {
+  const [pop, setPop] = useState<PopoverState | null>(null);
+  const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
-    if (hideTimer.current !== null) {
-      window.clearTimeout(hideTimer.current);
-      hideTimer.current = null;
+    if (hoverTimer.current !== null) {
+      window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
     }
   };
 
-  const place = useCallback((el: HTMLElement, chord: string, pinned: boolean) => {
-    const rect = el.getBoundingClientRect();
-    const left = Math.min(Math.max(rect.left + rect.width / 2 - POP_W / 2, 8), window.innerWidth - POP_W - 8);
+  const openFor = useCallback((target: HTMLElement, chord: string, pinned: boolean) => {
+    const rect = target.getBoundingClientRect();
+    const x = Math.min(
+      Math.max(rect.left + rect.width / 2 - POPOVER_WIDTH / 2, 8),
+      window.innerWidth - POPOVER_WIDTH - 8,
+    );
     const below = rect.bottom + 8;
-    const useAbove = below + 190 > window.innerHeight;
-    setPop({ chord, x: left, y: useAbove ? Math.max(rect.top - 196, 8) : below, pinned });
+    const flip = below + 190 > window.innerHeight;
+    const y = flip ? Math.max(rect.top - 196, 8) : below;
+    setPop({ chord, x, y, pinned });
   }, []);
 
   useEffect(() => {
     if (!pop) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPop(null);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPop(null);
     };
     const onScroll = () => setPop(null);
     window.addEventListener("keydown", onKey);
@@ -67,54 +63,62 @@ export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: Pro
         style={{ ["--sheet-size" as string]: `${fontSize}px` }}
         data-chord-sheet=""
       >
-        {lines.map((line, index) => {
-          if (line.type === "blank") return <div key={index} className="line-blank" aria-hidden="true" />;
-          if (line.type === "section")
+        {lines.map((line, i) => {
+          if (line.type === "blank") {
+            return <div key={i} className="line-blank" aria-hidden="true" />;
+          }
+
+          if (line.type === "section") {
             return (
-              <h3 key={index} className="section-label">
+              <h3 key={i} className="section-label">
                 {line.label}
               </h3>
             );
+          }
 
           return (
-            <p key={index} className="line">
-              {line.segments.map((seg, i) => (
-                <span className="seg" key={i}>
-                  {seg.chord ? (
+            <div key={i} className="line">
+              {line.segments.map((seg, j) => {
+                if (seg.chord) {
+                  return (
                     <button
+                      key={j}
                       type="button"
-                      className="ch"
+                      className="ch-inline"
                       aria-label={`Chord ${seg.chord}. Tampilkan diagram`}
                       aria-expanded={pop?.chord === seg.chord && pop.pinned}
-                      onMouseEnter={(event) => {
+                      onMouseEnter={(e) => {
                         clearTimer();
-                        if (!pop?.pinned) place(event.currentTarget, seg.chord!, false);
+                        if (!pop?.pinned) openFor(e.currentTarget, seg.chord!, false);
                       }}
                       onMouseLeave={() => {
                         clearTimer();
-                        hideTimer.current = window.setTimeout(() => {
-                          setPop((current) => (current?.pinned ? current : null));
+                        hoverTimer.current = window.setTimeout(() => {
+                          setPop((p) => (p?.pinned ? p : null));
                         }, 120);
                       }}
-                      onFocus={(event) => place(event.currentTarget, seg.chord!, false)}
-                      onBlur={() => setPop((current) => (current?.pinned ? current : null))}
-                      onClick={(event) => {
-                        const same = pop?.chord === seg.chord && pop.pinned;
-                        if (same) setPop(null);
-                        else place(event.currentTarget, seg.chord!, true);
+                      onFocus={(e) => openFor(e.currentTarget, seg.chord!, false)}
+                      onBlur={() => setPop((p) => (p?.pinned ? p : null))}
+                      onClick={(e) => {
+                        if (pop?.chord === seg.chord && pop.pinned) {
+                          setPop(null);
+                        } else {
+                          openFor(e.currentTarget, seg.chord!, true);
+                        }
                       }}
                     >
                       {seg.chord}
                     </button>
-                  ) : (
-                    <span className="ch ch-empty" aria-hidden="true">
-                      {"\u00a0"}
-                    </span>
-                  )}
-                  <span className="lyr">{seg.text || "\u00a0"}</span>
-                </span>
-              ))}
-            </p>
+                  );
+                }
+
+                return (
+                  <span key={j} className="text-inline">
+                    {seg.text}
+                  </span>
+                );
+              })}
+            </div>
           );
         })}
       </div>
@@ -126,7 +130,7 @@ export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: Pro
           aria-label={`Diagram chord ${pop.chord}`}
           style={{ left: pop.x, top: pop.y }}
           onMouseEnter={clearTimer}
-          onMouseLeave={() => setPop((current) => (current?.pinned ? current : null))}
+          onMouseLeave={() => setPop((p) => (p?.pinned ? p : null))}
         >
           <p className="pop-name">
             <span>{pop.chord}</span>
