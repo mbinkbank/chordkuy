@@ -138,7 +138,7 @@ export default function ChordViewer({
           );
         })}
 
-        {/* Toolbar - rendered OUTSIDE sheet for sticky to work */}
+        {/* Toolbar - sticky inside sheet */}
         <div className="sheet-toolbar">
           <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
             <span className="sheet-toolbar-lbl">FONT</span>
