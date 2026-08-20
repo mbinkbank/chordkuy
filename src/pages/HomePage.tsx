@@ -65,10 +65,8 @@ export default function HomePage() {
       <section className="hero">
         <div className="container text-center" style={{ maxWidth: "680px", margin: "0 auto" }}>
           <div className="stack stack-4" style={{ alignItems: "center" }}>
-            <h1 className="h-display" style={{ textAlign: "center" }}>
-              Chord gitar yang bersih,
-              <br />
-              mudah, cepat, dan enak dibaca.
+            <h1 className="h-display" style={{ textAlign: "center", fontSize: "clamp(22px, 5vw, 38px)" }}>
+              Chord gitar yang bersih, mudah, cepat, dan enak dibaca.
             </h1>
 
             <div style={{ width: "100%" }}>
