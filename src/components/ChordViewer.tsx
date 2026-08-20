@@ -140,48 +140,64 @@ export default function ChordViewer({
 
         {/* Toolbar - sticky inside sheet */}
         <div className="sheet-toolbar">
-          <div className="tb-group">
-            <span className="tb-label">FONT</span>
-            <button type="button" className="tb-btn" aria-label="Perkecil teks">
-              <Minus size={14} strokeWidth={2.5} />
+          {/* Font size group */}
+          <div className="tb-group tb-group-split">
+            <button type="button" className="tb-btn-split" onClick={() => {}} aria-label="Perkecil teks">
+              <Minus size={16} strokeWidth={2} />
             </button>
-            <button type="button" className="tb-btn" aria-label="Perbesar teks">
-              <Plus size={14} strokeWidth={2.5} />
+            <div className="tb-divider" />
+            <button type="button" className="tb-btn-split" onClick={() => {}} aria-label="Perbesar teks">
+              <Plus size={16} strokeWidth={2} />
             </button>
           </div>
 
-          <div className="tb-group">
-            <span className="tb-label tb-label-accent">CHORDS</span>
-          </div>
+          {/* Chords toggle */}
+          <button type="button" className="tb-btn-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="5" r="2" /><circle cx="12" cy="5" r="2" /><circle cx="19" cy="5" r="2" />
+              <circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" />
+              <circle cx="5" cy="19" r="2" /><circle cx="12" cy="19" r="2" /><circle cx="19" cy="19" r="2" />
+            </svg>
+          </button>
 
-          <button type="button" className="tb-btn tb-btn-scroll" onClick={onToggle} aria-pressed={playing}>
-            {playing ? <Pause size={14} strokeWidth={2.5} /> : <Play size={14} strokeWidth={2.5} />}
+          {/* Autoscroll */}
+          <button
+            type="button"
+            className={`tb-btn-autoscroll ${playing ? "active" : ""}`}
+            onClick={onToggle}
+            aria-pressed={playing}
+          >
+            <Play size={16} strokeWidth={2.5} />
             <span>AUTOSCROLL</span>
           </button>
 
-          <div className="tb-group">
-            <span className="tb-label">TRANSPOSE</span>
+          {/* Transpose group */}
+          <div className="tb-group tb-group-split">
             <button
               type="button"
-              className="tb-btn"
+              className="tb-btn-split"
               onClick={() => onTransposeChange(Math.max(-11, transpose - 1))}
               disabled={transpose <= -11}
               aria-label="Turunkan nada"
             >
-              <Minus size={14} strokeWidth={2.5} />
+              <Minus size={16} strokeWidth={2} />
             </button>
-            <span className="tb-key">
-              {currentKey}
-              {transpose !== 0 && <span className="tb-key-offset"> {transpose > 0 ? `+${transpose}` : transpose}</span>}
-            </span>
+            <div className="tb-divider" />
+            <button type="button" className="tb-btn-split tb-key-dropdown">
+              <span className="tb-key-text">{currentKey}</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div className="tb-divider" />
             <button
               type="button"
-              className="tb-btn"
+              className={`tb-btn-split tb-btn-plus ${transpose > 0 ? "active" : ""}`}
               onClick={() => onTransposeChange(Math.min(11, transpose + 1))}
               disabled={transpose >= 11}
               aria-label="Naikkan nada"
             >
-              <Plus size={14} strokeWidth={2.5} />
+              <Plus size={16} strokeWidth={2} />
             </button>
           </div>
         </div>
