@@ -135,6 +135,7 @@ body {
   min-height: 100vh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  padding: 10px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -328,7 +329,7 @@ a:focus-visible {
 }
 @media (min-width: 641px) {
   .section {
-    padding-inline: var(--s4);
+    padding-block: var(--s3);
   }
 }
 .stack {
