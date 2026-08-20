@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
+import { Minus, Plus, Play, Pause } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
   fontSize: number;
   lyricsOnly?: boolean;
+  // Toolbar props
+  playing: boolean;
+  onToggle: () => void;
+  transpose: number;
+  onTransposeChange: (v: number) => void;
+  currentKey: string;
 }
 
 interface PopoverState {
@@ -17,7 +24,16 @@ interface PopoverState {
 
 const POPOVER_WIDTH = 148;
 
-export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: ChordViewerProps) {
+export default function ChordViewer({
+  lines,
+  fontSize,
+  lyricsOnly = false,
+  playing,
+  onToggle,
+  transpose,
+  onTransposeChange,
+  currentKey,
+}: ChordViewerProps) {
   const [pop, setPop] = useState<PopoverState | null>(null);
   const hoverTimer = useRef<number | null>(null);
 
@@ -121,6 +137,56 @@ export default function ChordViewer({ lines, fontSize, lyricsOnly = false }: Cho
             </div>
           );
         })}
+
+        {/* Toolbar inside sheet */}
+        <div className="sheet-toolbar">
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+            <span className="sheet-toolbar-lbl">FONT</span>
+            <button type="button" className="btn btn-sm btn-icon" style={{ display: "grid", placeItems: "center" }}>
+              <Minus size={12} strokeWidth={2.5} />
+            </button>
+            <button type="button" className="btn btn-sm btn-icon" style={{ display: "grid", placeItems: "center" }}>
+              <Plus size={12} strokeWidth={2.5} />
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+            <span className="sheet-toolbar-lbl sheet-toolbar-chords">CHORDS</span>
+          </div>
+
+          <div className="sheet-toolbar-autoscroll">
+            <button type="button" onClick={onToggle} style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", color: "var(--foreground)", cursor: "pointer" }}>
+              {playing ? <Pause size={13} strokeWidth={2.5} /> : <Play size={13} strokeWidth={2.5} />}
+              <span>AUTOSCROLL</span>
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+            <span className="sheet-toolbar-lbl">TRANSPOSE</span>
+            <button
+              type="button"
+              className="btn btn-sm btn-icon"
+              onClick={() => onTransposeChange(Math.max(-11, transpose - 1))}
+              disabled={transpose <= -11}
+              style={{ display: "grid", placeItems: "center" }}
+            >
+              <Minus size={12} strokeWidth={2.5} />
+            </button>
+            <span className="sheet-toolbar-key">
+              {currentKey}
+              {transpose !== 0 && <span className="sheet-toolbar-offset"> {transpose > 0 ? `+${transpose}` : transpose}</span>}
+            </span>
+            <button
+              type="button"
+              className="btn btn-sm btn-icon"
+              onClick={() => onTransposeChange(Math.min(11, transpose + 1))}
+              disabled={transpose >= 11}
+              style={{ display: "grid", placeItems: "center" }}
+            >
+              <Plus size={12} strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
       </div>
 
       {pop && (

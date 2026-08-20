@@ -144,7 +144,16 @@ export default function ChordPage({ song }: { song: Song }) {
           </header>
 
           <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
-            <ChordViewer lines={lines} fontSize={fontSize} lyricsOnly={lyricsOnly} />
+            <ChordViewer
+              lines={lines}
+              fontSize={fontSize}
+              lyricsOnly={lyricsOnly}
+              playing={playing}
+              onToggle={toggle}
+              transpose={transpose}
+              onTransposeChange={setTranspose}
+              currentKey={currentKey}
+            />
           </section>
 
           <section className="section" aria-labelledby="related">
