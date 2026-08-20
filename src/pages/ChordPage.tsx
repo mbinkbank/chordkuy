@@ -62,7 +62,7 @@ export default function ChordPage({ song }: { song: Song }) {
     l: () => setLyricsOnly((v) => !v),
   });
 
-  const pageTitle = `Chord ${song.title} - ${song.artist} | ${SITE.name}`;
+  const pageTitle = `Chord Gitar ${song.title} - ${song.artist} | ${SITE.name}`;
   const pageDescription = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.originalKey}${
     song.capo ? `, capo fret ${song.capo}` : ", tanpa capo"
   }. Lengkap dengan lirik, transpose real-time, diagram chord, dan auto scroll.`;
@@ -113,7 +113,7 @@ export default function ChordPage({ song }: { song: Song }) {
           <header className="stack stack-3" style={{ paddingBottom: "var(--s4)" }}>
             <p className="eyebrow">Chord gitar · {song.genre}</p>
             <h1 className="h-page">
-              Chord {song.title}
+              Chord Gitar {song.title}
               <span className="muted" style={{ fontWeight: 400 }}>
                 {" "}
                 — {song.artist}
