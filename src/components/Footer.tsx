@@ -1,79 +1,13 @@
-import { useEffect, useState } from "react";
-import type { Artist, Genre } from "../data/types";
-import { getGenres, getPopularArtists } from "../lib/api";
 import { Link } from "../lib/router";
 import { SITE } from "../lib/site";
 
 export default function Footer() {
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
   const year = new Date().getFullYear();
-
-  useEffect(() => {
-    async function loadFooter() {
-      const [artData, genData] = await Promise.all([
-        getPopularArtists(4),
-        getGenres(),
-      ]);
-      setArtists(artData || []);
-      setGenres((genData || []).slice(0, 5));
-    }
-    loadFooter();
-  }, []);
 
   return (
     <footer className="site-footer">
       <div className="container">
-        <div className="footer-grid">
-          <div>
-            <h2>{SITE.name}</h2>
-            <p className="small muted" style={{ maxWidth: "40ch" }}>
-              {SITE.description}
-            </p>
-          </div>
-
-          <nav aria-label="Jelajahi">
-            <h2>Jelajahi</h2>
-            <ul className="footer-links">
-              <li>
-                <Link href="/search">Cari chord</Link>
-              </li>
-              <li>
-                <Link href="/artists">Daftar artis</Link>
-              </li>
-              <li>
-                <Link href="/about">Tentang kami</Link>
-              </li>
-              <li>
-                <Link href="/contact">Kontak</Link>
-              </li>
-            </ul>
-          </nav>
-
-          <nav aria-label="Artis populer">
-            <h2>Artis</h2>
-            <ul className="footer-links">
-              {artists.map((artist) => (
-                <li key={artist.slug}>
-                  <Link href={`/artist/${artist.slug}`}>{artist.name}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-label="Genre dan legal">
-            <h2>Genre</h2>
-            <ul className="footer-links">
-              {genres.map((genre) => (
-                <li key={genre.slug}>
-                  <Link href={`/search?q=${encodeURIComponent(genre.name)}`}>{genre.name}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="footer-bottom">
+        <div className="footer-bottom" style={{ borderTop: "none", padding: "var(--s4) 0" }}>
           <span>
             © {year} {SITE.name}. Chord untuk keperluan belajar dan latihan.
           </span>
