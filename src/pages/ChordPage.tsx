@@ -147,13 +147,6 @@ export default function ChordPage({ song }: { song: Song }) {
             <ChordViewer lines={lines} fontSize={fontSize} lyricsOnly={lyricsOnly} />
           </section>
 
-          <p className="caption" style={{ marginTop: "var(--s4)" }}>
-            Pintasan: <span className="kbd">+</span> / <span className="kbd">-</span> transpose ·{" "}
-            <span className="kbd">0</span> reset · <span className="kbd">Space</span> auto scroll ·{" "}
-            <span className="kbd">[</span> <span className="kbd">]</span> ukuran teks ·{" "}
-            <span className="kbd">L</span> mode lirik.
-          </p>
-
           <section className="section" aria-labelledby="related">
             <div className="section-head">
               <h2 className="h-section" id="related">
