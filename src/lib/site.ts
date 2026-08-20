@@ -7,7 +7,7 @@ export const SITE = {
   locale: "id-ID",
   lang: "id",
   description:
-    "Kumpulan chord gitar dengan transpose real-time, auto scroll, dan diagram chord. Ringan, tanpa iklan mengganggu, dan nyaman dibaca di ponsel maupun desktop.",
+    "Kumpulan kunci gitar dan chord lagu Indonesia terlengkap. Temukan kunci gitar mudah untuk berbagai lagu populer, lengkap dengan lirik dan chord gitar.",
   twitter: "@chordkuy",
   publisher: "Chordkuy",
   email: "halo@chordkuy.id",
