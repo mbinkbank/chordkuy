@@ -143,6 +143,10 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
           </header>
 
+          <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
+            <ChordViewer lines={lines} fontSize={fontSize} lyricsOnly={lyricsOnly} />
+          </section>
+
           <div className="toolbar" role="toolbar" aria-label="Kontrol pembaca chord">
             <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
               <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", color: "var(--muted)" }}>FONT</span>
@@ -216,10 +220,6 @@ export default function ChordPage({ song }: { song: Song }) {
               </button>
             </div>
           </div>
-
-          <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
-            <ChordViewer lines={lines} fontSize={fontSize} lyricsOnly={lyricsOnly} />
-          </section>
 
           <p className="caption" style={{ marginTop: "var(--s4)" }}>
             Pintasan: <span className="kbd">+</span> / <span className="kbd">-</span> transpose ·{" "}
