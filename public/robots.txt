@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /search?
 
-Sitemap: https://chordlab.pages.dev/sitemap.xml
+Sitemap: https://chordkuy.id/sitemap.xml

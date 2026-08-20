@@ -1,6 +1,6 @@
 {
-  "name": "ChordLab — Chord Gitar",
-  "short_name": "ChordLab",
+  "name": "Chordkuy — Chord Gitar",
+  "short_name": "Chordkuy",
   "description": "Chord gitar dengan transpose real-time, auto scroll, dan diagram chord.",
   "start_url": "/",
   "scope": "/",
@@ -13,9 +13,9 @@
   "categories": ["music", "education", "entertainment"],
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
