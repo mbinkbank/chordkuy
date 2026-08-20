@@ -39,8 +39,6 @@ export default function SongCard({ song, index, showArtist = true }: Props) {
         <span className="badge" style={{ display: "inline-flex" }}>
           {song.originalKey}
         </span>
-        <br />
-        <span>{song.originalKey}</span>
       </span>
     </Link>
   );
