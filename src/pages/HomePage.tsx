@@ -63,17 +63,19 @@ export default function HomePage() {
   return (
     <>
       <section className="hero">
-        <div className="container" style={{ maxWidth: "680px" }}>
-          <div className="stack stack-4">
-            <h1 className="h-display">
+        <div className="container text-center" style={{ maxWidth: "680px", margin: "0 auto" }}>
+          <div className="stack stack-4" style={{ alignItems: "center" }}>
+            <h1 className="h-display" style={{ textAlign: "center" }}>
               Chord gitar yang bersih,
               <br />
-              cepat, dan enak dibaca.
+              mudah, cepat, dan enak dibaca.
             </h1>
 
-            <SearchBar size="lg" placeholder="Cari judul lagu atau nama artis…" />
+            <div style={{ width: "100%" }}>
+              <SearchBar size="lg" placeholder="Cari judul lagu atau nama artis…" />
+            </div>
 
-            <div className="row">
+            <div className="row" style={{ justifyContent: "center" }}>
               <span className="caption">Populer:</span>
               {["Oasis", "Dewa 19", "Green Day", "Slank"].map((term) => (
                 <Link key={term} className="chip" href={`/search?q=${encodeURIComponent(term)}`}>
