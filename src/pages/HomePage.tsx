@@ -63,9 +63,9 @@ export default function HomePage() {
   return (
     <>
       <section className="hero">
-        <div className="container text-center" style={{ maxWidth: "760px", margin: "0 auto" }}>
+        <div className="container text-center" style={{ maxWidth: "680px", margin: "0 auto" }}>
           <div className="stack stack-4" style={{ alignItems: "center" }}>
-            <h1 className="h-display" style={{ textAlign: "center", fontSize: "clamp(20px, 4.5vw, 34px)" }}>
+            <h1 className="h-display" style={{ textAlign: "center" }}>
               Chord gitar yang bersih, mudah, cepat, dan enak dibaca.
             </h1>
 
