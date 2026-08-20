@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 
 interface Props {
   title: string;
@@ -27,8 +28,14 @@ export default function ShareButton({ title, text, url }: Props) {
 
   return (
     <>
-      <button type="button" className="btn btn-sm" onClick={share} aria-label={`Bagikan ${title}`}>
-        <span aria-hidden="true">↗</span> Bagikan
+      <button
+        type="button"
+        className="btn btn-sm"
+        onClick={share}
+        aria-label={`Bagikan ${title}`}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+      >
+        <Share2 size={13} strokeWidth={2.2} /> Bagikan
       </button>
       {message && (
         <span className="toast" role="status">

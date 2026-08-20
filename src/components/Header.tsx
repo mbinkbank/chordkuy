@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import ThemeToggle from "./ThemeToggle";
+import { Search, Menu, X, Music2 } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
@@ -15,8 +16,8 @@ export default function Header() {
       <div className="container">
         <div className="header-inner">
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
-            <span className="brand-mark" aria-hidden="true">
-              ♭
+            <span className="brand-mark" aria-hidden="true" style={{ display: "grid", placeItems: "center" }}>
+              <Music2 size={16} strokeWidth={2.5} />
             </span>
             <span>
               {SITE.name}
@@ -38,8 +39,8 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
-            <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu">
-              <span aria-hidden="true">⌕</span> Cari
+            <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <Search size={14} strokeWidth={2.5} /> Cari
             </Link>
             <ThemeToggle />
             <button
@@ -48,9 +49,10 @@ export default function Header() {
               aria-expanded={open}
               aria-controls="mobile-nav"
               onClick={() => setOpen((v) => !v)}
+              style={{ display: "grid", placeItems: "center" }}
             >
               <span className="sr-only">Buka menu navigasi</span>
-              <span aria-hidden="true">{open ? "✕" : "≡"}</span>
+              {open ? <X size={18} strokeWidth={2} /> : <Menu size={18} strokeWidth={2} />}
             </button>
           </div>
         </div>

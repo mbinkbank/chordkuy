@@ -1,3 +1,5 @@
+import { Play, Pause, Square } from "lucide-react";
+
 interface Props {
   playing: boolean;
   speed: number;
@@ -16,8 +18,9 @@ export default function AutoScrollControl({ playing, speed, onToggle, onStop, on
         onClick={onToggle}
         aria-pressed={playing}
         aria-label={playing ? "Jeda auto scroll" : "Mulai auto scroll"}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
       >
-        <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span> Scroll
+        {playing ? <Pause size={13} strokeWidth={2.5} /> : <Play size={13} strokeWidth={2.5} />} Scroll
       </button>
       <label className="sr-only" htmlFor="scroll-speed">
         Kecepatan auto scroll
@@ -41,8 +44,9 @@ export default function AutoScrollControl({ playing, speed, onToggle, onStop, on
         className="btn btn-sm btn-icon"
         onClick={onStop}
         aria-label="Hentikan auto scroll dan kembali ke atas"
+        style={{ display: "grid", placeItems: "center" }}
       >
-        ■
+        <Square size={12} strokeWidth={2.5} />
       </button>
     </div>
   );

@@ -1,3 +1,5 @@
+import { Plus, Minus } from "lucide-react";
+
 interface Props {
   value: number;
   onChange: (value: number) => void;
@@ -18,8 +20,9 @@ export default function FontSizeControl({ value, onChange, min = 12, max = 26 }:
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={value <= min}
         aria-label="Perkecil ukuran teks chord"
+        style={{ display: "inline-flex", alignItems: "center", gap: 2, padding: "0 6px" }}
       >
-        A−
+        <span>A</span><Minus size={11} strokeWidth={2.5} />
       </button>
       <span className="tool-value" aria-live="polite">
         {value}px
@@ -30,8 +33,9 @@ export default function FontSizeControl({ value, onChange, min = 12, max = 26 }:
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
         aria-label="Perbesar ukuran teks chord"
+        style={{ display: "inline-flex", alignItems: "center", gap: 2, padding: "0 6px" }}
       >
-        A+
+        <span>A</span><Plus size={11} strokeWidth={2.5} />
       </button>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react";
 
 const STORAGE_KEY = "chordlab:theme";
 type Theme = "dark" | "light";
@@ -28,8 +29,9 @@ export default function ThemeToggle() {
       aria-label={theme === "dark" ? "Aktifkan mode terang" : "Aktifkan mode gelap"}
       title={theme === "dark" ? "Mode terang" : "Mode gelap"}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      style={{ display: "grid", placeItems: "center" }}
     >
-      <span aria-hidden="true">{theme === "dark" ? "◐" : "◑"}</span>
+      {theme === "dark" ? <Sun size={15} strokeWidth={2.2} /> : <Moon size={15} strokeWidth={2.2} />}
     </button>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { searchCatalogue } from "../lib/api";
 import { Link, navigate } from "../lib/router";
+import { Search } from "lucide-react";
 
 interface Props {
   initialValue?: string;
@@ -74,8 +75,8 @@ export default function SearchBar({
   return (
     <div ref={wrapRef} style={{ position: "relative" }}>
       <form role="search" onSubmit={submit} className={size === "lg" ? "searchbar searchbar-lg" : "searchbar"}>
-        <span className="prefix" aria-hidden="true">
-          ⌕
+        <span className="prefix" aria-hidden="true" style={{ display: "grid", placeItems: "center" }}>
+          <Search size={16} strokeWidth={2.2} />
         </span>
         <input
           id={inputId}
