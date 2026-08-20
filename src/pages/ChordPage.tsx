@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
+import ChordDiagram from "../components/ChordDiagram";
 import ChordViewer from "../components/ChordViewer";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
