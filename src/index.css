@@ -933,32 +933,73 @@ a.card:focus-visible {
   white-space: nowrap;
   padding: 10px var(--s3);
 }
-.sheet-toolbar-lbl {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.sheet-toolbar-chords {
-  color: var(--chord-color);
-}
-.sheet-toolbar-autoscroll {
+.tb-group {
   display: flex;
   align-items: center;
-  gap: var(--s2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
+  gap: 6px;
   padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
 }
-.sheet-toolbar-key {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  min-width: 20px;
-  text-align: center;
-}
-.sheet-toolbar-offset {
+.tb-label {
   font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-right: 2px;
+}
+.tb-label-accent {
+  color: var(--chord-color);
+}
+.tb-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background var(--t), color var(--t);
+}
+.tb-btn:hover {
+  background: var(--surface-2);
+}
+.tb-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.tb-btn-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.tb-btn-scroll[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+.tb-key {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 24px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.tb-key-offset {
+  font-size: 10px;
+  font-weight: 500;
   color: var(--muted);
 }
 
@@ -989,25 +1030,18 @@ a.card:focus-visible {
 @media (max-width: 640px) {
   .sheet-toolbar {
     flex-wrap: wrap;
-    gap: var(--s1);
-    padding: var(--s2) var(--s2);
-    justify-content: space-around;
+    gap: 8px;
+    padding: 8px 12px;
+    justify-content: center;
+  }
+  .tb-label {
+    display: none;
   }
 }
 @media (max-width: 480px) {
   .sheet-toolbar {
-    gap: var(--s1);
-    padding: var(--s1) 0;
-  }
-  .toolgroup > .lbl {
-    display: none;
-  }
-  .speed-slider {
-    width: 64px;
-  }
-  .tool-value {
-    min-width: 34px;
-    font-size: 11px;
+    gap: 6px;
+    padding: 8px;
   }
 }
 

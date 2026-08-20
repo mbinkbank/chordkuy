@@ -140,50 +140,48 @@ export default function ChordViewer({
 
         {/* Toolbar - sticky inside sheet */}
         <div className="sheet-toolbar">
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
-            <span className="sheet-toolbar-lbl">FONT</span>
-            <button type="button" className="btn btn-sm btn-icon" style={{ display: "grid", placeItems: "center" }}>
-              <Minus size={12} strokeWidth={2.5} />
+          <div className="tb-group">
+            <span className="tb-label">FONT</span>
+            <button type="button" className="tb-btn" aria-label="Perkecil teks">
+              <Minus size={14} strokeWidth={2.5} />
             </button>
-            <button type="button" className="btn btn-sm btn-icon" style={{ display: "grid", placeItems: "center" }}>
-              <Plus size={12} strokeWidth={2.5} />
-            </button>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
-            <span className="sheet-toolbar-lbl sheet-toolbar-chords">CHORDS</span>
-          </div>
-
-          <div className="sheet-toolbar-autoscroll">
-            <button type="button" onClick={onToggle} style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", color: "var(--foreground)", cursor: "pointer" }}>
-              {playing ? <Pause size={13} strokeWidth={2.5} /> : <Play size={13} strokeWidth={2.5} />}
-              <span>AUTOSCROLL</span>
+            <button type="button" className="tb-btn" aria-label="Perbesar teks">
+              <Plus size={14} strokeWidth={2.5} />
             </button>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
-            <span className="sheet-toolbar-lbl">TRANSPOSE</span>
+          <div className="tb-group">
+            <span className="tb-label tb-label-accent">CHORDS</span>
+          </div>
+
+          <button type="button" className="tb-btn tb-btn-scroll" onClick={onToggle} aria-pressed={playing}>
+            {playing ? <Pause size={14} strokeWidth={2.5} /> : <Play size={14} strokeWidth={2.5} />}
+            <span>AUTOSCROLL</span>
+          </button>
+
+          <div className="tb-group">
+            <span className="tb-label">TRANSPOSE</span>
             <button
               type="button"
-              className="btn btn-sm btn-icon"
+              className="tb-btn"
               onClick={() => onTransposeChange(Math.max(-11, transpose - 1))}
               disabled={transpose <= -11}
-              style={{ display: "grid", placeItems: "center" }}
+              aria-label="Turunkan nada"
             >
-              <Minus size={12} strokeWidth={2.5} />
+              <Minus size={14} strokeWidth={2.5} />
             </button>
-            <span className="sheet-toolbar-key">
+            <span className="tb-key">
               {currentKey}
-              {transpose !== 0 && <span className="sheet-toolbar-offset"> {transpose > 0 ? `+${transpose}` : transpose}</span>}
+              {transpose !== 0 && <span className="tb-key-offset"> {transpose > 0 ? `+${transpose}` : transpose}</span>}
             </span>
             <button
               type="button"
-              className="btn btn-sm btn-icon"
+              className="tb-btn"
               onClick={() => onTransposeChange(Math.min(11, transpose + 1))}
               disabled={transpose >= 11}
-              style={{ display: "grid", placeItems: "center" }}
+              aria-label="Naikkan nada"
             >
-              <Plus size={12} strokeWidth={2.5} />
+              <Plus size={14} strokeWidth={2.5} />
             </button>
           </div>
         </div>
