@@ -273,33 +273,6 @@ export default function ChordPage({ song }: { song: Song }) {
         </aside>
       </div>
 
-      <p className="caption" style={{ marginTop: "var(--s4)" }}>
-        Pintasan: <span className="kbd">+</span> / <span className="kbd">-</span> transpose ·{" "}
-        <span className="kbd">0</span> reset · <span className="kbd">Space</span> auto scroll ·{" "}
-        <span className="kbd">[</span> <span className="kbd">]</span> ukuran teks ·{" "}
-        <span className="kbd">L</span> mode lirik.
-      </p>
-
-      <section className="section" aria-labelledby="related">
-        <div className="section-head">
-          <h2 className="h-section" id="related">
-            Lagu terkait
-          </h2>
-          <Link className="small" href={`/artist/${song.artistSlug}`}>
-            Lihat artis →
-          </Link>
-        </div>
-        {related.length === 0 ? (
-          <div className="empty">Belum ada lagu terkait.</div>
-        ) : (
-          <div className="grid grid-auto">
-            {related.map((song) => (
-              <SongCard key={song.id} song={song} />
-            ))}
-          </div>
-        )}
-      </section>
-
     </main>
   );
 }
