@@ -30,9 +30,6 @@ export default function Footer() {
             <p className="small muted" style={{ maxWidth: "40ch" }}>
               {SITE.description}
             </p>
-            <p className="caption" style={{ marginTop: "var(--s3)" }}>
-              <span className="badge">v1.0 · static</span>
-            </p>
           </div>
 
           <nav aria-label="Jelajahi">
