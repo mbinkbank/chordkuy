@@ -329,6 +329,7 @@ a:focus-visible {
 @media (min-width: 641px) {
   .section {
     padding-block: var(--s6);
+    padding-inline: var(--s4);
   }
 }
 .stack {
