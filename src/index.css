@@ -923,15 +923,21 @@ a.card:focus-visible {
 }
 
 .sheet-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--background) 94%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
   display: flex;
   flex-wrap: nowrap;
   gap: var(--s3);
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  padding: var(--s2) 0;
-  margin-top: var(--s3);
-  border-top: 1px solid var(--border);
+  padding: 10px var(--s3);
 }
 .sheet-toolbar-lbl {
   font-size: 11px;
@@ -961,6 +967,10 @@ a.card:focus-visible {
   font-size: 10px;
   color: var(--muted);
 }
+
+#main {
+  padding-bottom: 70px;
+}
 .toolgroup {
   display: flex;
   align-items: center;
@@ -986,7 +996,7 @@ a.card:focus-visible {
   .sheet-toolbar {
     flex-wrap: wrap;
     gap: var(--s1);
-    padding: var(--s2) 0;
+    padding: var(--s2) var(--s2);
     justify-content: space-around;
   }
 }
