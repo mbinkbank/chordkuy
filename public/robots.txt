@@ -1,5 +1,29 @@
+# Robots.txt for Chordkuy (https://chordkuy.id)
+# Allow all search engines to crawl and index all chord sheets & artist pages
+
 User-agent: *
 Allow: /
-Disallow: /search?
+Allow: /chord/
+Allow: /artist/
+Allow: /artists
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms
 
+# Disallow internal dynamic query searches to prevent duplicate content & save crawl budget
+Disallow: /search?*
+Disallow: /search/*
+
+# Search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Canonical Sitemap index
 Sitemap: https://chordkuy.id/sitemap.xml
