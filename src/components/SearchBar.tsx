@@ -1,4 +1,5 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import type { Song } from "../data/types";
 import { searchCatalogue } from "../lib/api";
 import { Link, navigate } from "../lib/router";
 import { Search } from "lucide-react";
@@ -24,17 +25,27 @@ export default function SearchBar({
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [suggestions, setSuggestions] = useState<Song[]>([]);
   const inputId = useId();
   const listId = `${inputId}-list`;
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setValue(initialValue), [initialValue]);
 
-  const suggestions = useMemo(() => {
+  useEffect(() => {
+    let cancel = false;
     if (!onQueryChange && value.trim().length >= 2) {
-      return searchCatalogue(value, 6).songs;
+      searchCatalogue(value, 6).then((res) => {
+        if (!cancel && res && res.songs) {
+          setSuggestions(res.songs);
+        }
+      });
+    } else {
+      setSuggestions([]);
     }
-    return [];
+    return () => {
+      cancel = true;
+    };
   }, [value, onQueryChange]);
 
   useEffect(() => {
