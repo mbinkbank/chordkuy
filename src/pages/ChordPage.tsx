@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import AutoScrollControl from "../components/AutoScrollControl";
 import Breadcrumb from "../components/Breadcrumb";
-import ChordDiagram from "../components/ChordDiagram";
 import ChordViewer from "../components/ChordViewer";
-import FontSizeControl from "../components/FontSizeControl";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
-import TransposeControl from "../components/TransposeControl";
 import type { Song } from "../data/types";
 import { formatDate, formatViews, getRelatedSongs } from "../lib/api";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
@@ -14,6 +10,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
+import { Minus, Plus, Play, Pause } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -146,23 +143,77 @@ export default function ChordPage({ song }: { song: Song }) {
           </header>
 
           <div className="toolbar" role="toolbar" aria-label="Kontrol pembaca chord">
-            <TransposeControl
-              value={transpose}
-              onChange={setTranspose}
-              currentKey={currentKey}
-              originalKey={song.originalKey}
-            />
-            <FontSizeControl value={fontSize} onChange={setFontSize} />
-            <AutoScrollControl
-              playing={playing}
-              speed={speed}
-              onToggle={toggle}
-              onStop={() => {
-                stop();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              onSpeedChange={setSpeed}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", color: "var(--muted)" }}>FONT</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-icon"
+                onClick={() => setFontSize((v) => Math.max(12, v - 1))}
+                disabled={fontSize <= 12}
+                style={{ display: "grid", placeItems: "center" }}
+              >
+                <Minus size={12} strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-icon"
+                onClick={() => setFontSize((v) => Math.min(26, v + 1))}
+                disabled={fontSize >= 26}
+                style={{ display: "grid", placeItems: "center" }}
+              >
+                <Plus size={12} strokeWidth={2.5} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", color: "var(--chord-color)" }}>CHORDS</span>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s2)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)", padding: "4px 8px" }}>
+              {playing ? (
+                <button
+                  type="button"
+                  onClick={toggle}
+                  style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", color: "var(--foreground)", cursor: "pointer" }}
+                >
+                  <Pause size={13} strokeWidth={2.5} /> <span style={{ fontSize: "12px", fontWeight: 600 }}>AUTOSCROLL</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={toggle}
+                  style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", color: "var(--foreground)", cursor: "pointer" }}
+                >
+                  <Play size={13} strokeWidth={2.5} /> <span style={{ fontSize: "12px", fontWeight: 600 }}>AUTOSCROLL</span>
+                </button>
+              )}
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s1)" }}>
+              <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", color: "var(--muted)" }}>TRANSPOSE</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-icon"
+                onClick={() => setTranspose((v) => Math.max(-11, v - 1))}
+                disabled={transpose <= -11}
+                style={{ display: "grid", placeItems: "center" }}
+              >
+                <Minus size={12} strokeWidth={2.5} />
+              </button>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--accent)", minWidth: "20px", textAlign: "center" }}>
+                {currentKey}
+                {transpose !== 0 && <span className="caption"> {transpose > 0 ? `+${transpose}` : transpose}</span>}
+              </span>
+              <button
+                type="button"
+                className="btn btn-sm btn-icon"
+                onClick={() => setTranspose((v) => Math.min(11, v + 1))}
+                disabled={transpose >= 11}
+                style={{ display: "grid", placeItems: "center" }}
+              >
+                <Plus size={12} strokeWidth={2.5} />
+              </button>
+            </div>
           </div>
 
           <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
