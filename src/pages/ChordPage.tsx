@@ -147,9 +147,12 @@ export default function ChordPage({ song }: { song: Song }) {
             <ChordViewer
               lines={lines}
               fontSize={fontSize}
+              onFontSizeChange={setFontSize}
               lyricsOnly={lyricsOnly}
               playing={playing}
+              speed={speed}
               onToggle={toggle}
+              onSpeedChange={setSpeed}
               transpose={transpose}
               onTransposeChange={setTranspose}
               currentKey={currentKey}

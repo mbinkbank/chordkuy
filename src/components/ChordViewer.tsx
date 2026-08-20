@@ -6,10 +6,13 @@ import { Minus, Plus, Play, Pause } from "lucide-react";
 interface ChordViewerProps {
   lines: SheetLine[];
   fontSize: number;
+  onFontSizeChange: (v: number) => void;
   lyricsOnly?: boolean;
   // Toolbar props
   playing: boolean;
+  speed: number;
   onToggle: () => void;
+  onSpeedChange: (v: number) => void;
   transpose: number;
   onTransposeChange: (v: number) => void;
   currentKey: string;
@@ -27,9 +30,12 @@ const POPOVER_WIDTH = 148;
 export default function ChordViewer({
   lines,
   fontSize,
+  onFontSizeChange,
   lyricsOnly = false,
   playing,
+  speed,
   onToggle,
+  onSpeedChange,
   transpose,
   onTransposeChange,
   currentKey,
@@ -141,12 +147,12 @@ export default function ChordViewer({
         {/* Toolbar - sticky inside sheet */}
         <div className="sheet-toolbar">
           {/* Font size group */}
-          <div className="tb-group tb-group-split">
-            <button type="button" className="tb-btn-split" onClick={() => {}} aria-label="Perkecil teks">
+          <div className="tb-group-split">
+            <button type="button" className="tb-btn-split" onClick={() => onFontSizeChange(Math.max(12, fontSize - 1))} aria-label="Perkecil teks">
               <Minus size={16} strokeWidth={2} />
             </button>
             <div className="tb-divider" />
-            <button type="button" className="tb-btn-split" onClick={() => {}} aria-label="Perbesar teks">
+            <button type="button" className="tb-btn-split" onClick={() => onFontSizeChange(Math.min(26, fontSize + 1))} aria-label="Perbesar teks">
               <Plus size={16} strokeWidth={2} />
             </button>
           </div>
@@ -162,8 +168,33 @@ export default function ChordViewer({
             <span>AUTOSCROLL</span>
           </button>
 
+          {/* Autoscroll speed panel (shown when playing) */}
+          {playing && (
+            <div className="tb-speed-panel">
+              <div className="tb-speed-bar">
+                <div
+                  className="tb-speed-fill"
+                  style={{ width: `${((speed - 1) / 9) * 100}%` }}
+                />
+                <input
+                  type="range"
+                  min={1}
+                  max={10}
+                  step={1}
+                  value={speed}
+                  onChange={(e) => onSpeedChange(Number(e.target.value))}
+                  className="tb-speed-input"
+                />
+              </div>
+              <span className="tb-speed-value">x{speed}</span>
+              <button type="button" className="tb-btn-split" onClick={onToggle} aria-label="Tutup pengaturan scroll">
+                <Minus size={14} strokeWidth={2} />
+              </button>
+            </div>
+          )}
+
           {/* Transpose group */}
-          <div className="tb-group tb-group-split">
+          <div className="tb-group-split">
             <button
               type="button"
               className="tb-btn-split"
@@ -183,7 +214,7 @@ export default function ChordViewer({
             <div className="tb-divider" />
             <button
               type="button"
-              className={`tb-btn-split tb-btn-plus ${transpose > 0 ? "active" : ""}`}
+              className="tb-btn-split"
               onClick={() => onTransposeChange(Math.min(11, transpose + 1))}
               disabled={transpose >= 11}
               aria-label="Naikkan nada"
