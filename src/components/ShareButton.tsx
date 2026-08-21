@@ -30,12 +30,12 @@ export default function ShareButton({ title, text, url }: Props) {
     <>
       <button
         type="button"
-        className="btn btn-sm"
+        className="btn btn-sm btn-icon"
         onClick={share}
         aria-label={`Bagikan ${title}`}
-        style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+        style={{ display: "grid", placeItems: "center" }}
       >
-        <Share2 size={13} strokeWidth={2.2} /> Bagikan
+        <Share2 size={13} strokeWidth={2.2} />
       </button>
       {message && (
         <span className="toast" role="status">

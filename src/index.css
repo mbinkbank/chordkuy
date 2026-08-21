@@ -1212,7 +1212,7 @@ a.card:focus-visible {
   color: var(--lyric-color);
 }
 .sheet-plain .seg .ch {
-  visibility: hidden;
+  display: none;
 }
 .sheet-plain .line {
   text-align: center;
