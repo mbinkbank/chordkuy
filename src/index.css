@@ -1129,7 +1129,7 @@ a.card:focus-visible {
   padding-block: var(--s2);
 }
 .sheet .section-label {
-  display: inline-block;
+  display: block;
   margin-top: 1.2em;
   margin-bottom: 0.4em;
   font-size: 11px;
@@ -1138,6 +1138,7 @@ a.card:focus-visible {
   color: var(--section-color);
   border-bottom: 1px solid var(--border);
   padding-bottom: 2px;
+  text-align: center;
 }
 .sheet .section-label:first-child {
   margin-top: 0;
@@ -1211,10 +1212,13 @@ a.card:focus-visible {
   display: block;
   color: var(--lyric-color);
 }
-.sheet-plain .seg .ch {
+.sheet-plain .ch-inline {
   display: none;
 }
 .sheet-plain .line {
+  text-align: center;
+}
+.sheet-plain .section-label {
   text-align: center;
 }
 
