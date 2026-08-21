@@ -1136,7 +1136,6 @@ a.card:focus-visible {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--section-color);
-  border-bottom: 1px solid var(--border);
   padding-bottom: 2px;
 }
 .sheet .section-label:first-child {
