@@ -83,7 +83,13 @@ export default function ChordViewer({
         style={{ ["--sheet-size" as string]: `${fontSize}px` }}
         data-chord-sheet=""
       >
-        {lines.map((line, i) => {
+        {lines
+          .filter((line) => {
+            if (!lyricsOnly) return true;
+            if (line.type !== "line") return true;
+            return line.segments.some((s) => s.text.trim() !== "" || s.chord === null);
+          })
+          .map((line, i) => {
           if (line.type === "blank") {
             return <div key={i} className="line-blank" aria-hidden="true" />;
           }
@@ -99,6 +105,7 @@ export default function ChordViewer({
           return (
             <div key={i} className="line">
               {line.segments.map((seg, j) => {
+                if (lyricsOnly && seg.chord) return null;
                 if (seg.chord) {
                   return (
                     <button

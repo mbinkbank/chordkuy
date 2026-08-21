@@ -1215,13 +1215,17 @@ a.card:focus-visible {
 }
 .sheet-plain .line {
   text-align: center;
-  min-height: auto;
+  min-height: 0;
   margin-bottom: 2px;
+  line-height: 1.6;
+}
+.sheet-plain .text-inline {
+  display: inline;
 }
 .sheet-plain .section-label {
   text-align: center;
-  margin-top: 1.2em;
-  margin-bottom: 4px;
+  margin-top: 0.8em;
+  margin-bottom: 2px;
 }
 
 /* Chord tooltip / popover */
