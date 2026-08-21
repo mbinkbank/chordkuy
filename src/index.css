@@ -1138,7 +1138,6 @@ a.card:focus-visible {
   color: var(--section-color);
   border-bottom: 1px solid var(--border);
   padding-bottom: 2px;
-  text-align: center;
 }
 .sheet .section-label:first-child {
   margin-top: 0;
