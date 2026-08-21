@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
-import { Minus, Plus, Play, Pause } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
   fontSize: number;
   onFontSizeChange: (v: number) => void;
   lyricsOnly?: boolean;
-  // Toolbar props
   playing: boolean;
   speed: number;
   onToggle: () => void;
@@ -144,85 +142,7 @@ export default function ChordViewer({
           );
         })}
 
-        {/* Toolbar - sticky inside sheet */}
-        <div className="sheet-toolbar">
-          {/* Font size group */}
-          <div className="tb-group-split">
-            <button type="button" className="tb-btn-split" onClick={() => onFontSizeChange(Math.max(12, fontSize - 1))} aria-label="Perkecil teks">
-              <Minus size={16} strokeWidth={2} />
-            </button>
-            <div className="tb-divider" />
-            <button type="button" className="tb-btn-split" onClick={() => onFontSizeChange(Math.min(26, fontSize + 1))} aria-label="Perbesar teks">
-              <Plus size={16} strokeWidth={2} />
-            </button>
-          </div>
-
-          {/* Autoscroll */}
-          <button
-            type="button"
-            className={`tb-btn-autoscroll ${playing ? "active" : ""}`}
-            onClick={onToggle}
-            aria-pressed={playing}
-          >
-            <Play size={16} strokeWidth={2.5} />
-            <span>AUTOSCROLL</span>
-          </button>
-
-          {/* Autoscroll speed panel (shown when playing) */}
-          {playing && (
-            <div className="tb-speed-panel">
-              <div className="tb-speed-bar">
-                <div
-                  className="tb-speed-fill"
-                  style={{ width: `${((speed - 1) / 9) * 100}%` }}
-                />
-                <input
-                  type="range"
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={speed}
-                  onChange={(e) => onSpeedChange(Number(e.target.value))}
-                  className="tb-speed-input"
-                />
-              </div>
-              <span className="tb-speed-value">x{speed}</span>
-              <button type="button" className="tb-btn-split" onClick={onToggle} aria-label="Tutup pengaturan scroll">
-                <Minus size={14} strokeWidth={2} />
-              </button>
-            </div>
-          )}
-
-          {/* Transpose group */}
-          <div className="tb-group-split">
-            <button
-              type="button"
-              className="tb-btn-split"
-              onClick={() => onTransposeChange(Math.max(-11, transpose - 1))}
-              disabled={transpose <= -11}
-              aria-label="Turunkan nada"
-            >
-              <Minus size={16} strokeWidth={2} />
-            </button>
-            <div className="tb-divider" />
-            <button type="button" className="tb-btn-split tb-key-dropdown">
-              <span className="tb-key-text">{currentKey}</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            <div className="tb-divider" />
-            <button
-              type="button"
-              className="tb-btn-split"
-              onClick={() => onTransposeChange(Math.min(11, transpose + 1))}
-              disabled={transpose >= 11}
-              aria-label="Naikkan nada"
-            >
-              <Plus size={16} strokeWidth={2} />
-            </button>
-          </div>
-        </div>
+        {/* Toolbar removed - now in ChordPage header */}
       </div>
 
       {pop && (

@@ -11,7 +11,6 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { Minus, Plus, Play, Pause } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -139,6 +138,48 @@ export default function ChordPage({ song }: { song: Song }) {
                 onClick={() => setLyricsOnly((v) => !v)}
               >
                 {lyricsOnly ? "Tampilkan chord" : "Lirik saja"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setFontSize((v) => Math.max(12, v - 1))}
+                disabled={fontSize <= 12}
+              >
+                A-
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setFontSize((v) => Math.min(26, v + 1))}
+                disabled={fontSize >= 26}
+              >
+                A+
+              </button>
+              <button
+                type="button"
+                className={playing ? "btn btn-sm btn-on" : "btn btn-sm"}
+                onClick={toggle}
+              >
+                {playing ? "Pause" : "Auto Scroll"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setTranspose((v) => Math.max(-11, v - 1))}
+                disabled={transpose <= -11}
+              >
+                -
+              </button>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--accent)" }}>
+                {currentKey}
+              </span>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setTranspose((v) => Math.min(11, v + 1))}
+                disabled={transpose >= 11}
+              >
+                +
               </button>
             </div>
           </header>
