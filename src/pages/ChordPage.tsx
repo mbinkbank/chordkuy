@@ -37,9 +37,9 @@ export default function ChordPage({ song }: { song: Song }) {
   }, [song]);
 
   const preferFlat = keyPrefersFlat(song.originalKey);
-  const baseLines = useMemo(() => parseSheet(song.lyrics), [song.lyrics]);
+  const baseLines = useMemo(() => parseSheet(song.lyrics || ""), [song.lyrics]);
   const lines = useMemo(
-    () => transposeLines(baseLines, transpose, preferFlat),
+    () => transposeLines(baseLines, transpose, preferFlat) || [],
     [baseLines, transpose, preferFlat],
   );
   const currentKey = transposeKey(song.originalKey, transpose, preferFlat);
