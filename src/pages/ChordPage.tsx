@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import ChordDiagram from "../components/ChordDiagram";
 import ChordViewer from "../components/ChordViewer";
-import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
 import { formatDate, formatViews, getRelatedSongs } from "../lib/api";
@@ -130,14 +129,13 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
 
             <div className="row">
-              <ShareButton title={`Chord ${song.title} - ${song.artist}`} />
               <button
                 type="button"
                 className={lyricsOnly ? "btn btn-sm btn-on" : "btn btn-sm"}
                 aria-pressed={lyricsOnly}
                 onClick={() => setLyricsOnly((v) => !v)}
               >
-                {lyricsOnly ? "Tampilkan chord" : "Lirik saja"}
+                {lyricsOnly ? "Mode Chord" : "Mode Lirik"}
               </button>
               <button
                 type="button"

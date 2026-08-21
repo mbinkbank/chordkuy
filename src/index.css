@@ -1214,6 +1214,9 @@ a.card:focus-visible {
 .sheet-plain .seg .ch {
   visibility: hidden;
 }
+.sheet-plain .line {
+  text-align: center;
+}
 
 /* Chord tooltip / popover */
 .chord-pop {
