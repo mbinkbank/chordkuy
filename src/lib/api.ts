@@ -2,7 +2,7 @@ import { supabase } from "./supabase";
 import type { Artist, Genre, Song } from "../data/types";
 
 const slugify = (text: string) =>
-  text
+  (text || "")
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, "")
@@ -20,8 +20,8 @@ export function mapDbRowToSong(row: any): Song {
   const artist = row.artist || "Unknown Artist";
   const slug = `${slugify(artist)}-${slugify(title)}`;
   const artistSlug = slugify(artist);
-  const capoNum = row.capo && row.capo.includes("fret") 
-    ? parseInt(row.capo.replace(/\D/g, ""), 10) || 0 
+  const capoNum = row.capo && row.capo.includes("fret")
+    ? parseInt(row.capo.replace(/\D/g, ""), 10) || 0
     : 0;
 
   const rawDiff = (row.difficulty || "").toLowerCase();
@@ -30,15 +30,15 @@ export function mapDbRowToSong(row: any): Song {
   else if (rawDiff === "advanced" || rawDiff === "mahir") difficulty = "Mahir";
 
   const contentChords = extractChords(row.content || "");
-  const originalKey = row.key_name || (contentChords.length > 0 ? contentChords[0] : "C");
+  const originalKey = row.key_name || "C";
 
   return {
     id: String(row.id),
-    title: title,
-    slug: slug,
-    artist: artist,
-    artistSlug: artistSlug,
-    originalKey: originalKey,
+    title,
+    slug,
+    artist,
+    artistSlug,
+    originalKey,
     capo: capoNum,
     lyrics: row.content || "",
     chords: contentChords,
@@ -46,24 +46,32 @@ export function mapDbRowToSong(row: any): Song {
     thumbnail: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    difficulty: difficulty,
+    difficulty,
     tuning: row.tuning || "E A D G B E",
     views: 100 + (row.id * 7) % 500,
   };
 }
 
 export async function getAllSongs(): Promise<Song[]> {
-  const { data, error } = await supabase
-    .from("chords")
-    .select("*")
-    .order("id", { ascending: false });
-  if (error || !data) return [];
-  return data.map(mapDbRowToSong);
+  try {
+    const { data, error } = await supabase
+      .from("chords")
+      .select("*")
+      .order("id", { ascending: false });
+    if (error || !data) return [];
+    return data.map(mapDbRowToSong);
+  } catch {
+    return [];
+  }
 }
 
 export async function getSongBySlug(slug: string): Promise<Song | null> {
-  const all = await getAllSongs();
-  return all.find((s) => s.slug === slug || s.slug === slug.replace(/-\d+$/, "")) ?? null;
+  try {
+    const all = await getAllSongs();
+    return all.find((s) => s.slug === slug || s.slug === slug.replace(/-\d+$/, "")) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
@@ -77,13 +85,17 @@ export async function getPopularSongs(limit = 8): Promise<Song[]> {
 }
 
 export async function getRecentSongs(limit = 6): Promise<Song[]> {
-  const { data, error } = await supabase
-    .from("chords")
-    .select("*")
-    .order("id", { ascending: false })
-    .limit(limit);
-  if (error || !data) return [];
-  return data.map(mapDbRowToSong);
+  try {
+    const { data, error } = await supabase
+      .from("chords")
+      .select("*")
+      .order("id", { ascending: false })
+      .limit(limit);
+    if (error || !data) return [];
+    return data.map(mapDbRowToSong);
+  } catch {
+    return [];
+  }
 }
 
 export async function getSongsByGenre(genreSlug: string): Promise<Song[]> {
@@ -144,7 +156,7 @@ export function formatDate(iso: string): string {
       year: "numeric",
     });
   } catch {
-    return iso;
+    return iso || "";
   }
 }
 
@@ -174,18 +186,22 @@ export interface SearchResult {
 
 export async function searchCatalogue(query: string, limit = 40): Promise<SearchResult> {
   if (!query.trim()) return { songs: [], artists: [] };
-  
-  const q = query.toLowerCase().trim();
-  const { data } = await supabase
-    .from("chords")
-    .select("*")
-    .or(`title.ilike.%${q}%,artist.ilike.%${q}%`)
-    .limit(limit);
 
-  if (!data) return { songs: [], artists: [] };
-  const songs = data.map(mapDbRowToSong);
-  const artists = await getAllArtists();
-  const filteredArtists = artists.filter((a) => a.name.toLowerCase().includes(q));
+  try {
+    const q = query.toLowerCase().trim();
+    const { data } = await supabase
+      .from("chords")
+      .select("*")
+      .or(`title.ilike.%${q}%,artist.ilike.%${q}%`)
+      .limit(limit);
 
-  return { songs, artists: filteredArtists };
+    if (!data) return { songs: [], artists: [] };
+    const songs = data.map(mapDbRowToSong);
+    const artists = await getAllArtists();
+    const filteredArtists = artists.filter((a) => a.name.toLowerCase().includes(q));
+
+    return { songs, artists: filteredArtists };
+  } catch {
+    return { songs: [], artists: [] };
+  }
 }
