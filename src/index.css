@@ -1216,8 +1216,8 @@ a.card:focus-visible {
 .sheet-plain .line {
   text-align: center;
   min-height: 0;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0;
+  padding: 0;
   line-height: 1.5;
 }
 .sheet-plain .line-blank {
@@ -1228,8 +1228,12 @@ a.card:focus-visible {
 }
 .sheet-plain .section-label {
   text-align: center;
-  margin-top: 0.4em;
-  margin-bottom: 0.1em;
+  margin: 0;
+  padding: 0.3em 0 0.1em;
+}
+.sheet-plain .section-label:first-child {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Chord tooltip / popover */

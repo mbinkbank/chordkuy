@@ -86,14 +86,11 @@ export default function ChordViewer({
         {lines
           .filter((line) => {
             if (!lyricsOnly) return true;
+            if (line.type === "blank") return false;
             if (line.type !== "line") return true;
             return line.segments.some((s) => s.text.trim() !== "" || s.chord === null);
           })
           .map((line, i) => {
-          if (line.type === "blank") {
-            return <div key={i} className="line-blank" aria-hidden="true" />;
-          }
-
           if (line.type === "section") {
             return (
               <h3 key={i} className="section-label">
