@@ -1216,16 +1216,20 @@ a.card:focus-visible {
 .sheet-plain .line {
   text-align: center;
   min-height: 0;
-  margin-bottom: 2px;
-  line-height: 1.6;
+  margin-bottom: 0;
+  margin-top: 0;
+  line-height: 1.5;
+}
+.sheet-plain .line-blank {
+  display: none;
 }
 .sheet-plain .text-inline {
   display: inline;
 }
 .sheet-plain .section-label {
   text-align: center;
-  margin-top: 0.8em;
-  margin-bottom: 2px;
+  margin-top: 0.4em;
+  margin-bottom: 0.1em;
 }
 
 /* Chord tooltip / popover */
