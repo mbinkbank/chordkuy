@@ -83,7 +83,7 @@ export default function ChordViewer({
         style={{ ["--sheet-size" as string]: `${fontSize}px` }}
         data-chord-sheet=""
       >
-        {lines
+        {(lines || [])
           .filter((line) => {
             if (!lyricsOnly) return true;
             if (line.type === "blank") return false;

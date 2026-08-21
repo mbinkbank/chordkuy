@@ -135,6 +135,7 @@ export function isChordLine(line: string): boolean {
 }
 
 export function parseSheet(raw: string): SheetLine[] {
+  if (!raw) return [];
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
 
@@ -189,7 +190,7 @@ export function parseSheet(raw: string): SheetLine[] {
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
-  if (semitones === 0) return lines;
+  if (!lines || semitones === 0) return lines || [];
   return lines.map((line) =>
     line.type === "line"
       ? {
@@ -204,6 +205,7 @@ export function transposeLines(lines: SheetLine[], semitones: number, preferFlat
 }
 
 export function uniqueChords(lines: SheetLine[]): string[] {
+  if (!lines) return [];
   const seen = new Set<string>();
   const out: string[] = [];
   for (const line of lines) {
