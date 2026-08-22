@@ -135,7 +135,11 @@ export default function ChordViewer({
           if (line.type === "section") {
             const displayLabel = isOriginalChord(line.label) ? "--- ORIGINAL CHORD ---" : line.label;
             return (
-              <h3 key={i} className="section-label">
+              <h3
+                key={i}
+                className="section-label"
+                style={isOriginalChord(line.label) ? { textAlign: "center" } : undefined}
+              >
                 {displayLabel}
               </h3>
             );
