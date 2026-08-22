@@ -261,19 +261,18 @@ export default function ChordPage({ song }: { song: Song }) {
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
               Chord Populer
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
               {popular.filter((s) => s.id !== song.id).map((s) => (
-                <Link
-                  key={s.id}
-                  href={`/chord/${s.slug}`}
-                  className="card"
-                  style={{ padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                >
-                  <span style={{ fontSize: 12, fontWeight: 600 }}>{s.title}</span>
-                  <span className="caption" style={{ fontSize: 10 }}>{s.artist}</span>
-                </Link>
+                <li key={s.id}>
+                  <Link
+                    href={`/chord/${s.slug}`}
+                    style={{ fontSize: 12, color: "var(--foreground)", textDecoration: "none" }}
+                  >
+                    {s.title} — {s.artist}
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </aside>
       </div>
