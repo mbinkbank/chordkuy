@@ -90,28 +90,33 @@ export default function ChordViewer({
   });
 
   // Mark last chord-only line after each section-label (for spacing before lyrics).
+  // Skip REFF sections — no section-end spacing.
   const lastSectionContent = new Set<number>();
   let activeSection = -1;
+  let skipSectionEnd = false;
   let lastChordIdx = -1;
   for (let i = 0; i < filteredLines.length; i++) {
     const line = filteredLines[i];
     if (line.type === "section") {
-      if (lastChordIdx >= 0) lastSectionContent.add(lastChordIdx);
+      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = i;
+      skipSectionEnd = /^reff\b/i.test(line.label.trim());
       lastChordIdx = -1;
     } else if (line.type === "blank" || hasLyricText(line)) {
-      if (lastChordIdx >= 0) lastSectionContent.add(lastChordIdx);
+      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = -1;
+      skipSectionEnd = false;
       lastChordIdx = -1;
     } else if (activeSection >= 0 && isChordOnly(line)) {
       lastChordIdx = i;
     } else {
-      if (lastChordIdx >= 0) lastSectionContent.add(lastChordIdx);
+      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = -1;
+      skipSectionEnd = false;
       lastChordIdx = -1;
     }
   }
-  if (lastChordIdx >= 0) lastSectionContent.add(lastChordIdx);
+  if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
   return (
     <>
