@@ -73,6 +73,10 @@ export default {
       }
     }
 
-    return env.ASSETS.fetch(request);
+    const assetRes = await env.ASSETS.fetch(request);
+    if (assetRes.status === 404) {
+      return env.ASSETS.fetch(new Request(new URL("/", url), request));
+    }
+    return assetRes;
   },
 };
