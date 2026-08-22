@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import ThemeToggle from "./ThemeToggle";
-import { Search, Menu, X, Music2 } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
@@ -16,13 +16,7 @@ export default function Header() {
       <div className="container">
         <div className="header-inner">
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
-            <span className="brand-mark" aria-hidden="true" style={{ display: "grid", placeItems: "center" }}>
-              <Music2 size={16} strokeWidth={2.5} />
-            </span>
-            <span>
-              {SITE.name}
-              <span className="brand-dot">_</span>
-            </span>
+            <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo" />
           </Link>
 
           <nav className="nav" aria-label="Navigasi utama">
