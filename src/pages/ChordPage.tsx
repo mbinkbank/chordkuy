@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
+import ChordDiagram from "../components/ChordDiagram";
 import ChordViewer from "../components/ChordViewer";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
@@ -167,11 +168,12 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
           </header>
 
-          <div className="keylist" style={{ paddingBottom: "var(--s2)" }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s2)" }}>
             {chordList.map((chord) => (
-              <span key={chord} className="badge badge-sm">
-                {chord}
-              </span>
+              <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
+                <ChordDiagram chord={chord} size={60} />
+                <span className="caption" style={{ fontSize: 9, fontWeight: 600 }}>{chord}</span>
+              </div>
             ))}
           </div>
 
