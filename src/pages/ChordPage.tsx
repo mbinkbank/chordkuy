@@ -144,7 +144,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className={playing ? "btn btn-sm btn-on" : "btn btn-sm"}
-                onClick={toggle}
+                onClick={() => { toggle(); setSettingsOpen(true); }}
               >
                 {playing ? "Pause" : "Auto Scroll"}
               </button>
@@ -329,7 +329,7 @@ export default function ChordPage({ song }: { song: Song }) {
                   key={lvl}
                   type="button"
                   className={`btn btn-sm${speed === lvl ? " btn-on" : ""}`}
-                  onClick={() => setSpeed(lvl)}
+                  onClick={() => { setSpeed(lvl); if (!playing) toggle(); }}
                   style={{ width: "100%", minHeight: 24, padding: "2px 0", fontSize: 10 }}
                 >
                   {lvl}
