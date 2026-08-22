@@ -1450,6 +1450,12 @@ a.card:focus-visible {
   transition: width 200ms linear;
 }
 
+@media (max-width: 640px) {
+  .settings-panel .btn {
+    min-height: 24px !important;
+  }
+}
+
 /* ---------- Print: clean chord sheet on paper ---------- */
 @media print {
   .site-header,
