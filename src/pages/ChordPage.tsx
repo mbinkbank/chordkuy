@@ -254,6 +254,19 @@ export default function ChordPage({ song }: { song: Song }) {
               </dd>
             </dl>
           </div>
+
+          <div className="card">
+            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
+              Chord Populer
+            </h2>
+            <div className="keylist">
+              {["C", "G", "D", "Em", "Am", "F", "A", "E", "Bm", "Dm"].map((chord) => (
+                <span key={chord} className="badge badge-sm">
+                  {chord}
+                </span>
+              ))}
+            </div>
+          </div>
         </aside>
       </div>
 
