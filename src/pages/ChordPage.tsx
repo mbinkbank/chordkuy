@@ -328,13 +328,13 @@ export default function ChordPage({ song }: { song: Song }) {
               bottom: 48,
               right: 0,
               padding: "12px 16px",
-              minWidth: 200,
+              minWidth: 160,
               display: "flex",
               flexDirection: "column",
               gap: 12,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
               <span className="caption" style={{ fontWeight: 600 }}>Ukuran Teks</span>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <button
@@ -356,7 +356,7 @@ export default function ChordPage({ song }: { song: Song }) {
                 </button>
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
               <span className="caption" style={{ fontWeight: 600 }}>Kecepatan</span>
               <div style={{ display: "flex", gap: 4 }}>
                 {[1, 2, 3, 4, 5].map((lvl) => (
