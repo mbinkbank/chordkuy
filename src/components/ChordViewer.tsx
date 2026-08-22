@@ -133,9 +133,10 @@ export default function ChordViewer({
         {filteredLines.map((line, i) => {
           if (line.type === "blank") return null;
           if (line.type === "section") {
+            const displayLabel = isOriginalChord(line.label) ? "--- ORIGINAL CHORD ---" : line.label;
             return (
               <h3 key={i} className="section-label">
-                {line.label}
+                {displayLabel}
               </h3>
             );
           }
