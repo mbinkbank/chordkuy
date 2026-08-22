@@ -143,22 +143,6 @@ export default function ChordPage({ song }: { song: Song }) {
               </button>
               <button
                 type="button"
-                className="btn btn-sm"
-                onClick={() => setFontSize((v) => Math.max(12, v - 1))}
-                disabled={fontSize <= 12}
-              >
-                A-
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm"
-                onClick={() => setFontSize((v) => Math.min(26, v + 1))}
-                disabled={fontSize >= 26}
-              >
-                A+
-              </button>
-              <button
-                type="button"
                 className={playing ? "btn btn-sm btn-on" : "btn btn-sm"}
                 onClick={toggle}
               >
