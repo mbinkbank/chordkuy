@@ -51,9 +51,9 @@ export default function ChordPage({ song }: { song: Song }) {
   useEffect(() => stop, [stop]);
 
   useShortcuts({
-    "+": () => setTranspose((v) => Math.min(11, v + 1)),
-    "=": () => setTranspose((v) => Math.min(11, v + 1)),
-    "-": () => setTranspose((v) => Math.max(-11, v - 1)),
+    "+": () => setTranspose((v) => v >= 11 ? -11 : v + 1),
+    "=": () => setTranspose((v) => v >= 11 ? -11 : v + 1),
+    "-": () => setTranspose((v) => v <= -11 ? 11 : v - 1),
     "0": () => setTranspose(0),
     " ": toggle,
     "]": () => setFontSize((v) => Math.min(26, v + 1)),
@@ -151,8 +151,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
-                onClick={() => setTranspose((v) => Math.max(-11, v - 1))}
-                disabled={transpose <= -11}
+                onClick={() => setTranspose((v) => v <= -11 ? 11 : v - 1)}
               >
                 <ChevronDown size={14} />
               </button>
@@ -162,8 +161,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
-                onClick={() => setTranspose((v) => Math.min(11, v + 1))}
-                disabled={transpose >= 11}
+                onClick={() => setTranspose((v) => v >= 11 ? -11 : v + 1)}
               >
                 <ChevronUp size={14} />
               </button>
