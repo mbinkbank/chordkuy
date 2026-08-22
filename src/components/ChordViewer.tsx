@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
+import { ChevronRight } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
@@ -39,6 +40,7 @@ export default function ChordViewer({
   currentKey,
 }: ChordViewerProps) {
   const [pop, setPop] = useState<PopoverState | null>(null);
+  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
   const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
@@ -82,6 +84,8 @@ export default function ChordViewer({
   const isChordOnly = (line: SheetLine) =>
     line.type === "line" && !hasLyricText(line);
 
+  const isOriginalChord = (label: string) => /^original\s+chord$/i.test(label.trim());
+
   const filteredLines = (lines || []).filter((line) => {
     if (!lyricsOnly) return true;
     if (line.type === "blank") return false;
@@ -89,8 +93,8 @@ export default function ChordViewer({
     return hasLyricText(line);
   });
 
-  // Mark last chord-only line after each section-label (for spacing before lyrics).
-  // Skip REFF sections — no section-end spacing.
+  // Section content = consecutive chord-only lines after a section-label.
+  const sectionContent = new Map<number, number[]>();
   const lastSectionContent = new Set<number>();
   let activeSection = -1;
   let skipSectionEnd = false;
@@ -101,6 +105,7 @@ export default function ChordViewer({
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = i;
       skipSectionEnd = /^reff\b/i.test(line.label.trim());
+      sectionContent.set(i, []);
       lastChordIdx = -1;
     } else if (line.type === "blank" || hasLyricText(line)) {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
@@ -108,6 +113,7 @@ export default function ChordViewer({
       skipSectionEnd = false;
       lastChordIdx = -1;
     } else if (activeSection >= 0 && isChordOnly(line)) {
+      sectionContent.get(activeSection)!.push(i);
       lastChordIdx = i;
     } else {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
@@ -118,6 +124,21 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
+  const hiddenBySection = new Set<number>();
+  for (const [sectionIdx, contentIdxs] of sectionContent) {
+    if (!collapsed.has(sectionIdx)) continue;
+    for (const idx of contentIdxs) hiddenBySection.add(idx);
+  }
+
+  const toggleSection = (sectionIndex: number) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionIndex)) next.delete(sectionIndex);
+      else next.add(sectionIndex);
+      return next;
+    });
+  };
+
   return (
     <>
       <div
@@ -126,8 +147,41 @@ export default function ChordViewer({
         data-chord-sheet=""
       >
         {filteredLines.map((line, i) => {
+          if (hiddenBySection.has(i)) return null;
           if (line.type === "blank") return null;
           if (line.type === "section") {
+            if (isOriginalChord(line.label)) {
+              const isCollapsed = collapsed.has(i);
+              return (
+                <h3
+                  key={i}
+                  className="section-label"
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={!isCollapsed}
+                  onClick={() => toggleSection(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleSection(i);
+                    }
+                  }}
+                  style={{ cursor: "pointer", userSelect: "none" }}
+                >
+                  <ChevronRight
+                    size={12}
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginRight: 4,
+                      transition: "transform 0.15s",
+                      transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)",
+                    }}
+                  />
+                  {line.label}
+                </h3>
+              );
+            }
             return (
               <h3 key={i} className="section-label">
                 {line.label}
