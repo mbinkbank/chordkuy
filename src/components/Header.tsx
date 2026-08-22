@@ -49,7 +49,6 @@ export default function Header() {
               aria-expanded={open}
               aria-controls="mobile-nav"
               onClick={() => setOpen((v) => !v)}
-              style={{ display: "grid", placeItems: "center" }}
             >
               <span className="sr-only">Buka menu navigasi</span>
               {open ? <X size={18} strokeWidth={2} /> : <Menu size={18} strokeWidth={2} />}
