@@ -1132,7 +1132,7 @@ a.card:focus-visible {
   display: block;
   padding-top: 4px;
   margin-top: 0.6em;
-  margin-bottom: 0;
+  margin-bottom: 0.4em;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
