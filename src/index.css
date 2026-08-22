@@ -589,8 +589,8 @@ a.card:focus-visible {
 }
 .song-card .thumb {
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
   border-radius: var(--radius-badge);
   display: grid;
@@ -600,6 +600,20 @@ a.card:focus-visible {
   color: var(--accent);
   background: var(--accent-soft);
   object-fit: cover;
+}
+.song-card .thumb svg {
+  width: 18px;
+  height: 18px;
+}
+@media (min-width: 640px) {
+  .song-card .thumb {
+    width: 40px;
+    height: 40px;
+  }
+  .song-card .thumb svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 .song-card > span {
   min-width: 0;
