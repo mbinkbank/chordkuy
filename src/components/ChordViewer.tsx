@@ -140,6 +140,14 @@ export default function ChordViewer({
           if (hiddenBySection.has(i)) return null;
           if (line.type === "blank") return null;
           if (line.type === "section") {
+            const isReff = /^reff\b/i.test(line.label.trim());
+            if (isReff) {
+              return (
+                <h3 key={i} className="section-label">
+                  {line.label}
+                </h3>
+              );
+            }
             const isCollapsed = collapsed.has(i);
             return (
               <h3
