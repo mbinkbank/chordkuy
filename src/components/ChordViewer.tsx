@@ -93,33 +93,20 @@ export default function ChordViewer({
     return hasLyricText(line);
   });
 
-  // Section content for spacing (chord-only lines after section-label).
-  // ORIGINAL CHORD: hide ALL remaining lines (chords + lyrics + nested sections) until end.
+  // Section content: chord-only lines right after a section-label, until lyrics/blank/next section.
   const sectionContent = new Map<number, number[]>();
   const lastSectionContent = new Set<number>();
   let activeSection = -1;
   let skipSectionEnd = false;
-  let originalSection = -1;
   let lastChordIdx = -1;
   for (let i = 0; i < filteredLines.length; i++) {
     const line = filteredLines[i];
-
-    // Once ORIGINAL CHORD starts: everything after it (including other sections) is hideable
-    if (originalSection >= 0 && i !== originalSection) {
-      if (line.type !== "blank") sectionContent.get(originalSection)!.push(i);
-      continue;
-    }
 
     if (line.type === "section") {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = i;
       skipSectionEnd = /^reff\b/i.test(line.label.trim());
-      if (isOriginalChord(line.label)) {
-        originalSection = i;
-        sectionContent.set(i, []);
-      } else {
-        sectionContent.set(i, []);
-      }
+      sectionContent.set(i, []);
       lastChordIdx = -1;
     } else if (line.type === "blank" || hasLyricText(line)) {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
@@ -137,21 +124,6 @@ export default function ChordViewer({
     }
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
-
-  // Also mark last chord-only line before lyrics in ORIGINAL CHORD section
-  for (const [sectionIdx, contentIdxs] of sectionContent) {
-    const secLine = filteredLines[sectionIdx];
-    if (secLine?.type === "section" && isOriginalChord(secLine.label)) {
-      // Find last chord-only line before lyrics
-      for (let j = contentIdxs.length - 1; j >= 0; j--) {
-        const contentLine = filteredLines[contentIdxs[j]];
-        if (contentLine?.type === "line" && isChordOnly(contentLine)) {
-          lastSectionContent.add(contentIdxs[j]);
-          break;
-        }
-      }
-    }
-  }
 
   // Default: ORIGINAL CHORD sections start collapsed
   const effectiveCollapsed = (() => {
