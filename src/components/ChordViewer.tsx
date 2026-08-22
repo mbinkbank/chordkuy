@@ -91,6 +91,7 @@ export default function ChordViewer({
             return line.segments.some((s) => s.text.trim() !== "" || s.chord === null);
           })
           .map((line, i) => {
+          if (line.type === "blank") return null;
           if (line.type === "section") {
             return (
               <h3 key={i} className="section-label">
