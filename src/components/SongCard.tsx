@@ -1,6 +1,7 @@
 import type { Song } from "../data/types";
 import { formatViews } from "../lib/api";
 import { Link } from "../lib/router";
+import { ListMusic } from "lucide-react";
 
 interface Props {
   song: Song;
@@ -9,8 +10,6 @@ interface Props {
 }
 
 export default function SongCard({ song, index, showArtist = true }: Props) {
-  const initials = song.title.slice(0, 2).toUpperCase();
-
   return (
     <Link className="card song-card" href={`/chord/${song.slug}`}>
       {song.thumbnail ? (
@@ -24,8 +23,8 @@ export default function SongCard({ song, index, showArtist = true }: Props) {
           decoding="async"
         />
       ) : (
-        <span className="thumb" aria-hidden="true">
-          {index !== undefined ? String(index + 1).padStart(2, "0") : initials}
+        <span className="thumb" aria-hidden="true" style={{ display: "grid", placeItems: "center" }}>
+          <ListMusic size={16} />
         </span>
       )}
 
