@@ -422,7 +422,7 @@ a:focus-visible {
   color: var(--accent);
 }
 .brand-logo {
-  max-width: 60%;
+  max-width: 40%;
   height: auto;
   display: block;
 }
@@ -464,6 +464,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: var(--s2);
+  flex-shrink: 0;
 }
 .nav-toggle {
   display: inline-flex;
