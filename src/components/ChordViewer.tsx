@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
-import { ChevronRight } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
@@ -40,7 +39,6 @@ export default function ChordViewer({
   currentKey,
 }: ChordViewerProps) {
   const [pop, setPop] = useState<PopoverState | null>(null);
-  const [collapsed, setCollapsed] = useState<Set<number> | null>(null);
   const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
@@ -125,32 +123,6 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
-  // Default: ORIGINAL CHORD sections start collapsed
-  const effectiveCollapsed = (() => {
-    if (collapsed) return collapsed;
-    const init = new Set<number>();
-    for (let i = 0; i < filteredLines.length; i++) {
-      const line = filteredLines[i];
-      if (line.type === "section" && isOriginalChord(line.label)) init.add(i);
-    }
-    return init;
-  })();
-
-  const hiddenBySection = new Set<number>();
-  for (const [sectionIdx, contentIdxs] of sectionContent) {
-    if (!effectiveCollapsed.has(sectionIdx)) continue;
-    for (const idx of contentIdxs) hiddenBySection.add(idx);
-  }
-
-  const toggleSection = (sectionIndex: number) => {
-    setCollapsed(() => {
-      const next = new Set(effectiveCollapsed);
-      if (next.has(sectionIndex)) next.delete(sectionIndex);
-      else next.add(sectionIndex);
-      return next;
-    });
-  };
-
   return (
     <>
       <div
@@ -162,38 +134,6 @@ export default function ChordViewer({
           if (hiddenBySection.has(i)) return null;
           if (line.type === "blank") return null;
           if (line.type === "section") {
-            if (isOriginalChord(line.label)) {
-              const isCollapsed = effectiveCollapsed.has(i);
-              return (
-                <h3
-                  key={i}
-                  className="section-label"
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={!isCollapsed}
-                  onClick={() => toggleSection(i)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      toggleSection(i);
-                    }
-                  }}
-                  style={{ cursor: "pointer", userSelect: "none" }}
-                >
-                  <ChevronRight
-                    size={12}
-                    style={{
-                      display: "inline-block",
-                      verticalAlign: "middle",
-                      marginRight: 4,
-                      transition: "transform 0.15s",
-                      transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)",
-                    }}
-                  />
-                  {line.label}
-                </h3>
-              );
-            }
             return (
               <h3 key={i} className="section-label">
                 {line.label}
