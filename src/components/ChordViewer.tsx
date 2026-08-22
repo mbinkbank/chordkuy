@@ -138,11 +138,18 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
-  // Also mark ALL lines of ORIGINAL CHORD content for section-end spacing
+  // Also mark last chord-only line before lyrics in ORIGINAL CHORD section
   for (const [sectionIdx, contentIdxs] of sectionContent) {
     const secLine = filteredLines[sectionIdx];
     if (secLine?.type === "section" && isOriginalChord(secLine.label)) {
-      lastSectionContent.add(sectionIdx);
+      // Find last chord-only line before lyrics
+      for (let j = contentIdxs.length - 1; j >= 0; j--) {
+        const contentLine = filteredLines[contentIdxs[j]];
+        if (contentLine?.type === "line" && isChordOnly(contentLine)) {
+          lastSectionContent.add(contentIdxs[j]);
+          break;
+        }
+      }
     }
   }
 
@@ -188,7 +195,7 @@ export default function ChordViewer({
               return (
                 <h3
                   key={i}
-                  className={`section-label${lastSectionContent.has(i) ? " section-end" : ""}`}
+                  className="section-label"
                   role="button"
                   tabIndex={0}
                   aria-expanded={!isCollapsed}
