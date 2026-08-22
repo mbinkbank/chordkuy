@@ -322,34 +322,30 @@ export default function ChordPage({ song }: { song: Song }) {
       <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 50 }}>
         {settingsOpen && (
           <div
-            className="card"
             style={{
               position: "absolute",
               bottom: 48,
               right: 0,
-              padding: "14px 10px",
-              width: 56,
+              padding: "8px",
+              width: 52,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 6,
+              gap: 4,
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: 12,
             }}
           >
-            <span className="caption" style={{ fontSize: 10, fontWeight: 600 }}>speed</span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3, width: "100%" }}>
+            <span className="caption" style={{ fontSize: 9, fontWeight: 600 }}>speed</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
               {[5, 4, 3, 2, 1].map((lvl) => (
                 <button
                   key={lvl}
                   type="button"
-                  className="btn btn-sm"
+                  className={`btn btn-sm${speed === lvl ? " btn-on" : ""}`}
                   onClick={() => setSpeed(lvl)}
-                  style={{
-                    width: "100%",
-                    padding: "3px 0",
-                    fontSize: 10,
-                    background: speed === lvl ? "var(--accent)" : undefined,
-                    color: speed === lvl ? "#000" : undefined,
-                  }}
+                  style={{ width: "100%", minHeight: 24, padding: "2px 0", fontSize: 10 }}
                 >
                   {lvl}
                 </button>
@@ -360,19 +356,19 @@ export default function ChordPage({ song }: { song: Song }) {
                 type="button"
                 className="btn btn-sm"
                 onClick={toggle}
-                style={{ width: "100%", padding: "3px 0", fontSize: 10, color: "#ff6b6b" }}
+                style={{ width: "100%", minHeight: 24, padding: "2px 0", fontSize: 9, color: "#ff6b6b" }}
               >
                 stop
               </button>
             )}
             <div style={{ width: "100%", borderTop: "1px solid var(--border)", margin: "2px 0" }} />
-            <span className="caption" style={{ fontSize: 10, fontWeight: 600 }}>font</span>
+            <span className="caption" style={{ fontSize: 9, fontWeight: 600 }}>font</span>
             <button
               type="button"
               className="btn btn-sm"
               onClick={() => setFontSize((v) => Math.min(26, v + 1))}
               disabled={fontSize >= 26}
-              style={{ width: "100%", padding: "3px 0", fontSize: 14, fontWeight: 700 }}
+              style={{ width: "100%", minHeight: 24, padding: "2px 0", fontSize: 13, fontWeight: 700 }}
             >
               +
             </button>
@@ -381,11 +377,11 @@ export default function ChordPage({ song }: { song: Song }) {
               className="btn btn-sm"
               onClick={() => setFontSize((v) => Math.max(12, v - 1))}
               disabled={fontSize <= 12}
-              style={{ width: "100%", padding: "3px 0", fontSize: 14, fontWeight: 700 }}
+              style={{ width: "100%", minHeight: 24, padding: "2px 0", fontSize: 13, fontWeight: 700 }}
             >
               −
             </button>
-            <span className="caption" style={{ fontSize: 10 }}>{fontSize}px</span>
+            <span className="caption" style={{ fontSize: 9 }}>{fontSize}px</span>
           </div>
         )}
         <button
