@@ -1089,6 +1089,7 @@ a.card:focus-visible {
 /* Detail lagu: show inline on mobile, sidebar on desktop */
 .detail-card-mobile {
   display: block;
+  padding-bottom: 20px;
 }
 .detail-card-sidebar {
   display: none;
