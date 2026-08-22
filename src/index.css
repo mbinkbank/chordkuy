@@ -404,6 +404,8 @@ a:focus-visible {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--foreground-strong);
+  min-width: 0;
+  overflow: hidden;
 }
 .brand:hover {
   color: var(--foreground-strong);
@@ -422,13 +424,14 @@ a:focus-visible {
   color: var(--accent);
 }
 .brand-logo {
-  max-width: 40%;
+  max-width: 60%;
   height: auto;
   display: block;
+  min-width: 0;
 }
 @media (min-width: 861px) {
   .brand-logo {
-    max-width: 24%;
+    max-width: 32%;
   }
 }
 .nav {
