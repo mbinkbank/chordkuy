@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
+import { ChevronRight } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
@@ -39,6 +40,7 @@ export default function ChordViewer({
   currentKey,
 }: ChordViewerProps) {
   const [pop, setPop] = useState<PopoverState | null>(null);
+  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
   const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
@@ -76,6 +78,33 @@ export default function ChordViewer({
 
   useEffect(() => () => clearTimer(), []);
 
+  const toggleSection = (sectionIndex: number) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionIndex)) next.delete(sectionIndex);
+      else next.add(sectionIndex);
+      return next;
+    });
+  };
+
+  const filteredLines = (lines || []).filter((line) => {
+    if (!lyricsOnly) return true;
+    if (line.type === "blank") return false;
+    if (line.type !== "line") return true;
+    return line.segments.some((s) => s.text.trim() !== "");
+  });
+
+  const hiddenBySection = new Set<number>();
+  let currentSection = -1;
+  for (let i = 0; i < filteredLines.length; i++) {
+    const line = filteredLines[i];
+    if (line.type === "section") {
+      currentSection = i;
+    } else if (currentSection >= 0 && collapsed.has(currentSection)) {
+      hiddenBySection.add(i);
+    }
+  }
+
   return (
     <>
       <div
@@ -83,18 +112,32 @@ export default function ChordViewer({
         style={{ ["--sheet-size" as string]: `${fontSize}px` }}
         data-chord-sheet=""
       >
-        {(lines || [])
-          .filter((line) => {
-            if (!lyricsOnly) return true;
-            if (line.type === "blank") return false;
-            if (line.type !== "line") return true;
-            return line.segments.some((s) => s.text.trim() !== "");
-          })
-          .map((line, i) => {
+        {filteredLines.map((line, i) => {
+          if (hiddenBySection.has(i)) return null;
           if (line.type === "blank") return null;
           if (line.type === "section") {
+            const isCollapsed = collapsed.has(i);
             return (
-              <h3 key={i} className="section-label">
+              <h3
+                key={i}
+                className="section-label"
+                role="button"
+                tabIndex={0}
+                aria-expanded={!isCollapsed}
+                onClick={() => toggleSection(i)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSection(i); } }}
+                style={{ cursor: "pointer", userSelect: "none" }}
+              >
+                <ChevronRight
+                  size={12}
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginRight: 4,
+                    transition: "transform 0.15s",
+                    transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)",
+                  }}
+                />
                 {line.label}
               </h3>
             );
