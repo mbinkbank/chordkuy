@@ -87,24 +87,46 @@ export default function ChordViewer({
     });
   };
 
+  const hasLyricText = (line: SheetLine) =>
+    line.type === "line" && line.segments.some((s) => s.text.trim() !== "");
+
+  const isChordOnly = (line: SheetLine) =>
+    line.type === "line" && !hasLyricText(line);
+
   const filteredLines = (lines || []).filter((line) => {
     if (!lyricsOnly) return true;
     if (line.type === "blank") return false;
     if (line.type !== "line") return true;
-    return line.segments.some((s) => s.text.trim() !== "");
+    return hasLyricText(line);
   });
 
-  const hiddenBySection = new Set<number>();
-  let currentSection = -1;
+  // Section content = consecutive chord-only lines right after a section-label.
+  // Stops at lyric text, blank, or next section.
+  const sectionContent = new Map<number, number[]>();
+  let activeSection = -1;
   for (let i = 0; i < filteredLines.length; i++) {
     const line = filteredLines[i];
     if (line.type === "section") {
-      currentSection = i;
-    } else if (line.type === "blank") {
-      currentSection = -1;
-    } else if (currentSection >= 0 && collapsed.has(currentSection)) {
-      hiddenBySection.add(i);
+      activeSection = i;
+      sectionContent.set(i, []);
+    } else if (line.type === "blank" || hasLyricText(line)) {
+      activeSection = -1;
+    } else if (activeSection >= 0 && isChordOnly(line)) {
+      sectionContent.get(activeSection)!.push(i);
+    } else {
+      activeSection = -1;
     }
+  }
+
+  const hiddenBySection = new Set<number>();
+  for (const [sectionIdx, contentIdxs] of sectionContent) {
+    if (!collapsed.has(sectionIdx)) continue;
+    for (const idx of contentIdxs) hiddenBySection.add(idx);
+  }
+
+  const lastSectionContent = new Set<number>();
+  for (const contentIdxs of sectionContent.values()) {
+    if (contentIdxs.length > 0) lastSectionContent.add(contentIdxs[contentIdxs.length - 1]);
   }
 
   return (
@@ -146,7 +168,7 @@ export default function ChordViewer({
           }
 
           return (
-            <div key={i} className="line">
+            <div key={i} className={`line${lastSectionContent.has(i) ? " section-end" : ""}`}>
               {line.segments.map((seg, j) => {
                 if (lyricsOnly && seg.chord) return null;
                 if (seg.chord) {
