@@ -67,7 +67,7 @@ export default {
           },
         });
       } catch (err) {
-        // Fallback to static asset fetch on error
+        // Fallback: return static sitemap on error
       }
     }
 
