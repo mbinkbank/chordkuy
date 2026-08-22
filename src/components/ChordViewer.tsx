@@ -131,7 +131,6 @@ export default function ChordViewer({
         data-chord-sheet=""
       >
         {filteredLines.map((line, i) => {
-          if (hiddenBySection.has(i)) return null;
           if (line.type === "blank") return null;
           if (line.type === "section") {
             return (
