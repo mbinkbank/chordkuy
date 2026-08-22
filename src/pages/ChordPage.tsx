@@ -37,7 +37,7 @@ export default function ChordPage({ song }: { song: Song }) {
       setRelated(data);
     }
     loadRelated();
-    getPopularSongs(5).then(setPopular);
+    getPopularSongs(10).then(setPopular);
   }, [song]);
 
   const preferFlat = keyPrefersFlat(song.originalKey);
