@@ -163,6 +163,7 @@ export function parseSheet(raw: string): SheetLine[] {
 
       // Baris 2: Chord langsung di awal baris (tanpa indentasi)
       out.push({ type: "line", segments: parseLineInplace(restText) });
+      out.push({ type: "blank" });
       continue;
     }
 
