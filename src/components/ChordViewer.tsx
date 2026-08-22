@@ -40,7 +40,7 @@ export default function ChordViewer({
   currentKey,
 }: ChordViewerProps) {
   const [pop, setPop] = useState<PopoverState | null>(null);
-  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<number> | null>(null);
   const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
@@ -138,15 +138,26 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
+  // Default: ORIGINAL CHORD sections start collapsed
+  const effectiveCollapsed = (() => {
+    if (collapsed) return collapsed;
+    const init = new Set<number>();
+    for (let i = 0; i < filteredLines.length; i++) {
+      const line = filteredLines[i];
+      if (line.type === "section" && isOriginalChord(line.label)) init.add(i);
+    }
+    return init;
+  })();
+
   const hiddenBySection = new Set<number>();
   for (const [sectionIdx, contentIdxs] of sectionContent) {
-    if (!collapsed.has(sectionIdx)) continue;
+    if (!effectiveCollapsed.has(sectionIdx)) continue;
     for (const idx of contentIdxs) hiddenBySection.add(idx);
   }
 
   const toggleSection = (sectionIndex: number) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
+    setCollapsed(() => {
+      const next = new Set(effectiveCollapsed);
       if (next.has(sectionIndex)) next.delete(sectionIndex);
       else next.add(sectionIndex);
       return next;
@@ -165,7 +176,7 @@ export default function ChordViewer({
           if (line.type === "blank") return null;
           if (line.type === "section") {
             if (isOriginalChord(line.label)) {
-              const isCollapsed = collapsed.has(i);
+              const isCollapsed = effectiveCollapsed.has(i);
               return (
                 <h3
                   key={i}
