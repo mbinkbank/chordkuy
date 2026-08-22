@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import ChordDiagram from "./ChordDiagram";
+import { ChevronRight } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
@@ -137,6 +138,14 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
+  // Also mark last line of ORIGINAL CHORD content for section-end spacing
+  for (const [sectionIdx, contentIdxs] of sectionContent) {
+    const secLine = filteredLines[sectionIdx];
+    if (secLine?.type === "section" && isOriginalChord(secLine.label) && contentIdxs.length > 0) {
+      lastSectionContent.add(contentIdxs[contentIdxs.length - 1]);
+    }
+  }
+
   // Default: ORIGINAL CHORD sections start collapsed
   const effectiveCollapsed = (() => {
     if (collapsed) return collapsed;
@@ -175,12 +184,14 @@ export default function ChordViewer({
           if (line.type === "blank") return null;
           if (line.type === "section") {
             if (isOriginalChord(line.label)) {
+              const isCollapsed = effectiveCollapsed.has(i);
               return (
                 <h3
                   key={i}
                   className="section-label"
                   role="button"
                   tabIndex={0}
+                  aria-expanded={!isCollapsed}
                   onClick={() => toggleSection(i)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -188,8 +199,18 @@ export default function ChordViewer({
                       toggleSection(i);
                     }
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
+                  <ChevronRight
+                    size={12}
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginRight: 4,
+                      transition: "transform 0.15s",
+                      transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)",
+                    }}
+                  />
                   {line.label}
                 </h3>
               );
