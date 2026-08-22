@@ -138,11 +138,11 @@ export default function ChordViewer({
   }
   if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
-  // Also mark last line of ORIGINAL CHORD content for section-end spacing
+  // Also mark ALL lines of ORIGINAL CHORD content for section-end spacing
   for (const [sectionIdx, contentIdxs] of sectionContent) {
     const secLine = filteredLines[sectionIdx];
-    if (secLine?.type === "section" && isOriginalChord(secLine.label) && contentIdxs.length > 0) {
-      lastSectionContent.add(contentIdxs[contentIdxs.length - 1]);
+    if (secLine?.type === "section" && isOriginalChord(secLine.label)) {
+      for (const idx of contentIdxs) lastSectionContent.add(idx);
     }
   }
 
