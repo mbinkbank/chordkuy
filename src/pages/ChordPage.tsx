@@ -11,7 +11,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Settings } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -27,6 +27,7 @@ export default function ChordPage({ song }: { song: Song }) {
   const [speed, setSpeed] = useStoredState<number>("chordlab:scroll-speed", 3);
   const [lyricsOnly, setLyricsOnly] = useState(false);
   const [related, setRelated] = useState<Song[]>([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { playing, toggle, stop } = useAutoScroll(speed);
 
   useEffect(() => {
@@ -316,6 +317,80 @@ export default function ChordPage({ song }: { song: Song }) {
             </ul>
           </div>
         </aside>
+      </div>
+
+      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 50 }}>
+        {settingsOpen && (
+          <div
+            className="card"
+            style={{
+              position: "absolute",
+              bottom: 48,
+              right: 0,
+              padding: "12px 16px",
+              minWidth: 200,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="caption" style={{ fontWeight: 600 }}>Ukuran Teks</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <button
+                  type="button"
+                  className="btn btn-sm"
+                  onClick={() => setFontSize((v) => Math.max(12, v - 1))}
+                  disabled={fontSize <= 12}
+                >
+                  A-
+                </button>
+                <span style={{ fontSize: 12, fontWeight: 600, minWidth: 24, textAlign: "center" }}>{fontSize}px</span>
+                <button
+                  type="button"
+                  className="btn btn-sm"
+                  onClick={() => setFontSize((v) => Math.min(26, v + 1))}
+                  disabled={fontSize >= 26}
+                >
+                  A+
+                </button>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="caption" style={{ fontWeight: 600 }}>Kecepatan</span>
+              <div style={{ display: "flex", gap: 4 }}>
+                {[1, 2, 3, 4, 5].map((lvl) => (
+                  <button
+                    key={lvl}
+                    type="button"
+                    className={`btn btn-sm${speed === lvl ? " btn-on" : ""}`}
+                    onClick={() => setSpeed(lvl)}
+                    style={{ minWidth: 28, padding: "2px 6px", fontSize: 11 }}
+                  >
+                    {lvl}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        <button
+          type="button"
+          className="btn"
+          onClick={() => setSettingsOpen((v) => !v)}
+          aria-label="Pengaturan tampilan"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            display: "grid",
+            placeItems: "center",
+            padding: 0,
+            boxShadow: "0 2px 8px rgba(0,0,0,.3)",
+          }}
+        >
+          <Settings size={18} />
+        </button>
       </div>
 
     </main>
