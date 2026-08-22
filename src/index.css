@@ -1231,6 +1231,7 @@ a.card:focus-visible {
   text-align: center;
   margin: 0;
   padding: 0.3em 0 0.1em;
+  padding-top: 10px;
 }
 .sheet-plain .section-label:first-child {
   margin-top: 0;
