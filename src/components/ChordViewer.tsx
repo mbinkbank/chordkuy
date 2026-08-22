@@ -100,6 +100,8 @@ export default function ChordViewer({
     const line = filteredLines[i];
     if (line.type === "section") {
       currentSection = i;
+    } else if (line.type === "blank") {
+      currentSection = -1;
     } else if (currentSection >= 0 && collapsed.has(currentSection)) {
       hiddenBySection.add(i);
     }
