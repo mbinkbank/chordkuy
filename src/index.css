@@ -431,7 +431,7 @@ a:focus-visible {
 }
 @media (min-width: 861px) {
   .brand-logo {
-    max-width: 32%;
+    max-width: 30%;
   }
 }
 .nav {
