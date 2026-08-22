@@ -88,7 +88,7 @@ export default function ChordViewer({
             if (!lyricsOnly) return true;
             if (line.type === "blank") return false;
             if (line.type !== "line") return true;
-            return line.segments.some((s) => s.text.trim() !== "" || s.chord === null);
+            return line.segments.some((s) => s.text.trim() !== "");
           })
           .map((line, i) => {
           if (line.type === "blank") return null;
