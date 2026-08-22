@@ -254,17 +254,6 @@ export default function ChordPage({ song }: { song: Song }) {
               </dd>
             </dl>
           </div>
-
-          <div className="card">
-            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Tips memainkan
-            </h2>
-            <ul className="stack stack-1 small" style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              <li>› Pakai transpose jika nada terlalu tinggi untuk suaramu.</li>
-              <li>› Capo memudahkan chord barre menjadi bentuk terbuka.</li>
-              <li>› Arahkan kursor atau ketuk chord untuk melihat diagramnya.</li>
-            </ul>
-          </div>
         </aside>
       </div>
 
