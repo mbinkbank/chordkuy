@@ -11,6 +11,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -168,7 +169,7 @@ export default function ChordPage({ song }: { song: Song }) {
                 onClick={() => setTranspose((v) => Math.max(-11, v - 1))}
                 disabled={transpose <= -11}
               >
-                -
+                <ChevronDown size={14} />
               </button>
               <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--accent)" }}>
                 {currentKey}
@@ -179,7 +180,7 @@ export default function ChordPage({ song }: { song: Song }) {
                 onClick={() => setTranspose((v) => Math.min(11, v + 1))}
                 disabled={transpose >= 11}
               >
-                +
+                <ChevronUp size={14} />
               </button>
             </div>
           </header>
