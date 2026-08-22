@@ -421,6 +421,16 @@ a:focus-visible {
 .brand-dot {
   color: var(--accent);
 }
+.brand-logo {
+  max-width: 60%;
+  height: auto;
+  display: block;
+}
+@media (min-width: 861px) {
+  .brand-logo {
+    max-width: 24%;
+  }
+}
 .nav {
   display: none;
   align-items: center;
