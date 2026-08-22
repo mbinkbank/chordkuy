@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
-import ChordDiagram from "../components/ChordDiagram";
 import ChordViewer from "../components/ChordViewer";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
@@ -168,6 +167,14 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
           </header>
 
+          <div className="keylist" style={{ paddingBottom: "var(--s2)" }}>
+            {chordList.map((chord) => (
+              <span key={chord} className="badge badge-sm">
+                {chord}
+              </span>
+            ))}
+          </div>
+
           <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
             <ChordViewer
               lines={lines}
@@ -244,48 +251,6 @@ export default function ChordPage({ song }: { song: Song }) {
                 <Link href={`/search?q=${encodeURIComponent(song.genre)}`}>{song.genre}</Link>
               </dd>
             </dl>
-          </div>
-
-          <div className="card">
-            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Chord yang dipakai ({chordList.length})
-            </h2>
-            <div className="keylist" style={{ marginBottom: "var(--s3)" }}>
-              {chordList.map((chord) => (
-                <span key={chord} className="badge">
-                  {chord}
-                </span>
-              ))}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "var(--s3)",
-                overflowX: "auto",
-                paddingBottom: "var(--s2)",
-                scrollbarWidth: "thin",
-              }}
-            >
-              {chordList.map((chord) => (
-                <figure
-                  key={chord}
-                  style={{
-                    margin: 0,
-                    textAlign: "center",
-                    flex: "0 0 110px",
-                    background: "var(--surface-2)",
-                    padding: "8px 4px",
-                    borderRadius: "6px",
-                    border: "1px solid var(--border)",
-                  }}
-                >
-                  <ChordDiagram chord={chord} size={100} />
-                  <figcaption className="caption" style={{ fontWeight: 600, marginTop: 4 }}>
-                    {chord}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
           </div>
 
           <div className="card">
