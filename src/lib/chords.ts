@@ -202,17 +202,25 @@ export function parseSheet(raw: string): SheetLine[] {
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
   if (!lines || semitones === 0) return lines || [];
-  return lines.map((line) =>
-    line.type === "line"
-      ? {
-          type: "line",
-          segments: line.segments.map((s) => ({
-            ...s,
-            chord: s.chord ? transposeChord(s.chord, semitones, preferFlat) : null,
-          })),
-        }
-      : line,
-  );
+  let inOriginalChord = false;
+  return lines.map((line) => {
+    if (line.type === "section" && /^original\s+chord$/i.test(line.label.trim())) {
+      inOriginalChord = true;
+      return line;
+    }
+    if (line.type === "section") {
+      inOriginalChord = false;
+      return line;
+    }
+    if (inOriginalChord || line.type !== "line") return line;
+    return {
+      type: "line",
+      segments: line.segments.map((s) => ({
+        ...s,
+        chord: s.chord ? transposeChord(s.chord, semitones, preferFlat) : null,
+      })),
+    };
+  });
 }
 
 export function uniqueChords(lines: SheetLine[]): string[] {
