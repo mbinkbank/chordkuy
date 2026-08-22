@@ -5,7 +5,7 @@ import ChordViewer from "../components/ChordViewer";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
-import { formatDate, formatViews, getRelatedSongs } from "../lib/api";
+import { formatDate, formatViews, getPopularSongs, getRelatedSongs } from "../lib/api";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
 import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
@@ -27,6 +27,7 @@ export default function ChordPage({ song }: { song: Song }) {
   const [speed, setSpeed] = useStoredState<number>("chordlab:scroll-speed", 3);
   const [lyricsOnly, setLyricsOnly] = useState(false);
   const [related, setRelated] = useState<Song[]>([]);
+  const [popular, setPopular] = useState<Song[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { playing, toggle, stop } = useAutoScroll(speed);
 
@@ -36,6 +37,7 @@ export default function ChordPage({ song }: { song: Song }) {
       setRelated(data);
     }
     loadRelated();
+    getPopularSongs(5).then(setPopular);
   }, [song]);
 
   const preferFlat = keyPrefersFlat(song.originalKey);
@@ -259,11 +261,17 @@ export default function ChordPage({ song }: { song: Song }) {
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
               Chord Populer
             </h2>
-            <div className="keylist">
-              {["C", "G", "D", "Em", "Am", "F", "A", "E", "Bm", "Dm"].map((chord) => (
-                <span key={chord} className="badge badge-sm">
-                  {chord}
-                </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {popular.filter((s) => s.id !== song.id).map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/chord/${s.slug}`}
+                  className="card"
+                  style={{ padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>{s.title}</span>
+                  <span className="caption" style={{ fontSize: 10 }}>{s.artist}</span>
+                </Link>
               ))}
             </div>
           </div>
