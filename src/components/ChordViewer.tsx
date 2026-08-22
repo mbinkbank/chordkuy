@@ -142,7 +142,7 @@ export default function ChordViewer({
   for (const [sectionIdx, contentIdxs] of sectionContent) {
     const secLine = filteredLines[sectionIdx];
     if (secLine?.type === "section" && isOriginalChord(secLine.label)) {
-      for (const idx of contentIdxs) lastSectionContent.add(idx);
+      lastSectionContent.add(sectionIdx);
     }
   }
 
@@ -188,7 +188,7 @@ export default function ChordViewer({
               return (
                 <h3
                   key={i}
-                  className="section-label"
+                  className={`section-label${lastSectionContent.has(i) ? " section-end" : ""}`}
                   role="button"
                   tabIndex={0}
                   aria-expanded={!isCollapsed}
