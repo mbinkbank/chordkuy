@@ -589,30 +589,30 @@ a.card:focus-visible {
 }
 .song-card .thumb {
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
   border-radius: var(--radius-badge);
   display: grid;
   place-items: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-soft);
   object-fit: cover;
 }
 .song-card .thumb svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 @media (min-width: 640px) {
   .song-card .thumb {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
   .song-card .thumb svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
   }
 }
 .song-card > span {
