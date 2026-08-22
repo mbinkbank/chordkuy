@@ -93,11 +93,13 @@ export default function ChordViewer({
     return hasLyricText(line);
   });
 
-  // Section content = consecutive chord-only lines after a section-label.
+  // Section content for spacing (chord-only lines after section-label).
+  // ORIGINAL CHORD: all following lines until next section are hideable content.
   const sectionContent = new Map<number, number[]>();
   const lastSectionContent = new Set<number>();
   let activeSection = -1;
   let skipSectionEnd = false;
+  let originalSection = -1;
   let lastChordIdx = -1;
   for (let i = 0; i < filteredLines.length; i++) {
     const line = filteredLines[i];
@@ -105,8 +107,12 @@ export default function ChordViewer({
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = i;
       skipSectionEnd = /^reff\b/i.test(line.label.trim());
+      originalSection = isOriginalChord(line.label) ? i : -1;
       sectionContent.set(i, []);
       lastChordIdx = -1;
+    } else if (originalSection >= 0) {
+      // Everything after ORIGINAL CHORD until next section is hideable
+      if (line.type !== "blank") sectionContent.get(originalSection)!.push(i);
     } else if (line.type === "blank" || hasLyricText(line)) {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = -1;
