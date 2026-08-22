@@ -144,7 +144,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className={playing ? "btn btn-sm btn-on" : "btn btn-sm"}
-                onClick={() => { toggle(); setSettingsOpen(true); }}
+                onClick={() => setSettingsOpen(true)}
               >
                 {playing ? "Pause" : "Auto Scroll"}
               </button>
