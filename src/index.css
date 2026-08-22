@@ -1086,6 +1086,22 @@ a.card:focus-visible {
   padding-bottom: 70px;
 }
 
+/* Detail lagu: show inline on mobile, sidebar on desktop */
+.detail-card-mobile {
+  display: block;
+}
+.detail-card-sidebar {
+  display: none;
+}
+@media (min-width: 1025px) {
+  .detail-card-mobile {
+    display: none;
+  }
+  .detail-card-sidebar {
+    display: block;
+  }
+}
+
 @media (max-width: 640px) {
   .sheet-toolbar {
     flex-wrap: nowrap;

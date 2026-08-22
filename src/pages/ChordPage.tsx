@@ -98,6 +98,48 @@ export default function ChordPage({ song }: { song: Song }) {
     ],
   });
 
+  const detailCard = (
+    <div className="card">
+      <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
+        Detail lagu
+      </h2>
+      <dl className="meta-list">
+        <dt>Artis</dt>
+        <dd>
+          <Link href={`/artist/${song.artistSlug}`}>{song.artist}</Link>
+        </dd>
+        <dt>Kunci asli</dt>
+        <dd>{song.originalKey}</dd>
+        <dt>Kunci kini</dt>
+        <dd className="accent">{currentKey}</dd>
+        <dt>Capo</dt>
+        <dd>{song.capo ? `Fret ${song.capo}` : "—"}</dd>
+        {song.tuning && (
+          <>
+            <dt>Tuning</dt>
+            <dd>{song.tuning}</dd>
+          </>
+        )}
+        {song.strumming && (
+          <>
+            <dt>Genjrengan</dt>
+            <dd>{song.strumming}</dd>
+          </>
+        )}
+        {song.duration && (
+          <>
+            <dt>Durasi</dt>
+            <dd>{song.duration}</dd>
+          </>
+        )}
+        <dt>Genre</dt>
+        <dd>
+          <Link href={`/search?q=${encodeURIComponent(song.genre)}`}>{song.genre}</Link>
+        </dd>
+      </dl>
+    </div>
+  );
+
   return (
     <main id="main" className="container">
       <Breadcrumb
@@ -196,6 +238,7 @@ export default function ChordPage({ song }: { song: Song }) {
           </section>
 
           <section className="section" aria-labelledby="related">
+            <div className="detail-card-mobile">{detailCard}</div>
             <div className="section-head">
               <h2 className="h-section" id="related">
                 Lagu terkait
@@ -217,44 +260,8 @@ export default function ChordPage({ song }: { song: Song }) {
         </article>
 
         <aside className="sidebar" aria-label="Informasi lagu">
-          <div className="card">
-            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Detail lagu
-            </h2>
-            <dl className="meta-list">
-              <dt>Artis</dt>
-              <dd>
-                <Link href={`/artist/${song.artistSlug}`}>{song.artist}</Link>
-              </dd>
-              <dt>Kunci asli</dt>
-              <dd>{song.originalKey}</dd>
-              <dt>Kunci kini</dt>
-              <dd className="accent">{currentKey}</dd>
-              <dt>Capo</dt>
-              <dd>{song.capo ? `Fret ${song.capo}` : "—"}</dd>
-              {song.tuning && (
-                <>
-                  <dt>Tuning</dt>
-                  <dd>{song.tuning}</dd>
-                </>
-              )}
-              {song.strumming && (
-                <>
-                  <dt>Genjrengan</dt>
-                  <dd>{song.strumming}</dd>
-                </>
-              )}
-              {song.duration && (
-                <>
-                  <dt>Durasi</dt>
-                  <dd>{song.duration}</dd>
-                </>
-              )}
-              <dt>Genre</dt>
-              <dd>
-                <Link href={`/search?q=${encodeURIComponent(song.genre)}`}>{song.genre}</Link>
-              </dd>
-            </dl>
+          <div className="detail-card-sidebar">
+            {detailCard}
           </div>
 
           <div className="card">
