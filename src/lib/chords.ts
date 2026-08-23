@@ -323,7 +323,16 @@ export function parseSheet(raw: string): SheetLine[] {
     }
   }
 
-  return result;
+  // Pastikan ada blank line sebelum setiap section label
+  const spaced: SheetLine[] = [];
+  for (const l of result) {
+    if (l.type === "section" && spaced.length > 0 && spaced[spaced.length - 1].type !== "blank") {
+      spaced.push({ type: "blank" });
+    }
+    spaced.push(l);
+  }
+
+  return spaced;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
