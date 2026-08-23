@@ -154,7 +154,6 @@ export default function ChordPage({ song }: { song: Song }) {
       <div className="chord-layout">
         <article>
           <header className="stack stack-3" style={{ paddingBottom: "var(--s4)" }}>
-            <p className="eyebrow">Chord gitar · {song.genre}</p>
             <h1 className="h-page">
               Chord Gitar {song.title}
               <span className="muted" style={{ fontWeight: 400 }}>
@@ -170,9 +169,6 @@ export default function ChordPage({ song }: { song: Song }) {
               </span>
               {song.difficulty && <span className="badge badge-muted">{song.difficulty}</span>}
               {song.tempo && <span className="badge badge-muted">{song.tempo} BPM</span>}
-              <Link className="badge badge-muted" href={`/artist/${song.artistSlug}`}>
-                Semua lagu {song.artist} →
-              </Link>
             </div>
 
             <div className="row">
