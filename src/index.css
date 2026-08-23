@@ -429,6 +429,15 @@ a:focus-visible {
   display: block;
   min-width: 0;
 }
+.logo-dark {
+  display: none;
+}
+[data-theme="dark"] .logo-light {
+  display: none;
+}
+[data-theme="dark"] .logo-dark {
+  display: block;
+}
 @media (min-width: 861px) {
   .brand-logo {
     max-width: 30%;

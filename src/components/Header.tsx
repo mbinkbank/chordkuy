@@ -16,7 +16,8 @@ export default function Header() {
       <div className="container">
         <div className="header-inner">
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
-            <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo" />
+            <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo logo-light" />
+            <img src="/chordkuy-logodark.svg" alt="Chordkuy" className="brand-logo logo-dark" />
           </Link>
 
           <nav className="nav" aria-label="Navigasi utama">
