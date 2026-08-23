@@ -94,8 +94,8 @@ export type SheetLine =
  * preserving exact spaces, labels like (3x), and punctuation.
  */
 function parseLineInplace(lineStr: string): Segment[] {
-  // Strip U+FFFD replacement chars (encoding artifacts from scraping)
-  lineStr = lineStr.replace(/\uFFFD/g, "");
+  // Replace U+FFFD replacement chars with space (encoding artifacts from scraping)
+  lineStr = lineStr.replace(/\uFFFD/g, " ");
   const segments: Segment[] = [];
   // Regex presisi untuk menangkap chord lengkap termasuk slash chord (seperti -D/F# atau D/F#)
   const regex = /(?:^|\s|-)\K([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?)/g;
