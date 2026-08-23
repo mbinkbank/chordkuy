@@ -206,14 +206,24 @@ export function parseSheet(raw: string): SheetLine[] {
   // 2. lirik huruf -> blank -> chord-only: HAPUS blank
   // 3. apa pun -> blank -> marker seperti (*), (**): SIMPAN blank
   const isChordOnlyLine = (l?: SheetLine) =>
-    !!l && l.type === "line" && l.segments.every((s) => !s.text || !s.text.trim());
+    !!l &&
+    l.type === "line" &&
+    l.segments.every((s) => {
+      const t = s.text?.trim();
+      return !t || /^\(\d+x?\)$/i.test(t) || /^\.+$/.test(t);
+    });
   const isMarkerLine = (l?: SheetLine) => {
     if (!l || l.type !== "line") return false;
     const t = l.segments.map((s) => s.chord ?? s.text ?? "").join("").trim();
     return /^\(\*+\)$/.test(t);
   };
   const isLyricsLine = (l?: SheetLine) =>
-    !!l && l.type === "line" && l.segments.some((s) => s.text && s.text.trim());
+    !!l &&
+    l.type === "line" &&
+    l.segments.some((s) => {
+      const t = s.text?.trim();
+      return !!t && !/^\(\d+x?\)$/i.test(t) && !/^\.+$/.test(t);
+    });
 
   const cleaned: SheetLine[] = [];
   for (let i = 0; i < out.length; i++) {
@@ -241,24 +251,25 @@ export function parseSheet(raw: string): SheetLine[] {
   }
 
   // Tambahkan blank di akhir section instrumental (Intro/Musik/Outro/Solo/Interlude):
-  // setelah run baris chord-only berikut label, sebelum konten pertama yang bukan chord.
-  const isChordOnlyRunLine = (l?: SheetLine) =>
-    !!l &&
-    l.type === "line" &&
-    l.segments.every((s) => {
-      const t = s.text?.trim();
-      return !t || /^\(\d+x?\)$/i.test(t);
-    });
+  // setelah run baris chord-only berikut label, sebelum pasangan chord+lirik pertama.
   const result: SheetLine[] = [];
   for (let i = 0; i < cleaned.length; ) {
     const cur = cleaned[i];
     result.push(cur);
     if (cur.type === "section" && INTRO_LIKE_RE.test(cur.label.trim())) {
       let j = i + 1;
-      while (j < cleaned.length && isChordOnlyRunLine(cleaned[j])) j++;
+      while (j < cleaned.length && cleaned[j].type === "blank") j++;
+      while (
+        j < cleaned.length &&
+        isChordOnlyLine(cleaned[j]) &&
+        !(j + 1 < cleaned.length && isLyricsLine(cleaned[j + 1]) && !isMarkerLine(cleaned[j + 1]))
+      )
+        j++;
       const stop = cleaned[j];
       if (stop && stop.type === "line" && !isMarkerLine(stop)) {
-        for (let k = i + 1; k < j; k++) result.push(cleaned[k]);
+        for (let k = i + 1; k < j; k++) {
+          if (cleaned[k].type !== "blank") result.push(cleaned[k]);
+        }
         if (result[result.length - 1]?.type !== "blank") result.push({ type: "blank" });
         i = j;
         continue;
