@@ -15,7 +15,7 @@ function extractChords(content: string): string[] {
   return matches ? Array.from(new Set(matches)) : [];
 }
 
-export export function mapDbRowToSong(row: any): Song {
+export function mapDbRowToSong(row: any): Song {
   const title = row.title || "Untitled";
   const artist = row.artist || "Unknown Artist";
   const slug = `${slugify(artist)}-${slugify(title)}`;
