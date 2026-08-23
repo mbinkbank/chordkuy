@@ -112,7 +112,9 @@ export default function ChordViewer({
       skipSectionEnd = /^reff\b/i.test(line.label.trim());
       sectionContent.set(i, []);
       lastChordIdx = -1;
-    } else if (line.type === "blank" || hasLyricText(line)) {
+    } else if (line.type === "blank") {
+      // blank lines within section: skip, don't break section tracking
+    } else if (hasLyricText(line)) {
       if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = -1;
       skipSectionEnd = false;
