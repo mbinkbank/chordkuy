@@ -158,8 +158,8 @@ export function parseSheet(raw: string): SheetLine[] {
     // Decorative separator lines (---- / ====) — skip entirely
     if (/^[-_=]+$/.test(trimmed)) continue;
 
-    // ===ORIGINAL CHORD=== or ORIGINAL CHORD → clean section label
-    const originalChord = trimmed.replace(/[=_-]+/g, " ").replace(/\s+/g, " ").trim();
+    // ===ORIGINAL CHORD=== / [[ORIGINAL CHORD]] / ---- ORIGINAL CHORD---- → clean section label
+    const originalChord = trimmed.replace(/[\[\]()=_-]+/g, " ").replace(/\s+/g, " ").trim();
     if (/^original\s+chord$/i.test(originalChord)) {
       out.push({ type: "section", label: "ORIGINAL CHORD" });
       inSection = true;
