@@ -113,17 +113,11 @@ export default function ChordViewer({
       sectionContent.set(i, []);
       lastChordIdx = -1;
     } else if (line.type === "blank") {
-      // blank lines within section: skip, don't break section tracking
-    } else if (hasLyricText(line)) {
-      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
-      activeSection = -1;
-      skipSectionEnd = false;
-      lastChordIdx = -1;
-    } else if (activeSection >= 0 && isChordOnly(line)) {
+      // skip blank lines
+    } else if (isChordOnly(line) && activeSection >= 0) {
       sectionContent.get(activeSection)!.push(i);
       lastChordIdx = i;
     } else {
-      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
       activeSection = -1;
       skipSectionEnd = false;
       lastChordIdx = -1;
