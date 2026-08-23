@@ -201,7 +201,7 @@ export function parseSheet(raw: string): SheetLine[] {
 
   // Aturan blank line:
   // 1. chord-only -> blank -> lirik huruf: HAPUS blank
-  // 2. apa pun -> blank -> chord-only: SIMPAN blank
+  // 2. lirik huruf -> blank -> chord-only: HAPUS blank
   // 3. apa pun -> blank -> marker seperti (*), (**): SIMPAN blank
   const isChordOnlyLine = (l?: SheetLine) =>
     !!l && l.type === "line" && l.segments.every((s) => !s.text || !s.text.trim());
@@ -225,7 +225,11 @@ export function parseSheet(raw: string): SheetLine[] {
       for (let j = i + 1; j < out.length; j++) {
         if (out[j].type !== "blank") { next = out[j]; break; }
       }
-      if (isChordOnlyLine(prev) && isLyricsLine(next) && !isMarkerLine(next)) continue;
+      const remove =
+        !isMarkerLine(next) &&
+        ((isChordOnlyLine(prev) && isLyricsLine(next)) ||
+          (isLyricsLine(prev) && !isMarkerLine(prev) && isChordOnlyLine(next)));
+      if (remove) continue;
       if (cleaned.length > 0 && cleaned[cleaned.length - 1].type === "blank") continue;
       cleaned.push(line);
       continue;
