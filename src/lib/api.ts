@@ -98,7 +98,7 @@ export async function getRecentSongs(limit = 6): Promise<Song[]> {
   }
 }
 
-export const RECENT_PER_PAGE = 50;
+export const RECENT_PER_PAGE = 6;
 
 export async function getRecentSongsPage(
   page: number,
