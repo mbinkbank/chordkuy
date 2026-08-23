@@ -1,43 +1,50 @@
+import { NextRequest } from "next/server";
 import { db } from "@/db";
-import { bad, ok } from "@/lib/api-response";
+import { tbChord } from "@/db/schema";
+import { sql, ne } from "drizzle-orm";
+import { successResponse, errorResponse } from "@/lib/api-response";
+import { format } from "date-fns";
 
-export async function GET() {
-  const { count: songCount, error: e1 } = await db
-    .from("chords")
-    .select("id", { count: "exact", head: true });
-  if (e1) return bad(e1.message, 500);
+export async function GET(_request: NextRequest) {
+  try {
+    const currentMonth = format(new Date(), "yyyy-MM");
 
-  const langRes = await db.from("chords").select("language");
-  if (langRes.error) return bad(langRes.error.message, 500);
-  const langCount: Record<string, number> = { ID: 0, EN: 0 };
-  for (const r of langRes.data || []) {
-    const k = (r.language || "ID") === "EN" ? "EN" : "ID";
-    langCount[k] = (langCount[k] || 0) + 1;
+    const [totalSongs] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(tbChord);
+
+    const [totalAlbums] = await db
+      .select({ count: sql<number>`count(distinct album)::int` })
+      .from(tbChord)
+      .where(ne(tbChord.album, ""));
+
+    const [newThisMonth] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(tbChord)
+      .where(sql`lastmod LIKE ${currentMonth + "%"}`);
+
+    const lastUpdated = await db
+      .select({
+        judul: tbChord.judul,
+        penyanyi: tbChord.penyanyi,
+        lastmod: tbChord.lastmod,
+        album: tbChord.album,
+      })
+      .from(tbChord)
+      .orderBy(sql`lastmod DESC`)
+      .limit(1);
+
+    return successResponse(
+      {
+        total_songs: Number(totalSongs?.count ?? 0),
+        total_albums: Number(totalAlbums?.count ?? 0),
+        new_this_month: Number(newThisMonth?.count ?? 0),
+        last_updated: lastUpdated[0] || null,
+      },
+      "Berhasil"
+    );
+  } catch (error) {
+    console.error("GET /api/dashboard/stats error:", error);
+    return errorResponse("Terjadi kesalahan server", 500);
   }
-
-  const artistsRes = await db.from("chords").select("artist");
-  if (artistsRes.error) return bad(artistsRes.error.message, 500);
-  const artistSet = new Set((artistsRes.data || []).map((r) => r.artist));
-
-  const topRes = await db
-    .from("chords")
-    .select("id,title,artist,rating")
-    .order("rating", { ascending: false, nullsFirst: false })
-    .limit(5);
-  if (topRes.error) return bad(topRes.error.message, 500);
-  const topRated = topRes.data || [];
-
-  return ok({
-    songCount: songCount ?? 0,
-    artistCount: artistSet.size,
-    avgRating:
-      topRated.length > 0
-        ? Number((topRated.reduce((a: number, r: any) => a + (Number(r.rating) || 0), 0) / topRated.length).toFixed(2))
-        : null,
-    languageStats: [
-      { name: "Indonesia", code: "ID", count: langCount.ID },
-      { name: "English", code: "EN", count: langCount.EN },
-    ],
-    topRated,
-  });
 }

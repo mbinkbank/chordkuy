@@ -1,18 +1,24 @@
-import { createClient } from "@supabase/supabase-js";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
-/**
- * Client server-only dengan service role (melewati RLS).
- * Lazy init supaya build tidak error saat env belum tersedia.
- */
-const url = process.env.SUPABASE_URL || "https://tbpdopmbvuhxjktuwsej.supabase.co";
-const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const databaseUrl = process.env.DATABASE_URL;
 
-let client: ReturnType<typeof createClient> | null = null;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is required");
+}
 
-export const db = new Proxy({} as ReturnType<typeof createClient>, {
-  get(_target, prop) {
-    if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY belum diset di environment");
-    if (!client) client = createClient(url, key);
-    return (client as any)[prop];
-  },
-});
+const globalForDb = globalThis as typeof globalThis & {
+  __arenaNextJsPostgresqlPool?: Pool;
+};
+
+export const pool =
+  globalForDb.__arenaNextJsPostgresqlPool ??
+  new Pool({
+    connectionString: databaseUrl,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForDb.__arenaNextJsPostgresqlPool = pool;
+}
+
+export const db = drizzle(pool);

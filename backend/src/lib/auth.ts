@@ -1,32 +1,55 @@
 import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
+import bcrypt from "bcryptjs";
 
-const secret = new TextEncoder().encode(
-  process.env.AUTH_SECRET || "dev-secret-ganti-di-produksi-minimal-32-karakter",
-);
+const JWT_SECRET = process.env.JWT_SECRET || "chordku-secret-key-change-in-production";
+const secret = new TextEncoder().encode(JWT_SECRET);
 
-export const COOKIE_NAME = "ck_token";
+export interface JWTPayload {
+  userId: string;
+  email: string;
+  name: string;
+  role: string;
+}
 
-export async function createToken(email: string): Promise<string> {
-  return new SignJWT({ email })
+export async function signToken(payload: JWTPayload): Promise<string> {
+  return await new SignJWT(payload as unknown as Record<string, unknown>)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(secret);
 }
 
-export async function verifyToken(token: string | undefined): Promise<{ email: string } | null> {
-  if (!token) return null;
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload as { email: string };
+    return payload as unknown as JWTPayload;
   } catch {
     return null;
   }
 }
 
-/** Cek kredensial terhadap environment variable. */
-export function checkCredentials(email: string, password: string): boolean {
-  const e = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const p = process.env.ADMIN_PASSWORD || "";
-  return e.length > 0 && p.length > 0 && email.trim().toLowerCase() === e && password === p;
+export async function getAuthUser(): Promise<JWTPayload | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  if (!token) return null;
+  return verifyToken(token);
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, 12);
+}
+
+export async function comparePassword(
+  password: string,
+  hash: string
+): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
+
+export function getTokenFromHeader(
+  authHeader: string | null
+): string | null {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+  return authHeader.slice(7);
 }

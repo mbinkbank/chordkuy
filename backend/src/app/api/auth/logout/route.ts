@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
-import { COOKIE_NAME } from "@/lib/auth";
-import { ok } from "@/lib/api-response";
+import { NextRequest } from "next/server";
+import { successResponse } from "@/lib/api-response";
+import { cookies } from "next/headers";
 
-export async function POST() {
-  const res = ok({ loggedOut: true });
-  res.cookies.set(COOKIE_NAME, "", { maxAge: 0, path: "/" });
-  return res;
+export async function POST(_request: NextRequest) {
+  const cookieStore = await cookies();
+  cookieStore.delete("auth_token");
+  return successResponse(null, "Logout berhasil");
 }
