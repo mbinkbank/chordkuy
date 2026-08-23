@@ -1199,10 +1199,6 @@ a.card:focus-visible {
 .sheet .section-label:first-child {
   margin-top: 0;
 }
-.line.section-end,
-.section-label.section-end {
-  margin-bottom: 1.2em;
-}
 .line {
   white-space: pre-wrap;
   word-break: break-word;

@@ -85,9 +85,6 @@ export default function ChordViewer({
       return true;
     });
 
-  const isChordOnly = (line: SheetLine) =>
-    line.type === "line" && !hasLyricText(line);
-
   const isOriginalChord = (label: string) => /^original\s+chord$/i.test(label.trim());
 
   const filteredLines = (lines || []).filter((line) => {
@@ -97,33 +94,7 @@ export default function ChordViewer({
     return hasLyricText(line);
   });
 
-  // Section content: chord-only lines right after a section-label, until lyrics/blank/next section.
-  const sectionContent = new Map<number, number[]>();
-  const lastSectionContent = new Set<number>();
-  let activeSection = -1;
-  let skipSectionEnd = false;
-  let lastChordIdx = -1;
-  for (let i = 0; i < filteredLines.length; i++) {
-    const line = filteredLines[i];
 
-    if (line.type === "section") {
-      if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
-      activeSection = i;
-      skipSectionEnd = /^reff\b/i.test(line.label.trim());
-      sectionContent.set(i, []);
-      lastChordIdx = -1;
-    } else if (line.type === "blank") {
-      // skip blank lines
-    } else if (isChordOnly(line) && activeSection >= 0) {
-      sectionContent.get(activeSection)!.push(i);
-      lastChordIdx = i;
-    } else {
-      activeSection = -1;
-      skipSectionEnd = false;
-      lastChordIdx = -1;
-    }
-  }
-  if (lastChordIdx >= 0 && !skipSectionEnd) lastSectionContent.add(lastChordIdx);
 
   return (
     <>
@@ -148,7 +119,7 @@ export default function ChordViewer({
           }
 
           return (
-            <div key={i} className={`line${lastSectionContent.has(i) ? " section-end" : ""}`}>
+            <div key={i} className="line">
               {line.segments.map((seg, j) => {
                 if (lyricsOnly && seg.chord) return null;
                 if (seg.chord) {
