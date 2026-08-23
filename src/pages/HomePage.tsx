@@ -64,6 +64,22 @@ export default function HomePage() {
   return (
     <>
       <section className="hero">
+        <div className="hero-aurora" aria-hidden="true">
+          <span className="blob blob-a" />
+          <span className="blob blob-b" />
+          <span className="blob blob-c" />
+        </div>
+        <div className="eq-bars" aria-hidden="true">
+          {Array.from({ length: 40 }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                animationDelay: `${((i * 13) % 17) * -0.11}s`,
+                animationDuration: `${0.8 + ((i * 7) % 11) / 12}s`,
+              }}
+            />
+          ))}
+        </div>
         <div className="container text-center" style={{ maxWidth: "680px", margin: "0 auto" }}>
           <div className="stack stack-4" style={{ alignItems: "center" }}>
             <h1 className="h-display" style={{ textAlign: "center" }}>
