@@ -1189,7 +1189,7 @@ a.card:focus-visible {
 .sheet .section-label {
   display: block;
   margin-bottom: 0;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--section-color);
