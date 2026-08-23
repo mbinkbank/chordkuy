@@ -11,7 +11,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -169,6 +169,12 @@ export default function ChordPage({ song }: { song: Song }) {
               </span>
               {song.difficulty && <span className="badge badge-muted">{song.difficulty}</span>}
               {song.tempo && <span className="badge badge-muted">{song.tempo} BPM</span>}
+              <span className="badge badge-muted rating-badge">
+                <Star size={12} strokeWidth={2.2} aria-hidden="true" /> {(song.rating ?? 4.8).toFixed(1)}
+              </span>
+              <span className="badge badge-muted">
+                {song.language === "EN" ? "English" : "Indonesia"}
+              </span>
             </div>
 
             <div className="row">

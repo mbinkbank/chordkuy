@@ -41,6 +41,7 @@ export interface Song {
   duration?: string;
   views?: number;
   rating?: number;
+  language?: string;
 }
 
 export interface Artist {
