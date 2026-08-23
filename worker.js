@@ -29,7 +29,9 @@ export default {
     }
 
     if (url.pathname === "/api/scrape-fetch") {
-      if (!env.SCRAPER_TOKEN || request.headers.get("x-scraper-token") !== env.SCRAPER_TOKEN) {
+      const sent = (request.headers.get("x-scraper-token") || "").trim();
+      const expected = (env.SCRAPER_TOKEN || "").trim();
+      if (!expected || sent !== expected) {
         return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
       }
       const target = url.searchParams.get("url");
