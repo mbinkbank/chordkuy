@@ -945,7 +945,7 @@ a.card:focus-visible {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: min(100%, 680px);
+  width: min(100%, var(--maxw));
   display: flex;
   align-items: flex-end;
   gap: 3px;
