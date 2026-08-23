@@ -15,7 +15,7 @@ function extractChords(content: string): string[] {
   return matches ? Array.from(new Set(matches)) : [];
 }
 
-export function mapDbRowToSong(row: any): Song {
+export export function mapDbRowToSong(row: any): Song {
   const title = row.title || "Untitled";
   const artist = row.artist || "Unknown Artist";
   const slug = `${slugify(artist)}-${slugify(title)}`;
@@ -108,7 +108,9 @@ export async function getRecentSongsPage(
     const from = (page - 1) * perPage;
     const { data, error, count } = await supabase
       .from("chords")
-      .select("*", { count: "exact" })
+      .select("id,title,artist,key_name,capo,tuning,difficulty", {
+        count: "exact",
+      })
       .order("id", { ascending: false })
       .range(from, from + perPage - 1);
     if (error || !data) return { songs: [], total: 0 };

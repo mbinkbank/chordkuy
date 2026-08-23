@@ -3,19 +3,35 @@ import ArtistCard from "../components/ArtistCard";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
 import { ListMusic } from "lucide-react";
-import type { Artist, Genre, Song } from "../data/types";
+import type { Artist, Song } from "../data/types";
+import buildData from "../data/build-data.json";
 import {
   formatDate,
-  getGenres,
-  getPopularArtists,
-  getPopularSongs,
   getRecentSongsPage,
-  getStats,
+  mapDbRowToSong,
   RECENT_PER_PAGE,
 } from "../lib/api";
 import { Link, useRoute } from "../lib/router";
 import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
+
+const BAKED_POPULAR: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong);
+const BAKED_ARTISTS: Artist[] = ((buildData.artistNames as string[]) || []).map((name) => ({
+  id: name,
+  name,
+  slug: name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, ""),
+  bio: `Kumpulan chord gitar dari ${name}.`,
+  country: "Indonesia",
+  genres: ["Pop"],
+  thumbnail: null,
+  createdAt: new Date().toISOString(),
+}));
+const BAKED_RECENT: Song[] = (buildData.recentRows as any[]).map(mapDbRowToSong);
 
 function pageNumbers(current: number, total: number): (number | "…")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
@@ -39,40 +55,19 @@ export default function HomePage() {
   const route = useRoute();
   const pageParam = parseInt(new URLSearchParams(route.search).get("page") || "1", 10);
   const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
-  const [popular, setPopular] = useState<Song[]>([]);
-  const [recent, setRecent] = useState<Song[]>([]);
-  const [recentTotal, setRecentTotal] = useState(0);
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [stats, setStats] = useState({ songCount: 0, artistCount: 0, genreCount: 0 });
-  const [loading, setLoading] = useState(true);
-  const [loadingRecent, setLoadingRecent] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [popular] = useState<Song[]>(BAKED_POPULAR);
+  const [artists] = useState<Artist[]>(BAKED_ARTISTS);
+  const [recent, setRecent] = useState<Song[]>(page === 1 ? BAKED_RECENT : []);
+  const [recentTotal, setRecentTotal] = useState<number>(buildData.songCount);
+  const [loadingRecent, setLoadingRecent] = useState(page !== 1);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const [popData, artData, genData, statData] = await Promise.all([
-          getPopularSongs(8),
-          getPopularArtists(6),
-          getGenres(),
-          getStats(),
-        ]);
-        setPopular(popData || []);
-        setArtists(artData || []);
-        setGenres(genData || []);
-        setStats(statData || { songCount: 0, artistCount: 0, genreCount: 0 });
-      } catch (err: any) {
-        console.error("Failed to load home page data:", err);
-        setErrorMsg(String(err?.message || err));
-      } finally {
-        setLoading(false);
-      }
+    if (page === 1) {
+      setRecent(BAKED_RECENT);
+      setRecentTotal(buildData.songCount);
+      setLoadingRecent(false);
+      return;
     }
-    loadData();
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
     setLoadingRecent(true);
     getRecentSongsPage(page)
@@ -144,12 +139,6 @@ export default function HomePage() {
       </section>
 
       <main id="main">
-        {errorMsg && (
-          <div className="container" style={{ padding: "20px 0", color: "#ff6b6b" }}>
-            Error memuat data: {errorMsg}
-          </div>
-        )}
-
         <section className="container section" aria-labelledby="popular-songs">
           <div className="section-head">
             <h2 className="h-section" id="popular-songs">
@@ -159,9 +148,7 @@ export default function HomePage() {
               Lihat semua →
             </Link>
           </div>
-          {loading ? (
-            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu...</p>
-          ) : popular.length === 0 ? (
+          {popular.length === 0 ? (
             <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Belum ada lagu tersedia.</p>
           ) : (
             <div className="grid grid-auto">
@@ -181,15 +168,11 @@ export default function HomePage() {
               Semua artis →
             </Link>
           </div>
-          {loading ? (
-            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat artis...</p>
-          ) : (
-            <div className="grid grid-auto">
-              {artists.map((artist) => (
-                <ArtistCard key={artist.id} artist={artist} />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-auto">
+            {artists.map((artist) => (
+              <ArtistCard key={artist.id} artist={artist} />
+            ))}
+          </div>
         </section>
 
         <section className="container section" aria-labelledby="recent">
