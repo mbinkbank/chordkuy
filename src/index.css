@@ -1190,6 +1190,7 @@ a.card:focus-visible {
   display: block;
   margin-bottom: 0;
   font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--section-color);
