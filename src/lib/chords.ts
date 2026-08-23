@@ -199,30 +199,8 @@ export function parseSheet(raw: string): SheetLine[] {
     out.push({ type: "line", segments: parseLineInplace(lineToParse) });
   }
 
-  // Post-process: remove blank lines between chord-only and lyrics, collapse multiple blanks to 1
-  const cleaned: SheetLine[] = [];
-  for (let i = 0; i < out.length; i++) {
-    const line = out[i];
-    if (line.type !== "blank") {
-      cleaned.push(line);
-      continue;
-    }
-    let nextNonBlank: SheetLine | null = null;
-    for (let j = i + 1; j < out.length; j++) {
-      if (out[j].type !== "blank") { nextNonBlank = out[j]; break; }
-    }
-    let prevNonBlank: SheetLine | null = null;
-    for (let j = cleaned.length - 1; j >= 0; j--) {
-      if (cleaned[j].type !== "blank") { prevNonBlank = cleaned[j]; break; }
-    }
-    const isChord = (l: SheetLine | null) => l?.type === "line" && l.segments.every(s => !s.text?.trim());
-    const isLyrics = (l: SheetLine | null) => l?.type === "line" && l.segments.some(s => s.text?.trim());
-    if ((isChord(prevNonBlank) && isLyrics(nextNonBlank)) || (isLyrics(prevNonBlank) && isChord(nextNonBlank))) continue;
-    if (cleaned.length > 0 && cleaned[cleaned.length - 1].type === "blank") continue;
-    cleaned.push(line);
-  }
-
-  return cleaned;
+  // Remove all blank lines — chord/lyrics/sections flow directly
+  return out.filter((line) => line.type !== "blank");
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
