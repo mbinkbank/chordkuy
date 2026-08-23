@@ -199,7 +199,8 @@ export function parseSheet(raw: string): SheetLine[] {
     out.push({ type: "line", segments: parseLineInplace(lineToParse) });
   }
 
-  return out;
+  // Collapse consecutive blank lines to max 1
+  return out.filter((line, i) => line.type !== "blank" || out[i - 1]?.type !== "blank");
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
