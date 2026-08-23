@@ -424,7 +424,7 @@ a:focus-visible {
   color: var(--accent);
 }
 .brand-logo {
-  max-width: 60%;
+  max-width: 65%;
   height: auto;
   display: block;
   min-width: 0;
