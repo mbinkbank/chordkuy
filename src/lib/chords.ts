@@ -290,6 +290,37 @@ export function parseSheet(raw: string): SheetLine[] {
     i++;
   }
 
+  // Hapus indentasi berlebih per blok: kurangi prefix spasi yang SAMA di semua baris
+  // blok, sehingga posisi chord relatif terhadap lirik tidak berubah.
+  const indentOf = (l: SheetLine) => {
+    if (l.type !== "line") return 0;
+    const first = l.segments[0];
+    if (!first || first.chord || !first.text) return 0;
+    const m = /^ +/.exec(first.text);
+    return m ? m[0].length : 0;
+  };
+  let blockStart = -1;
+  for (let i = 0; i <= result.length; i++) {
+    const line = result[i];
+    const inBlock = line && line.type === "line";
+    if (inBlock && blockStart < 0) blockStart = i;
+    if (!inBlock && blockStart >= 0) {
+      const minIndent = Math.min(
+        ...result.slice(blockStart, i).map(indentOf),
+      );
+      if (minIndent > 0) {
+        for (let k = blockStart; k < i; k++) {
+          const l = result[k];
+          const first = l.segments[0];
+          if (first && !first.chord && first.text) {
+            result[k] = { ...l, segments: [{ ...first, text: first.text.slice(minIndent) }, ...l.segments.slice(1)] };
+          }
+        }
+      }
+      blockStart = -1;
+    }
+  }
+
   return result;
 }
 
