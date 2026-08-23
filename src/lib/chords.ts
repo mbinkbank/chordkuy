@@ -237,7 +237,23 @@ export function parseSheet(raw: string): SheetLine[] {
     cleaned.push(line);
   }
 
-  return cleaned;
+  // Tambahkan blank di atas chord-only yang langsung diikuti lirik
+  const result: SheetLine[] = [];
+  for (let i = 0; i < cleaned.length; i++) {
+    const cur = cleaned[i];
+    const nextLine = cleaned[i + 1];
+    if (
+      isChordOnlyLine(cur) &&
+      isLyricsLine(nextLine) &&
+      !isMarkerLine(nextLine) &&
+      result[result.length - 1]?.type !== "blank"
+    ) {
+      result.push({ type: "blank" });
+    }
+    result.push(cur);
+  }
+
+  return result;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
