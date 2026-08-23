@@ -268,7 +268,19 @@ export function parseSheet(raw: string): SheetLine[] {
       const stop = cleaned[j];
       if (stop && stop.type === "line" && !isMarkerLine(stop)) {
         for (let k = i + 1; k < j; k++) {
-          if (cleaned[k].type !== "blank") result.push(cleaned[k]);
+          const l = cleaned[k];
+          if (l.type !== "blank") {
+            // hilangkan spasi awal pada baris chord run (indentasi dari data mentah)
+            const first = l.segments[0];
+            if (first && !first.chord && first.text?.startsWith(" ")) {
+              result.push({
+                ...l,
+                segments: [{ ...first, text: first.text.replace(/^\s+/, "") }, ...l.segments.slice(1)],
+              });
+            } else {
+              result.push(l);
+            }
+          }
         }
         if (result[result.length - 1]?.type !== "blank") result.push({ type: "blank" });
         i = j;
