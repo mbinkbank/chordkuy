@@ -40,6 +40,7 @@ export interface Song {
   tuning?: string;
   duration?: string;
   views?: number;
+  rating?: number;
 }
 
 export interface Artist {

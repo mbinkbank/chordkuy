@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import ArtistCard from "../components/ArtistCard";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
-import { ListMusic } from "lucide-react";
+import { ListMusic, Star } from "lucide-react";
 import type { Artist, Song } from "../data/types";
 import buildData from "../data/build-data.json";
 import {
-  formatDate,
   getRecentSongsPage,
   mapDbRowToSong,
   RECENT_PER_PAGE,
@@ -204,7 +203,10 @@ export default function HomePage() {
                         {song.artist} · {song.genre}
                       </span>
                     </span>
-                    <span className="meta">{formatDate(song.createdAt)}</span>
+                    <span className="meta rating">
+                      <Star size={13} strokeWidth={2.2} aria-hidden="true" />
+                      {(song.rating ?? 4.8).toFixed(1)}
+                    </span>
                   </Link>
                 ))}
               </div>

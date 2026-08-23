@@ -1652,3 +1652,11 @@ a.card:focus-visible {
     color: #000;
   }
 }
+
+.meta.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #f59e0b;
+  font-weight: 600;
+}

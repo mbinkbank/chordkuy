@@ -49,6 +49,7 @@ export function mapDbRowToSong(row: any): Song {
     difficulty,
     tuning: row.tuning || "E A D G B E",
     views: 100 + (row.id * 7) % 500,
+    rating: typeof row.rating === "number" ? row.rating : undefined,
   };
 }
 
@@ -108,7 +109,7 @@ export async function getRecentSongsPage(
     const from = (page - 1) * perPage;
     const { data, error, count } = await supabase
       .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty", {
+      .select("id,title,artist,key_name,capo,tuning,difficulty,rating", {
         count: "exact",
       })
       .order("id", { ascending: false })
