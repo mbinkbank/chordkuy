@@ -10,7 +10,7 @@ const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRicGRvcG1idnVoeGprdHV3c2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzA1OTUsImV4cCI6MjEwMjU0NjU5NX0.bFxR8c-n67bRTRT6E4InnIjUXAVTs4erVHVZSi-0q60";
 
 const COLS = "id,title,artist,key_name,capo,tuning,difficulty";
-const PER_PAGE = 50;
+const PER_PAGE = 10;
 
 async function main() {
   console.log("Fetching build data...");
