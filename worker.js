@@ -28,6 +28,28 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/scrape-fetch") {
+      if (!env.SCRAPER_TOKEN || request.headers.get("x-scraper-token") !== env.SCRAPER_TOKEN) {
+        return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
+      }
+      const target = url.searchParams.get("url");
+      if (!target || !target.startsWith("https://www.chordtela.com")) {
+        return new Response(JSON.stringify({ error: "url param required" }), { status: 400 });
+      }
+      const upstream = await fetch(target, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+          "Accept-Language": "id-ID,id;q=0.9",
+        },
+        redirect: "follow",
+      });
+      const body = await upstream.text();
+      return new Response(JSON.stringify({ status: upstream.status, body }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     return env.ASSETS.fetch(request);
   },
 };

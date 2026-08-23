@@ -249,8 +249,25 @@ def format_content(raw_text: str) -> str:
 supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
 
 
+PROXY_BASE = os.getenv("SCRAPE_PROXY_URL", "").rstrip("/")
+SCRAPER_TOKEN = os.getenv("SCRAPE_PROXY_TOKEN", "")
+
+
 def fetch(url: str) -> bytes:
     print(f"[GET] {url}", flush=True)
+    if PROXY_BASE:
+        import json as _json
+        import urllib.parse
+        import urllib.request
+
+        endpoint = f"{PROXY_BASE}/api/scrape-fetch?url={urllib.parse.quote(url, safe='')}"
+        req = urllib.request.Request(endpoint, headers={"x-scraper-token": SCRAPER_TOKEN})
+        with urllib.request.urlopen(req, timeout=90) as r:
+            data = _json.loads(r.read())
+        if data.get("status") != 200:
+            raise RuntimeError(f"HTTP {data['status']} via proxy untuk {url}")
+        time.sleep(random.uniform(DELAY_MIN, DELAY_MAX))
+        return data["body"].encode()
     res = subprocess.run(
         ["curl", "-s", "-L", "-A", USER_AGENT, url],
         capture_output=True,
