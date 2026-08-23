@@ -27,13 +27,3 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Trigger Cloudflare Pages rebuild
-        env:
-          PAGES_HOOK: ${{ secrets.PAGES_DEPLOY_HOOK_URL }}
-        run: |
-          if [ -n "$PAGES_HOOK" ]; then
-            curl -s -X POST "$PAGES_HOOK"
-          else
-            echo "PAGES_DEPLOY_HOOK_URL belum diset - skip"
-          fi
