@@ -24,7 +24,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          SCRAPE_PROXY_URL: "https://chordkuy.mariobaladollun.workers.dev"
+          SCRAPE_PROXY_URL: "https://chordkuy.id"
           SCRAPE_PROXY_TOKEN: ${{ secrets.SCRAPE_PROXY_TOKEN }}
           DAILY_LIMIT: "300"
         run: python chordtela_scraper.py
