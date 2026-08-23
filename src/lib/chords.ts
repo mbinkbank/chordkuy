@@ -184,7 +184,7 @@ export function parseSheet(raw: string): SheetLine[] {
     // Explicit section header lines biasa (e.g. [Verse 1], Chorus:)
     if (
       (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
-      /^(intro\s*:?|musik\s*:?|music\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
+      /^(intro\s*:?|musik\s*:?|music\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|int\s*[.:]?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
     ) {
       out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
       inSection = true;
