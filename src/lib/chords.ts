@@ -136,6 +136,8 @@ export function isChordLine(line: string): boolean {
   return chordCount / tokens.length >= 0.5;
 }
 
+const INTRO_LIKE_RE = /^(intro\s*:?|musik\s*:?|music\s*:?|outro\s*:?|int\.\s*|interlude\s*:?|solo\s*:?)/i;
+
 export function parseSheet(raw: string): SheetLine[] {
   if (!raw) return [];
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
@@ -238,7 +240,34 @@ export function parseSheet(raw: string): SheetLine[] {
     cleaned.push(line);
   }
 
-  return cleaned;
+  // Tambahkan blank di akhir section instrumental (Intro/Musik/Outro/Solo/Interlude):
+  // setelah run baris chord-only berikut label, sebelum konten pertama yang bukan chord.
+  const isChordOnlyRunLine = (l?: SheetLine) =>
+    !!l &&
+    l.type === "line" &&
+    l.segments.every((s) => {
+      const t = s.text?.trim();
+      return !t || /^\(\d+x?\)$/i.test(t);
+    });
+  const result: SheetLine[] = [];
+  for (let i = 0; i < cleaned.length; ) {
+    const cur = cleaned[i];
+    result.push(cur);
+    if (cur.type === "section" && INTRO_LIKE_RE.test(cur.label.trim())) {
+      let j = i + 1;
+      while (j < cleaned.length && isChordOnlyRunLine(cleaned[j])) j++;
+      const stop = cleaned[j];
+      if (stop && stop.type === "line" && !isMarkerLine(stop)) {
+        for (let k = i + 1; k < j; k++) result.push(cleaned[k]);
+        if (result[result.length - 1]?.type !== "blank") result.push({ type: "blank" });
+        i = j;
+        continue;
+      }
+    }
+    i++;
+  }
+
+  return result;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
