@@ -9,34 +9,56 @@ import {
   getGenres,
   getPopularArtists,
   getPopularSongs,
-  getRecentSongs,
+  getRecentSongsPage,
   getStats,
+  RECENT_PER_PAGE,
 } from "../lib/api";
-import { Link } from "../lib/router";
+import { Link, useRoute } from "../lib/router";
 import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
+function pageNumbers(current: number, total: number): (number | "…")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const wanted = new Set(
+    [1, 2, current - 1, current, current + 1, total - 1, total].filter((p) => p >= 1 && p <= total),
+  );
+  const sorted = [...wanted].sort((a, b) => a - b);
+  const out: (number | "…")[] = [];
+  let prev = 0;
+  for (const p of sorted) {
+    if (prev && p - prev > 1) out.push("…");
+    out.push(p);
+    prev = p;
+  }
+  return out;
+}
+
+const pageHref = (p: number) => (p <= 1 ? "/" : `/?page=${p}`);
+
 export default function HomePage() {
+  const route = useRoute();
+  const pageParam = parseInt(new URLSearchParams(route.search).get("page") || "1", 10);
+  const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
   const [popular, setPopular] = useState<Song[]>([]);
   const [recent, setRecent] = useState<Song[]>([]);
+  const [recentTotal, setRecentTotal] = useState(0);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [stats, setStats] = useState({ songCount: 0, artistCount: 0, genreCount: 0 });
   const [loading, setLoading] = useState(true);
+  const [loadingRecent, setLoadingRecent] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [popData, recData, artData, genData, statData] = await Promise.all([
+        const [popData, artData, genData, statData] = await Promise.all([
           getPopularSongs(8),
-          getRecentSongs(6),
           getPopularArtists(6),
           getGenres(),
           getStats(),
         ]);
         setPopular(popData || []);
-        setRecent(recData || []);
         setArtists(artData || []);
         setGenres(genData || []);
         setStats(statData || { songCount: 0, artistCount: 0, genreCount: 0 });
@@ -49,6 +71,25 @@ export default function HomePage() {
     }
     loadData();
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingRecent(true);
+    getRecentSongsPage(page)
+      .then(({ songs, total }) => {
+        if (cancelled) return;
+        setRecent(songs || []);
+        setRecentTotal(total || 0);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingRecent(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [page]);
+
+  const totalPages = Math.max(1, Math.ceil(recentTotal / RECENT_PER_PAGE));
 
   useSeo({
     title: `${SITE.name} — Chord Gitar Lengkap, Transpose & Auto Scroll`,
@@ -156,27 +197,65 @@ export default function HomePage() {
             <h2 className="h-section" id="recent">
               Baru Ditambahkan
             </h2>
-            <span className="caption">Diperbarui berkala</span>
+            {recentTotal > 0 && (
+              <span className="caption">
+                {recentTotal} lagu · halaman {page} dari {totalPages}
+              </span>
+            )}
           </div>
-          {loading ? (
+          {loadingRecent ? (
             <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu baru...</p>
+          ) : recent.length === 0 ? (
+            <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Belum ada lagu tersedia.</p>
           ) : (
-            <div className="list-rows">
-              {recent.map((song) => (
-                <Link key={song.id} className="card song-card" href={`/chord/${song.slug}`}>
-                  <span className="thumb" aria-hidden="true">
-                    <ListMusic size={18} />
-                  </span>
-                  <span style={{ minWidth: 0 }}>
-                    <span className="title">{song.title}</span>
-                    <span className="sub">
-                      {song.artist} · {song.genre}
+            <>
+              <div className="list-rows">
+                {recent.map((song) => (
+                  <Link key={song.id} className="card song-card" href={`/chord/${song.slug}`}>
+                    <span className="thumb" aria-hidden="true">
+                      <ListMusic size={18} />
                     </span>
-                  </span>
-                  <span className="meta">{formatDate(song.createdAt)}</span>
-                </Link>
-              ))}
-            </div>
+                    <span style={{ minWidth: 0 }}>
+                      <span className="title">{song.title}</span>
+                      <span className="sub">
+                        {song.artist} · {song.genre}
+                      </span>
+                    </span>
+                    <span className="meta">{formatDate(song.createdAt)}</span>
+                  </Link>
+                ))}
+              </div>
+              {totalPages > 1 && (
+                <nav className="pagination" aria-label="Navigasi halaman Baru Ditambahkan">
+                  {page > 1 && (
+                    <Link className="btn btn-sm" href={pageHref(page - 1)}>
+                      ‹ Sebelumnya
+                    </Link>
+                  )}
+                  {pageNumbers(page, totalPages).map((p, i) =>
+                    p === "…" ? (
+                      <span key={`e${i}`} className="pagination-ellipsis">
+                        …
+                      </span>
+                    ) : (
+                      <Link
+                        key={p}
+                        className={`btn btn-sm${p === page ? " btn-on" : ""}`}
+                        href={pageHref(p)}
+                        aria-current={p === page ? "page" : undefined}
+                      >
+                        {p}
+                      </Link>
+                    ),
+                  )}
+                  {page < totalPages && (
+                    <Link className="btn btn-sm" href={pageHref(page + 1)}>
+                      Berikutnya ›
+                    </Link>
+                  )}
+                </nav>
+              )}
+            </>
           )}
         </section>
       </main>

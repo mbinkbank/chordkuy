@@ -379,6 +379,18 @@ a:focus-visible {
   margin-bottom: var(--s4);
   border-bottom: 1px solid var(--border);
 }
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s4);
+}
+.pagination-ellipsis {
+  color: var(--muted);
+  padding: 0 2px;
+}
 
 /* ---------- Header / Nav ---------- */
 .site-header {

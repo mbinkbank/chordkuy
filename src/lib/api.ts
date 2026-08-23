@@ -98,6 +98,26 @@ export async function getRecentSongs(limit = 6): Promise<Song[]> {
   }
 }
 
+export const RECENT_PER_PAGE = 50;
+
+export async function getRecentSongsPage(
+  page: number,
+  perPage = RECENT_PER_PAGE,
+): Promise<{ songs: Song[]; total: number }> {
+  try {
+    const from = (page - 1) * perPage;
+    const { data, error, count } = await supabase
+      .from("chords")
+      .select("*", { count: "exact" })
+      .order("id", { ascending: false })
+      .range(from, from + perPage - 1);
+    if (error || !data) return { songs: [], total: 0 };
+    return { songs: data.map(mapDbRowToSong), total: count ?? data.length };
+  } catch {
+    return { songs: [], total: 0 };
+  }
+}
+
 export async function getSongsByGenre(genreSlug: string): Promise<Song[]> {
   return await getAllSongs();
 }
