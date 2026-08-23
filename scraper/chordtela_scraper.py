@@ -262,7 +262,14 @@ def fetch(url: str) -> bytes:
         import urllib.request
 
         endpoint = f"{PROXY_BASE}/api/scrape-fetch?url={urllib.parse.quote(url, safe='')}"
-        req = urllib.request.Request(endpoint, headers={"x-scraper-token": SCRAPER_TOKEN})
+        req = urllib.request.Request(
+            endpoint,
+            headers={
+                "x-scraper-token": SCRAPER_TOKEN,
+                "User-Agent": USER_AGENT,
+                "Accept": "application/json",
+            },
+        )
         try:
             with urllib.request.urlopen(req, timeout=90) as r:
                 data = _json.loads(r.read())
