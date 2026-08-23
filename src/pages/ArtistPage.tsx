@@ -7,7 +7,7 @@ import { getSongsByArtist } from "../lib/api";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, itemListSchema, useSeo } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { ListMusic } from "lucide-react";
+import { UserStar } from "lucide-react";
 
 export default function ArtistPage({ artist }: { artist: Artist }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -72,7 +72,7 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
       <header className="panel" style={{ marginBottom: "var(--s5)" }}>
         <div className="row" style={{ alignItems: "flex-start", gap: "var(--s4)" }}>
           <span className="avatar avatar-lg" aria-hidden="true">
-            <ListMusic size={24} />
+            <UserStar size={24} />
           </span>
           <div className="stack stack-2" style={{ flex: "1 1 260px", minWidth: 0 }}>
             <p className="eyebrow">Artis · {artist.country}</p>

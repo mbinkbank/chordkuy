@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ArtistCard from "../components/ArtistCard";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
+import { ListMusic } from "lucide-react";
 import type { Artist, Genre, Song } from "../data/types";
 import {
   formatDate,
@@ -148,7 +149,7 @@ export default function HomePage() {
               {recent.map((song) => (
                 <Link key={song.id} className="card song-card" href={`/chord/${song.slug}`}>
                   <span className="thumb" aria-hidden="true">
-                    {song.originalKey}
+                    <ListMusic size={18} />
                   </span>
                   <span style={{ minWidth: 0 }}>
                     <span className="title">{song.title}</span>
