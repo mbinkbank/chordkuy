@@ -26,3 +26,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+backend/.env
+backend/.env*.local
+backend/drizzle.config.json
+backend/server.log
+histats-last-snapshot.json
