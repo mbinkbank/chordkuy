@@ -94,8 +94,8 @@ export type SheetLine =
  * preserving exact spaces, labels like (3x), and punctuation.
  */
 function parseLineInplace(lineStr: string): Segment[] {
-  // Replace U+FFFD replacement chars with space (encoding artifacts from scraping)
-  lineStr = lineStr.replace(/\uFFFD/g, " ");
+  // Replace U+FFFD replacement chars & NBSP with plain space (scraping artifacts)
+  lineStr = lineStr.replace(/[\uFFFD\u00A0]/g, " ");
   const segments: Segment[] = [];
   // Regex presisi untuk menangkap chord lengkap termasuk slash chord (seperti -D/F# atau D/F#)
   const regex = /(?:^|\s|-)\K([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d|M)*(?:\/[A-G][#b]?)?)/g;
@@ -259,30 +259,32 @@ export function parseSheet(raw: string): SheetLine[] {
     if (cur.type === "section" && INTRO_LIKE_RE.test(cur.label.trim())) {
       let j = i + 1;
       while (j < cleaned.length && cleaned[j].type === "blank") j++;
+      const runLines: SheetLine[] = [];
       while (
         j < cleaned.length &&
         isChordOnlyLine(cleaned[j]) &&
         !(j + 1 < cleaned.length && isLyricsLine(cleaned[j + 1]) && !isMarkerLine(cleaned[j + 1]))
-      )
+      ) {
+        runLines.push(cleaned[j]);
         j++;
-      const stop = cleaned[j];
-      if (stop && stop.type === "line" && !isMarkerLine(stop)) {
-        for (let k = i + 1; k < j; k++) {
-          const l = cleaned[k];
-          if (l.type !== "blank") {
-            // hilangkan spasi awal pada baris chord run (indentasi dari data mentah)
-            const first = l.segments[0];
-            if (first && !first.chord && first.text?.startsWith(" ")) {
-              result.push({
-                ...l,
-                segments: [{ ...first, text: first.text.replace(/^\s+/, "") }, ...l.segments.slice(1)],
-              });
-            } else {
-              result.push(l);
-            }
+        while (j < cleaned.length && cleaned[j].type === "blank") j++;
+      }
+      if (runLines.length) {
+        for (const l of runLines) {
+          const first = l.segments[0];
+          if (first && !first.chord && first.text?.startsWith(" ")) {
+            result.push({
+              ...l,
+              segments: [{ ...first, text: first.text.replace(/^\s+/, "") }, ...l.segments.slice(1)],
+            });
+          } else {
+            result.push(l);
           }
         }
-        if (result[result.length - 1]?.type !== "blank") result.push({ type: "blank" });
+        const stop = j < cleaned.length ? cleaned[j] : undefined;
+        if (stop && stop.type === "line" && !isMarkerLine(stop) && result[result.length - 1]?.type !== "blank") {
+          result.push({ type: "blank" });
+        }
         i = j;
         continue;
       }
