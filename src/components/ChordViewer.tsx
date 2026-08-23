@@ -77,7 +77,13 @@ export default function ChordViewer({
   useEffect(() => () => clearTimer(), []);
 
   const hasLyricText = (line: SheetLine) =>
-    line.type === "line" && line.segments.some((s) => s.text.trim() !== "");
+    line.type === "line" && line.segments.some((s) => {
+      if (!s.text) return false;
+      const t = s.text.trim();
+      if (!t) return false;
+      if (/^\(\d+x?\)$/i.test(t)) return false;
+      return true;
+    });
 
   const isChordOnly = (line: SheetLine) =>
     line.type === "line" && !hasLyricText(line);
