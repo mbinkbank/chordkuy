@@ -228,7 +228,7 @@ export function parseSheet(raw: string): SheetLine[] {
       const remove =
         !isMarkerLine(next) &&
         ((isChordOnlyLine(prev) && isLyricsLine(next)) ||
-          (isLyricsLine(prev) && !isMarkerLine(prev) && isChordOnlyLine(next)));
+          (isLyricsLine(prev) && isChordOnlyLine(next)));
       if (remove) continue;
       if (cleaned.length > 0 && cleaned[cleaned.length - 1].type === "blank") continue;
       cleaned.push(line);
