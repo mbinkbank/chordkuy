@@ -15,7 +15,6 @@ export const SITE = {
 
 export const NAV_ITEMS = [
   { href: "/", label: "Beranda" },
-  { href: "/search", label: "Cari" },
   { href: "/artists", label: "Artis" },
   { href: "/about", label: "Tentang" },
   { href: "/contact", label: "Kontak" },
