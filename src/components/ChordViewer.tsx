@@ -104,7 +104,7 @@ export default function ChordViewer({
         data-chord-sheet=""
       >
         {filteredLines.map((line, i) => {
-          if (line.type === "blank") return null;
+          if (line.type === "blank") return <div key={i} className="blank-line" />;
           if (line.type === "section") {
             const displayLabel = isOriginalChord(line.label) ? "--- ORIGINAL CHORD ---" : line.label;
             return (

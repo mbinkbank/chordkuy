@@ -199,8 +199,7 @@ export function parseSheet(raw: string): SheetLine[] {
     out.push({ type: "line", segments: parseLineInplace(lineToParse) });
   }
 
-  // Remove all blank lines — chord/lyrics/sections flow directly
-  return out.filter((line) => line.type !== "blank");
+  return out;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
