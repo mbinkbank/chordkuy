@@ -199,8 +199,41 @@ export function parseSheet(raw: string): SheetLine[] {
     out.push({ type: "line", segments: parseLineInplace(lineToParse) });
   }
 
-  // Collapse consecutive blank lines to max 1
-  return out.filter((line, i) => line.type !== "blank" || out[i - 1]?.type !== "blank");
+  // Aturan blank line:
+  // 1. chord-only -> blank -> lirik huruf: HAPUS blank
+  // 2. apa pun -> blank -> chord-only: SIMPAN blank
+  // 3. apa pun -> blank -> marker seperti (*), (**): SIMPAN blank
+  const isChordOnlyLine = (l?: SheetLine) =>
+    !!l && l.type === "line" && l.segments.every((s) => !s.text || !s.text.trim());
+  const isMarkerLine = (l?: SheetLine) => {
+    if (!l || l.type !== "line") return false;
+    const t = l.segments.map((s) => s.chord ?? s.text ?? "").join("").trim();
+    return /^\(\*+\)$/.test(t);
+  };
+  const isLyricsLine = (l?: SheetLine) =>
+    !!l && l.type === "line" && l.segments.some((s) => s.text && s.text.trim());
+
+  const cleaned: SheetLine[] = [];
+  for (let i = 0; i < out.length; i++) {
+    const line = out[i];
+    if (line.type === "blank") {
+      let prev: SheetLine | undefined;
+      for (let j = cleaned.length - 1; j >= 0; j--) {
+        if (cleaned[j].type !== "blank") { prev = cleaned[j]; break; }
+      }
+      let next: SheetLine | undefined;
+      for (let j = i + 1; j < out.length; j++) {
+        if (out[j].type !== "blank") { next = out[j]; break; }
+      }
+      if (isChordOnlyLine(prev) && isLyricsLine(next) && !isMarkerLine(next)) continue;
+      if (cleaned.length > 0 && cleaned[cleaned.length - 1].type === "blank") continue;
+      cleaned.push(line);
+      continue;
+    }
+    cleaned.push(line);
+  }
+
+  return cleaned;
 }
 
 export function transposeLines(lines: SheetLine[], semitones: number, preferFlat = false): SheetLine[] {
