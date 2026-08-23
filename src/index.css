@@ -942,13 +942,14 @@ a.card:focus-visible {
 }
 .eq-bars {
   position: absolute;
-  inset-inline: 0;
   bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 680px);
   display: flex;
   align-items: flex-end;
   gap: 3px;
   height: 36px;
-  padding-inline: var(--s4);
   opacity: 0.35;
   pointer-events: none;
 }
