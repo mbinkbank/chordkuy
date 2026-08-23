@@ -1,6 +1,8 @@
 name: Rebuild Sitemap
 
 on:
+  push:
+    branches: [main]
   repository_dispatch:
     types: [rebuild-sitemap]
   workflow_dispatch:
