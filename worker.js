@@ -189,9 +189,84 @@ ${listHtml}
 </html>`;
 }
 
+// ---------- Pageview tracking ----------
+function getCookie(request, name) {
+  const c = request.headers.get("Cookie") || "";
+  const m = c.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function shouldTrack(request, url) {
+  if (request.method !== "GET") return false;
+  if (url.pathname.startsWith("/api/")) return false;
+  if (url.pathname.startsWith("/assets/")) return false;
+  if (/\.(js|css|png|jpg|svg|ico|json|xml|txt|woff2?)$/.test(url.pathname)) return false;
+  // hanya halaman HTML
+  return (
+    url.pathname === "/" ||
+    url.pathname.startsWith("/chord/") ||
+    url.pathname.startsWith("/artist/") ||
+    url.pathname === "/artists" ||
+    url.pathname.startsWith("/search")
+  );
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // ---------- Pageview tracking (human only) ----------
+    let visitorId = getCookie(request, "ck_id");
+    let setCookie = null;
+    const trackThis = shouldTrack(request, url) && !isCrawler(request);
+    if (trackThis && !visitorId) {
+      visitorId = crypto.randomUUID();
+      setCookie = `ck_id=${visitorId}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    }
+    if (trackThis) {
+      const referrer = request.headers.get("Referer") || "";
+      const country = (request.cf && request.cf.country) || "";
+      const pathToLog = url.pathname;
+      const vidToLog = visitorId;
+      ctx.waitUntil(
+        (async () => {
+          let pageTitle = "";
+          try {
+            if (pathToLog.startsWith("/chord/")) {
+              const slug = decodeURIComponent(pathToLog.replace("/chord/", "").replace(/\/$/, ""));
+              const map = await getSongMap();
+              const s = map[slug];
+              if (s) pageTitle = `${s.title} - ${s.artist}`;
+            } else if (pathToLog.startsWith("/artist/")) {
+              const slug = decodeURIComponent(pathToLog.replace("/artist/", "").replace(/\/$/, ""));
+              const map = await getSongMap();
+              for (const s of Object.values(map)) {
+                if (slugifyJs(s.artist) === slug) { pageTitle = s.artist; break; }
+              }
+            }
+          } catch {}
+          const svcKey = env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_KEY;
+          try {
+            await fetch(`${SUPABASE_URL}/rest/v1/pageviews`, {
+              method: "POST",
+              headers: {
+                apikey: svcKey,
+                Authorization: `Bearer ${svcKey}`,
+                "Content-Type": "application/json",
+                Prefer: "return=minimal",
+              },
+              body: JSON.stringify({
+                path: pathToLog,
+                title: pageTitle.slice(0, 200),
+                referrer: referrer.slice(0, 500),
+                country: String(country).slice(0, 2),
+                visitor_id: vidToLog,
+              }),
+            });
+          } catch {}
+        })(),
+      );
+    }
 
     // ---------- Dynamic rendering untuk crawler ----------
     if (isCrawler(request)) {
@@ -215,9 +290,11 @@ export default {
       }
 
       if (html) {
-        return new Response(html, {
+        const res = new Response(html, {
           headers: { "Content-Type": "text/html; charset=utf-8" },
         });
+        if (setCookie) res.headers.set("Set-Cookie", setCookie);
+        return res;
       }
       // fallback ke SPA kalau bukan halaman yang bisa di-render
     }
@@ -334,6 +411,13 @@ export default {
       });
     }
 
-    return env.ASSETS.fetch(request);
+    return env.ASSETS.fetch(request).then((res) => {
+      if (setCookie) {
+        const newRes = new Response(res.body, res);
+        newRes.headers.set("Set-Cookie", setCookie);
+        return newRes;
+      }
+      return res;
+    });
   },
 };
