@@ -46,28 +46,58 @@ function StatCard({ icon, label, value, accent, sub }: {
 function TableCard({ title, icon, rows, emptyText }: {
   title: string; icon: React.ReactNode; rows: { label: string; c: number }[]; emptyText: string;
 }) {
+  const max = Math.max(...rows.map((r) => r.c), 1);
   return (
-    <div className="panel" style={{ padding: 0, overflow: "hidden" }}>
+    <div className="panel" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ color: "var(--accent)" }}>{icon}</span>
-        <h3 style={{ margin: 0, fontSize: 14 }}>{title}</h3>
+        <span style={{ width: 28, height: 28, borderRadius: 8, display: "grid", placeItems: "center", background: "var(--accent)", color: "#06220e" }}>{icon}</span>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>{title}</h3>
+        <span className="badge" style={{ marginLeft: "auto", fontSize: 11 }}>{rows.length} item</span>
       </div>
       {rows.length === 0 ? (
-        <p className="muted" style={{ padding: "20px 16px", fontSize: 13 }}>{emptyText}</p>
+        <div style={{ padding: "28px 16px", textAlign: "center" }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: "var(--bg)", border: "1px dashed var(--border)", display: "grid", placeItems: "center", margin: "0 auto 10px", color: "var(--muted)" }}>{icon}</div>
+          <p className="muted" style={{ fontSize: 13, margin: 0 }}>{emptyText}</p>
+          <p className="muted" style={{ fontSize: 11, marginTop: 4 }}>Data akan muncul setelah ada kunjungan.</p>
+        </div>
       ) : (
-        <table>
-          <thead>
-            <tr><th style={{ width: "75%" }}>{title.includes("URL") ? "URL" : title.includes("Title") ? "Judul" : title.includes("Perujuk") ? "Sumber" : "Negara"}</th><th style={{ textAlign: "right" }}>Views</th></tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.label}>
-                <td style={{ maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.label}>{r.label || "(langsung)"}</td>
-                <td style={{ textAlign: "right", fontWeight: 600 }}>{r.c}</td>
+        <div style={{ overflow: "auto", maxHeight: 320 }}>
+          <table style={{ fontSize: 13 }}>
+            <thead style={{ position: "sticky", top: 0, background: "var(--panel)", zIndex: 1 }}>
+              <tr>
+                <th style={{ width: 28, textAlign: "center" }}>#</th>
+                <th>{title.includes("URL") ? "URL" : title.includes("Title") ? "Judul Lagu" : title.includes("Perujuk") ? "Sumber" : "Negara"}</th>
+                <th style={{ textAlign: "right", whiteSpace: "nowrap" }}>Views</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => {
+                const displayLabel = r.label.replace(/\/+/g, "/").replace(/^\/chord\/chord\//, "/chord/");
+                return (
+                  <tr key={r.label} style={{ borderBottom: i === rows.length - 1 ? "none" : undefined }}>
+                    <td style={{ textAlign: "center", color: "var(--muted)", fontWeight: 600, width: 28 }}>{i + 1}</td>
+                    <td style={{ maxWidth: 220 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span
+                          style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 500 }}
+                          title={r.label}
+                        >
+                          {displayLabel || "(langsung)"}
+                        </span>
+                      </div>
+                      <div style={{ height: 4, background: "var(--bg)", borderRadius: 999, marginTop: 6, overflow: "hidden" }}>
+                        <div style={{ width: `${Math.round((r.c / max) * 100)}%`, height: "100%", background: "var(--accent)" }} />
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <span className="badge" style={{ background: "var(--accent)", color: "#06220e", borderColor: "transparent", fontWeight: 700 }}>{r.c}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
