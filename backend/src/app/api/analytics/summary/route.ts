@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
       totalRes,
       todayRes,
       onlineRes,
+      onlineDetailsRes,
       refRes,
       countryRes,
       urlRes,
@@ -44,17 +45,18 @@ export async function GET(request: NextRequest) {
       db.execute(sql`select count(*)::int as c, count(distinct visitor_id)::int as uv from pageviews`),
       db.execute(sql`select count(*)::int as pv, count(distinct visitor_id)::int as uv from pageviews where created_at >= ${todayStart.toISOString()}`),
       db.execute(sql`select count(distinct visitor_id)::int as c from pageviews where created_at >= ${fiveMinAgo.toISOString()}`),
-      db.execute(sql`select referrer as label, count(*)::int as c from pageviews where referrer <> '' group by referrer order by c desc limit 10`),
-      db.execute(sql`select country as label, count(*)::int as c from pageviews where country <> '' group by country order by c desc limit 10`),
-      db.execute(sql`select path as label, count(*)::int as c from pageviews group by path order by c desc limit 10`),
-      db.execute(sql`select title as label, count(*)::int as c from pageviews where title <> '' group by title order by c desc limit 10`),
-      db.execute(sql`select to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as d, count(*)::int as pv, count(distinct visitor_id)::int as uv from pageviews where created_at >= now() - interval '30 days' group by d order by d`),
       db.execute(sql`
-        with first_seen as (select visitor_id, min(created_at)::date as d from pageviews group by visitor_id)
-        select count(*)::int as c from first_seen where d = current_date
+        select visitor_id,
+               max(created_at) as last_seen,
+               (array_agg(path order by created_at desc))[1] as last_path,
+               (array_agg(title order by created_at desc))[1] as last_title,
+               count(*)::int as pages
+        from pageviews
+        where created_at >= ${fiveMinAgo.toISOString()}
+        group by visitor_id
+        order by last_seen desc
       `),
-      db.execute(sql`select visitor_id, created_at from pageviews where created_at >= ${todayStart.toISOString()} order by visitor_id, created_at`),
-    ]);
+      db.execute(sql`select referrer as label, count(*)::int as c from pageviews where referrer <> '' group by referrer order by c desc limit 10`),
 
     const totalRow: any = (totalRes as any).rows?.[0] || {};
     const todayRow: any = (todayRes as any).rows?.[0] || {};
@@ -116,6 +118,7 @@ export async function GET(request: NextRequest) {
         firstTime: Number(firstRow.c || 0),
       },
       usersOnline: Number(onlineRow.c || 0),
+      onlineDetails: (onlineDetailsRes as any).rows || [],
       avgDuration,
       avgDurationMs,
       pagesPerVisit,

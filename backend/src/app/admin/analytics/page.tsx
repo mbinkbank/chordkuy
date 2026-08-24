@@ -14,6 +14,7 @@ type Summary = {
   totalVisitors: number;
   today: { pageViews: number; visitors: number; firstTime: number };
   usersOnline: number;
+  onlineDetails: { visitor_id: string; last_seen: string; last_path: string; last_title: string; pages: number }[];
   avgDuration: string;
   pagesPerVisit: number;
   referrers: { label: string; c: number }[];
@@ -23,11 +24,19 @@ type Summary = {
   daily: { d: string; pv: number; uv: number }[];
 };
 
-function StatCard({ icon, label, value, accent, sub }: {
-  icon: React.ReactNode; label: string; value: string | number; accent: string; sub?: string;
+function StatCard({ icon, label, value, accent, sub, onClick }: {
+  icon: React.ReactNode; label: string; value: string | number; accent: string; sub?: string; onClick?: () => void;
 }) {
   return (
-    <div className="panel" style={{ display: "flex", alignItems: "center", gap: 14, padding: "18px 16px", borderLeft: `3px solid ${accent}` }}>
+    <div
+      className="panel"
+      onClick={onClick}
+      style={{
+        display: "flex", alignItems: "center", gap: 14, padding: "18px 16px",
+        borderLeft: `3px solid ${accent}`,
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
       <div style={{
         width: 42, height: 42, borderRadius: 10, display: "grid", placeItems: "center",
         background: `${accent}18`, color: accent, flexShrink: 0,
@@ -106,8 +115,9 @@ function TableCard({ title, icon, rows, emptyText }: {
 export default function AnalyticsPage() {
   const [data, setData] = useState<Summary | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showOnline, setShowOnline] = useState(false);
 
-  useEffect(() => {
+  const load = () => {
     fetch("/api/analytics/summary")
       .then((r) => r.json())
       .then((j) => {
@@ -115,6 +125,12 @@ export default function AnalyticsPage() {
         else setError(j.message || "Gagal memuat");
       })
       .catch((e) => setError(e.message));
+  };
+
+  useEffect(() => {
+    load();
+    const id = setInterval(load, 15000);
+    return () => clearInterval(id);
   }, []);
 
   if (error) return <p className="error">{error}</p>;
@@ -136,7 +152,8 @@ export default function AnalyticsPage() {
           label="Users online"
           value={data.usersOnline}
           accent="#22c55e"
-          sub="5 menit terakhir"
+          sub="5 menit terakhir → klik untuk detail"
+          onClick={() => setShowOnline(true)}
         />
       </div>
 
@@ -182,6 +199,43 @@ export default function AnalyticsPage() {
         <TableCard title="Situs Perujuk" icon={<Globe size={16} />} rows={data.referrers} emptyText="Belum ada perujuk." />
         <TableCard title="Geolocation" icon={<Globe size={16} />} rows={data.countries} emptyText="Belum ada data negara." />
       </div>
+
+      {showOnline && (
+        <div
+          onClick={() => setShowOnline(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "grid", placeItems: "center", zIndex: 50, padding: 16 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="panel"
+            style={{ width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "auto" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <h3 style={{ margin: 0 }}>Users online — detail tab</h3>
+              <button className="secondary" onClick={() => setShowOnline(false)}>Tutup</button>
+            </div>
+            {(data.onlineDetails || []).length === 0 ? (
+              <p className="muted" style={{ fontSize: 13 }}>Tidak ada pengunjung online saat ini.</p>
+            ) : (
+              <table>
+                <thead><tr><th>Visitor</th><th>Tab terakhir</th><th>Halaman</th></tr></thead>
+                <tbody>
+                  {(data.onlineDetails || []).map((u: any) => (
+                    <tr key={u.visitor_id}>
+                      <td style={{ fontFamily: "monospace", fontSize: 11 }}>{u.visitor_id.slice(0, 8)}…</td>
+                      <td style={{ maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={u.last_path}>
+                        {u.last_path || "/"}
+                      </td>
+                      <td style={{ fontSize: 12, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={u.last_title}>{u.last_title || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            <p className="muted" style={{ fontSize: 11, marginTop: 10 }}>Menampilkan tab terakhir per visitor dalam 5 menit. Buka 2 tab = 1 visitor, 1 baris.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
