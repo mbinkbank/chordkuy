@@ -32,3 +32,5 @@ backend/.env*.local
 backend/drizzle.config.json
 backend/server.log
 histats-last-snapshot.json
+
+.prerender-cache/
