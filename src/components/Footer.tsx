@@ -7,6 +7,9 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="container">
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--s3) 0 var(--s2)" }}>
+          <div id="histats_counter"></div>
+        </div>
         <div className="footer-bottom" style={{ borderTop: "none", padding: "var(--s4) 0" }}>
           <span>
             © {year} {SITE.name}. Chord untuk keperluan belajar dan latihan.
