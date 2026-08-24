@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
                array_agg(path order by created_at desc) as paths,
                array_agg(title order by created_at desc) as titles,
                array_agg(country order by created_at desc) as countries,
+               array_agg(referrer order by created_at desc) as referrers,
                count(*)::int as pages
         from pageviews
         where created_at >= ${fiveMinAgo.toISOString()}
