@@ -1,6 +1,6 @@
 
 > react-vite-tailwind@0.0.0 build
-> node scripts/fetch-build-data.mjs && vite build && node scripts/generate-sitemap.mjs && node scripts/prerender.mjs
+> node scripts/fetch-build-data.mjs && node scripts/preserve-prerender.mjs && vite build && node scripts/prerender.mjs && node scripts/generate-sitemap.mjs
 
 Fetching build data...
 build-data.json: 678 lagu, 342 artis (popular 8, recent 50)
@@ -13,1026 +13,1023 @@ computing gzip size...
 [2mdist/[22m[35massets/index-D3lcabce.css   [39m[1m[2m 24.63 kB[22m[1m[22m[2m │ gzip:   5.59 kB[22m
 [2mdist/[22m[36massets/browser-M1QfABy2.js  [39m[1m[2m  0.62 kB[22m[1m[22m[2m │ gzip:   0.43 kB[22m
 [2mdist/[22m[36massets/index-BW1pq8UO.js    [39m[1m[2m369.32 kB[22m[1m[22m[2m │ gzip: 111.78 kB[22m
-[32m✓ built in 1.78s[39m
+[32m✓ built in 1.48s[39m
+Lagu di DB: 678
+Pre-render 1013/1013 halaman (335 di-skip)...
+OK /artists (1/1013)
+OK /artist/cabiak-upiak-bulu (2/1013)
+OK / (3/1013)
+OK /artist/anyqu-feat-cabiak (4/1013)
+OK /artist/nada-zahrani-iqbal-mahesa-ft-cabiak (5/1013)
+OK /artist/caca-da5 (6/1013)
+OK /artist/caca-handika (7/1013)
+OK /artist/caca-jiga (8/1013)
+OK /artist/caca-olivia (9/1013)
+GAGAL /artist/cabiak: Waiting failed: 10000ms exceeded
+GAGAL /artist/ayu-amanda-ridho-zulma-ft-cabiak: Waiting failed: 10000ms exceeded
+OK /artist/arif-lida-feat-caca-olivia (12/1013)
+OK /artist/tunggara (13/1013)
+OK /artist/cade-thompson (14/1013)
+OK /artist/caesario (15/1013)
+OK /artist/caessaria-feat-ariel-noah (16/1013)
+OK /artist/caessaria-feat-astrid (17/1013)
+OK /artist/caessaria (18/1013)
+GAGAL /artist/caca-da5-feat-al-ibnu-adijaya: Waiting failed: 10000ms exceeded
+OK /artist/caffeine (20/1013)
+OK /artist/caffein (21/1013)
+OK /artist/yang-tak-pernah (22/1013)
+OK /artist/rudy-caffein (23/1013)
+OK /artist/v2last (24/1013)
+OK /artist/v2last-feat-firman-x-factor-indonesia (25/1013)
+GAGAL /artist/cacaiska: Waiting failed: 10000ms exceeded
+GAGAL /artist/caeleb-ft-hendro-mc: Waiting failed: 10000ms exceeded
+OK /artist/josua-natanael-dera (28/1013)
+OK /artist/justin-bieber (29/1013)
+OK /artist/don-toliver (30/1013)
+OK /artist/angger-bayu-aji (31/1013)
+OK /artist/iwan-fals-feat-danilla-riyadi (32/1013)
+GAGAL /artist/rudy-caffeine: Waiting failed: 10000ms exceeded
+OK /artist/nia (34/1013)
+OK /artist/isty-julistry (35/1013)
+OK /artist/ananta-prince (36/1013)
+OK /artist/jeifi-kawengian (37/1013)
+GAGAL /artist/tenxi-jemsii-josua-natanael-dia: Waiting failed: 10000ms exceeded
+GAGAL /artist/riku-josua-natanael-naykilla: Waiting failed: 10000ms exceeded
+OK /artist/diego-alexander-garing (40/1013)
+OK /artist/nadeera (41/1013)
+OK /artist/hael-husaini-nadeera (42/1013)
+OK /artist/menghayal-cinta (43/1013)
+OK /artist/sonya-bara (44/1013)
+OK /artist/next-level (45/1013)
+GAGAL /artist/elsa-kapoh: Waiting failed: 10000ms exceeded
+OK /artist/tika-mila (47/1013)
+OK /artist/little-big-town (48/1013)
+OK /artist/aku-yang-terluka (49/1013)
+OK /artist/fourtwnty (50/1013)
+GAGAL /artist/chyran-astrid: Waiting failed: 10000ms exceeded
+GAGAL /artist/nova-sondakh: Waiting failed: 10000ms exceeded
+OK /artist/wis-bedo (53/1013)
+OK /artist/candria-feat-richie-five-minutes (54/1013)
+OK /artist/candria (55/1013)
+OK /artist/munn (56/1013)
+OK /artist/ilham (57/1013)
+OK /artist/udur-pasaribu (58/1013)
+OK /artist/ian-kasela (59/1013)
+GAGAL /artist/float: Waiting failed: 10000ms exceeded
+OK /artist/hugo-feat-ian-kasela (61/1013)
+OK /artist/spontan-music (62/1013)
+OK /artist/lin-yu-chun (63/1013)
+OK /artist/enzana (64/1013)
+GAGAL /artist/rahma-delinofira: Waiting failed: 10000ms exceeded
+OK /artist/morgan-wade (66/1013)
+OK /artist/dek-soma (67/1013)
+OK /artist/dek-soma-feat-trias (68/1013)
+GAGAL /artist/loy-bikin-panas: Waiting failed: 10000ms exceeded
+OK /artist/dek-soma-feat-edi-satya (70/1013)
+OK /artist/widi-as (71/1013)
+OK /artist/siapa-cintaku (72/1013)
+OK /artist/relawan-asmara (73/1013)
+OK /artist/relawan-asmara-ft-damara-de (74/1013)
+OK /artist/intan-selvi (75/1013)
+GAGAL /artist/kenshi-band: Waiting failed: 10000ms exceeded
+OK /artist/intan-selvi-ft-roby-januarta (77/1013)
+OK /artist/ykp-akustik-ft-agustina (78/1013)
+OK /artist/yan-jaya (79/1013)
+OK /artist/yan-jaya-feat-wahyu (80/1013)
+OK /artist/tio-sitanggang (81/1013)
+GAGAL /artist/marisha-putri: Waiting failed: 10000ms exceeded
+OK /artist/i-miss-you (83/1013)
+GAGAL /artist/lion-babe-feat-oshun: Waiting failed: 10000ms exceeded
+OK /artist/afandi-neomu (85/1013)
+OK /artist/mifthah-aulianti-ft-frans-ariesta (86/1013)
+OK /artist/miftah-ft-jamal (87/1013)
+OK /artist/noah-davis (88/1013)
+OK /artist/vivi-dc-official (89/1013)
+GAGAL /artist/bang-roy-purba: Waiting failed: 10000ms exceeded
+OK /artist/vivi-dc (91/1013)
+OK /artist/anggi-chandra-feat-vivi-dc (92/1013)
+OK /artist/vivi-dc-feat-ben-tusipa (93/1013)
+OK /artist/muhammad-rasyid (94/1013)
+OK /artist/thomas-day (95/1013)
+OK /artist/tantari (96/1013)
+GAGAL /artist/macam-susah: Waiting failed: 10000ms exceeded
+OK /artist/hari-ini-hari-raya (98/1013)
+GAGAL /artist/mas-jar: Waiting failed: 10000ms exceeded
+OK /artist/achey-tantari (100/1013)
+OK /artist/tantari-putera-bobo (101/1013)
+OK /artist/achey-tantari-baby-feaaa (102/1013)
+OK /artist/nabila-taqiyyah (103/1013)
+OK /artist/rizwan-fadilah-nabila-taqiyyah (104/1013)
+OK /artist/kim-nabila-taqiyyah (105/1013)
+GAGAL /artist/vivi-dc-feat-anggi-chandra: Waiting failed: 10000ms exceeded
+OK /artist/bob-yunus (107/1013)
+OK /artist/aespa (108/1013)
+OK /artist/inna-azuri (109/1013)
+OK /artist/jhalo-jz (110/1013)
+OK /artist/raptama-trio (111/1013)
+OK /artist/ora-ketututan (112/1013)
+OK /artist/cinto-sataguah-karang (113/1013)
+GAGAL /artist/achey-tantari-rayyan-dahlya: Waiting failed: 10000ms exceeded
+OK /artist/tajul-feat-wany-hasrita (115/1013)
+GAGAL /artist/insomniacks-nabila-taqiyyah: Waiting failed: 10000ms exceeded
+OK /artist/tajul (117/1013)
+OK /artist/tajul-afieq-shazwan (118/1013)
+OK /artist/tajul-wany-hasrita (119/1013)
+OK /artist/amyn-bayu (120/1013)
+OK /artist/weird-genius-winky-wiryawan (121/1013)
+GAGAL /artist/alba-samallo: Waiting failed: 10000ms exceeded
+OK /artist/tuty-tomagola (123/1013)
+OK /artist/janji-di-tugu-merpati (124/1013)
+OK /artist/mabuak-diseso-bayang (125/1013)
+OK /artist/rayola-feat-daniel-maestro (126/1013)
+OK /artist/rika-masya-ft-daniel-maestro (127/1013)
+OK /artist/daniel-maestro-ft-nabila-yuza (128/1013)
+OK /artist/daniel-maestro-ft-nabilla-yuza (129/1013)
+OK /artist/bujang-tabuang (130/1013)
+OK /artist/denai-taseso-uda-taluko (131/1013)
+GAGAL /artist/tajul-muna-shahirah: Waiting failed: 10000ms exceeded
+OK /artist/daniel-maestro-ft-icha-zagita (133/1013)
+GAGAL /artist/eka-x-winky: Waiting failed: 10000ms exceeded
+OK /artist/vany-thursdila-feat-daniel-maestro (135/1013)
+OK /artist/sri-fayola-feat-daniel-maestro (136/1013)
+OK /artist/rayola-ft-daniel-maestro (137/1013)
+OK /artist/julia-anugerah-putri (138/1013)
+OK /artist/jangan-ada-dusta-di-antara-kita (139/1013)
+GAGAL /artist/daniel-maestro: Waiting failed: 10000ms exceeded
+OK /artist/rindu-yang-terlarang (141/1013)
+OK /artist/dewi-yull (142/1013)
+OK /artist/arnada-trio (143/1013)
+OK /artist/keisya-levronka-nyoman-paul (144/1013)
+OK /artist/keryl (145/1013)
+OK /artist/the-siswondo (146/1013)
+OK /artist/fonny-shencia (147/1013)
+OK /artist/jacson-zeran (148/1013)
+OK /artist/freed-ghalib (149/1013)
+OK /artist/rikki-hwang (150/1013)
+GAGAL /artist/daniel-maestro-ft-vany-thursdila: Waiting failed: 10000ms exceeded
+OK /artist/sendogarpu (152/1013)
+OK /artist/silvy-carlina (153/1013)
+GAGAL /artist/daniel-maestro-feat-nabilla-yuza: Waiting failed: 10000ms exceeded
+OK /artist/silvy-carlina-sadri-zarro (155/1013)
+OK /artist/wayan-sumade (156/1013)
+OK /artist/aniq-muhai (157/1013)
+OK /artist/aniq-muhai-ft-adnin-roslan (158/1013)
+OK /artist/unic-ft-aniq-muhai-naufal-isa (159/1013)
+OK /artist/kansas (160/1013)
+OK /artist/sakajawa (161/1013)
+GAGAL /artist/keisya-levronka: Waiting failed: 10000ms exceeded
+OK /artist/miftah-wahdini-anjas-wasae (163/1013)
+OK /artist/trousdale (164/1013)
+OK /artist/dandy-barakati-ft-dante-nababan (165/1013)
+OK /artist/so-omom (166/1013)
+OK /artist/dante-nababan (167/1013)
+OK /artist/bage-abu (168/1013)
+OK /artist/ta-lipa-lipa (169/1013)
+OK /artist/bae-mar-lama (170/1013)
+GAGAL /artist/enka-ft-momon-karman: Waiting failed: 10000ms exceeded
+OK /artist/sardi-uwo (172/1013)
+OK /artist/antha-pryma (173/1013)
+GAGAL /artist/wah-ditya: Waiting failed: 10000ms exceeded
+GAGAL /artist/anjas-wasae: Waiting failed: 10000ms exceeded
+OK /artist/critoss-official-feat-oktavia (176/1013)
+OK /artist/vicky-kalea (177/1013)
+OK /artist/ressa-febyolla (178/1013)
+OK /artist/indang-annes-ressa-febyolla (179/1013)
+OK /artist/lintang-ivnda-feat-lintang-chya (180/1013)
+OK /artist/pinkan-mambo (181/1013)
+OK /artist/lian-karina (182/1013)
+OK /artist/steelheart (183/1013)
+OK /artist/sun-tutup-lawang-ati (184/1013)
+OK /artist/catur-arum (185/1013)
+OK /artist/satukan-langkah (186/1013)
+GAGAL /artist/benny-blanco-bts-snoop-dogg: Waiting failed: 10000ms exceeded
+OK /artist/catur-arum-feat-ayu-surati (188/1013)
+OK /artist/wijaya-80-feat-sal-priadi (189/1013)
+GAGAL /artist/dima-nagari-urang-minang-ado: Waiting failed: 10000ms exceeded
+OK /artist/arsy-widianto-wijaya80 (191/1013)
+OK /artist/riyan-chaniago-feat-tiva-zalfan (192/1013)
+OK /artist/the-brandals-feat-sukatani (193/1013)
+OK /artist/antik (194/1013)
+GAGAL /artist/olivia-addams: Waiting failed: 10000ms exceeded
+OK /artist/qaish-ft-tresna (196/1013)
+OK /artist/illenium (197/1013)
+OK /artist/rieke-adriati (198/1013)
+OK /artist/aja-dipikiri (199/1013)
+OK /artist/fearless-soul (200/1013)
+OK /artist/rama-arief (201/1013)
+OK /artist/asfan-shah-keka-nizam (202/1013)
+OK /artist/pasto (203/1013)
+GAGAL /artist/wijaya-80: Waiting failed: 10000ms exceeded
+OK /artist/ratu (205/1013)
+OK /artist/boyolali-aku-bali (206/1013)
+OK /artist/adam-levine (207/1013)
+OK /artist/jason-derulo (208/1013)
+OK /artist/utara-band (209/1013)
+OK /artist/delva-feat-gilga-sahid (210/1013)
+GAGAL /artist/kaji-soher: Waiting failed: 10000ms exceeded
+OK /artist/gilga-sahid-x-global-musik (212/1013)
+OK /artist/gilga-sahid (213/1013)
+GAGAL /artist/asfan-shah-lia-aziz: Waiting failed: 10000ms exceeded
+OK /artist/gilga-sahid-ft-happy-asmara (215/1013)
+OK /artist/happy-asmara-feat-gilga-sahid (216/1013)
+OK /artist/badai-romantic-project (217/1013)
+GAGAL /artist/tanya-hati: Waiting failed: 10000ms exceeded
+OK /artist/fari-firdan (219/1013)
+OK /artist/aidilla (220/1013)
+OK /artist/silet-open-up-x-kapthenpurek (221/1013)
+OK /artist/jeyma-monica (222/1013)
+OK /artist/kapthenpurek (223/1013)
+OK /artist/kapthenpurek-ft-andy-lo-wi (224/1013)
+OK /artist/anak-kompleks-feat-kapthenpurek (225/1013)
+OK /artist/ko-piara (226/1013)
+GAGAL /artist/gilga-sahid-ft-mira-putri: Waiting failed: 10000ms exceeded
+OK /artist/new-gvme (228/1013)
+GAGAL /artist/gilga-sahid-feat-abah-kirun: Waiting failed: 10000ms exceeded
+OK /artist/tambah-gaga (230/1013)
+OK /artist/tinggal-tulang (231/1013)
+OK /artist/kapthenpurek-jhalo-jz (232/1013)
+OK /artist/juan-reza-ft-kapthen-purek (233/1013)
+OK /artist/kapthenpurek-ft-juan-reza (234/1013)
+OK /artist/son-dheztrow-ft-kapthenpurek (235/1013)
+GAGAL /artist/kapthenpurek-x-andy-lowy: Waiting failed: 10000ms exceeded
+OK /artist/kanzer-pmc (237/1013)
+OK /artist/busu-busu-setia-2 (238/1013)
+OK /artist/jovi-herlandi-x-billgoun-x-rizky-safaty-x-edwardo-palingu (239/1013)
+OK /artist/onchy-wegu (240/1013)
+OK /artist/theo-mustofa (241/1013)
+GAGAL /artist/busu-busu-setia-buset: Waiting failed: 10000ms exceeded
+OK /artist/salsa-billa (243/1013)
+OK /artist/bimbim-slank (244/1013)
+GAGAL /artist/delite-feat-kapthenpurek: Waiting failed: 10000ms exceeded
+OK /artist/shallow-side (246/1013)
+OK /artist/andri-kancil (247/1013)
+OK /artist/axel-johansson (248/1013)
+OK /artist/kemot-bob (249/1013)
+OK /artist/jay-jalalu (250/1013)
+OK /artist/rio-wermasubun-ft-mario-yamlean (251/1013)
+OK /artist/kinur (252/1013)
+OK /artist/ari-benjho (253/1013)
+OK /artist/simple-rock (254/1013)
+GAGAL /artist/roxen: Waiting failed: 10000ms exceeded
+GAGAL /artist/lady-roos: Waiting failed: 10000ms exceeded
+OK /artist/alvi-ananta-ft-koko-arya (257/1013)
+OK /artist/mesandal-keroncong (258/1013)
+OK /artist/near (259/1013)
+GAGAL /artist/irwan-wolfang: Waiting failed: 10000ms exceeded
+OK /artist/leni-paslah (261/1013)
+OK /artist/eki-volad (262/1013)
+OK /artist/mario-g-klau-x-mone-band (263/1013)
+OK /artist/apank-ks2k (264/1013)
+OK /artist/alexa (265/1013)
+OK /artist/rizki-hidayat (266/1013)
+OK /artist/muka-timur (267/1013)
+OK /artist/ko-siapa (268/1013)
+OK /artist/fahmi-bo-feat-yogi-andrian (269/1013)
+GAGAL /artist/bintang-trada-sayang: Waiting failed: 10000ms exceeded
+OK /artist/sehati-sejiwa (271/1013)
+GAGAL /artist/eki-voland: Waiting failed: 10000ms exceeded
+OK /artist/ayu-amanda-ft-obenk-gta (273/1013)
+GAGAL /artist/rina-fitriyani-br-pinen: Waiting failed: 10000ms exceeded
+OK /artist/cinta-petir (275/1013)
+OK /artist/ryan-junior-x-gans-polos (276/1013)
+OK /artist/suci-nurjayanti (277/1013)
+OK /artist/falado-trio (278/1013)
+OK /artist/epep-feat-cindy-marenta (279/1013)
+OK /artist/epep-cindy-marenta (280/1013)
+OK /artist/iqbal (281/1013)
+OK /artist/jackie-chan-feat-kim-hee-seon (282/1013)
+GAGAL /artist/obenk-gta: Waiting failed: 10000ms exceeded
+OK /artist/made-ada (284/1013)
+OK /artist/made-ada-ft-lugra (285/1013)
+GAGAL /artist/obenk-gta-x-arul-x-nanda-faul: Waiting failed: 10000ms exceeded
+OK /artist/martin-hill (287/1013)
+GAGAL /artist/bintangku: Waiting failed: 10000ms exceeded
+OK /artist/moh (289/1013)
+OK /artist/netty-vera-br-bangun (290/1013)
+OK /artist/dek-pekir (291/1013)
+OK /artist/deama-feat-dek-pekir (292/1013)
+OK /artist/elsyana (293/1013)
+OK /artist/elsyana-feat-rozac-tanjung (294/1013)
+OK /artist/sore-ze-band (295/1013)
+OK /artist/mallfin-marandof (296/1013)
+OK /artist/sanggam-manurung (297/1013)
+OK /artist/sa-tra-rela (298/1013)
+GAGAL /artist/geby-wuy: Waiting failed: 10000ms exceeded
+GAGAL /artist/lovarian: Waiting failed: 10000ms exceeded
+GAGAL /artist/alsa: Waiting failed: 10000ms exceeded
+OK /artist/adnan-bustam (302/1013)
+OK /artist/khilaf (303/1013)
+OK /artist/cut-rani-auliza (304/1013)
+OK /artist/bergek-feat-cut-rani (305/1013)
+OK /artist/ramlan-yahya-feat-cut-rani (306/1013)
+OK /artist/cut-rani (307/1013)
+OK /artist/sabee-lam-doa (308/1013)
+OK /artist/ziell-ferdian-feat-cut-rani (309/1013)
+OK /artist/floor-88 (310/1013)
+GAGAL /artist/senandika: Waiting failed: 10000ms exceeded
+OK /artist/floor-88-raffa-affar (312/1013)
+GAGAL /artist/dept: Waiting failed: 10000ms exceeded
+GAGAL /artist/as-last-hope: Waiting failed: 10000ms exceeded
+OK /artist/floor-88-baby-shima (315/1013)
+OK /artist/mario-g-klau-ft-angelo-klau (316/1013)
+OK /artist/virgi (317/1013)
+OK /artist/nining-meida (318/1013)
+OK /artist/kabaya-beureum (319/1013)
+OK /artist/mira-kirana (320/1013)
+OK /artist/neiked-mae-muller-polo-g (321/1013)
+OK /artist/ifnyn-feat-kaffah-almira (322/1013)
+OK /artist/ifnyn (323/1013)
+OK /artist/dewi-purwati (324/1013)
+OK /artist/retno-susanti (325/1013)
+GAGAL /artist/floor-88-x-masmona: Waiting failed: 10000ms exceeded
+OK /artist/guntur-arisandy (327/1013)
+GAGAL /artist/olivia-dean: Waiting failed: 10000ms exceeded
+OK /artist/willy-anggawinata-ft-brigitta-tifanny (329/1013)
+GAGAL /artist/stick-figure: Waiting failed: 10000ms exceeded
+OK /artist/avolia-willy-anggawinata-adam-zeins (331/1013)
+OK /artist/vicky-salamor (332/1013)
+OK /chord/ayu-amanda-ridho-zulma-ft-cabiak-agiah-bana (333/1013)
+OK /chord/cabiak-mantan-samo-jo-kantuik (334/1013)
+OK /chord/cabiak-kanai-hao (335/1013)
+OK /chord/cabiak-upiak-bulu-cewek-mintak-kawin (336/1013)
+OK /chord/cabiak-alek-sudah-upek-tibo (337/1013)
+OK /chord/cabiak-betty-anak-juragan (338/1013)
+OK /chord/cabiak-payah-cari-karajo (339/1013)
+GAGAL /artist/willy-anggawinata: Waiting failed: 10000ms exceeded
+OK /chord/cabiak-sagalo-gadang (341/1013)
+OK /chord/anyqu-feat-cabiak-umbuak-pilanak (342/1013)
+OK /chord/nada-zahrani-iqbal-mahesa-ft-cabiak-saba-mananti (343/1013)
+OK /chord/caca-da5-nia-anak-surga (344/1013)
+GAGAL /artist/lian-karoho: Waiting failed: 10000ms exceeded
+GAGAL /artist/vicky-salamor-ft-new-gvme: Waiting failed: 10000ms exceeded
+OK /chord/caca-da5-cinta-kutanam-kau-balas-dusta (347/1013)
+OK /chord/caca-da5-sakiknyo-denai (348/1013)
+OK /chord/caca-handika-semua-tau (349/1013)
+OK /chord/caca-handika-air-mata-bawang (350/1013)
+OK /chord/caca-handika-orang-sekampung (351/1013)
+OK /chord/caca-handika-gantungan-baju (352/1013)
+OK /chord/caca-handika-cincin-putih (353/1013)
+OK /chord/caca-handika-angka-satu (354/1013)
+OK /chord/caca-jiga-balapik-cinta (355/1013)
+GAGAL /chord/caca-da5-hanya-butiran-debu: Waiting failed: 10000ms exceeded
+GAGAL /chord/caca-da5-feat-al-ibnu-adijaya-pikia-pikia-bana: Waiting failed: 10000ms exceeded
+OK /chord/caca-olivia-kerinduan-hati (358/1013)
+GAGAL /chord/caca-da5-sayo-da: Waiting failed: 10000ms exceeded
+OK /chord/caca-olivia-sebatang-kara (360/1013)
+OK /chord/caca-olivia-cinta-tak-terlukai (361/1013)
+OK /chord/caca-olivia-buruang-tabang-sangkak-lah-tingga (362/1013)
+OK /chord/tunggara-caca-veronica (363/1013)
+OK /chord/cacaiska-tentang-kepastian (364/1013)
+OK /chord/cade-thompson-eyes-of-god (365/1013)
+OK /chord/caeleb-ft-hendro-mc-marisa-marah-tapi-sayang (366/1013)
+OK /chord/caesario-lestari (367/1013)
+GAGAL /chord/arif-lida-feat-caca-olivia-bidadari-hidupku: Waiting failed: 10000ms exceeded
+GAGAL /chord/arif-lida-feat-caca-olivia-semua-tau: Waiting failed: 10000ms exceeded
+OK /chord/caessaria-feat-ariel-noah-little-old-man (370/1013)
+GAGAL /chord/caca-olivia-muara-kasih-ibu: Waiting failed: 10000ms exceeded
+OK /chord/caessaria-feat-astrid-gelap-mata (372/1013)
+OK /chord/caffeine-aku-takkan-memiliki (373/1013)
+OK /chord/caffeine-kau-yang-tlah-pergi (374/1013)
+OK /chord/caffeine-tiga-kata (375/1013)
+OK /chord/caffeine-hidupku-kan-damaikan-hatimu (376/1013)
+OK /chord/yang-tak-pernah-caffeine (377/1013)
+OK /chord/caffeine-seperti-bidadari (378/1013)
+OK /chord/rudy-caffeine-kunci-hati (379/1013)
+OK /chord/rudy-caffein-aku-memilih-dia (380/1013)
+OK /chord/caffeine-berdua (381/1013)
+GAGAL /chord/caessaria-infeksi: Waiting failed: 10000ms exceeded
+GAGAL /chord/caffein-bayangkan: Waiting failed: 10000ms exceeded
+GAGAL /chord/caffeine-tiara: Waiting failed: 10000ms exceeded
+OK /chord/caffeine-cinta-sejati (385/1013)
+OK /chord/tenxi-jemsii-josua-natanael-dia-puting-beliung (386/1013)
+OK /chord/riku-josua-natanael-naykilla-na (387/1013)
+OK /chord/justin-bieber-honest-feat-don-toliver (388/1013)
+GAGAL /chord/v2last-seperti-bintang: Waiting failed: 10000ms exceeded
+GAGAL /chord/v2last-feat-firman-x-factor-indonesia-gagal-tersakiti: Waiting failed: 10000ms exceeded
+OK /chord/don-toliver-tiramisu (391/1013)
+GAGAL /chord/josua-natanael-dera-masih-baru: Waiting failed: 10000ms exceeded
+OK /chord/angger-bayu-aji-kau-ku-kenang-saja (393/1013)
+OK /chord/angger-bayu-aji-oh-kasihku (394/1013)
+OK /chord/angger-bayu-aji-raih-bersama (395/1013)
+OK /chord/iwan-fals-feat-danilla-riyadi-penghibur-hati (396/1013)
+GAGAL /chord/angger-bayu-aji-pergi-tuk-kembali: Waiting failed: 10000ms exceeded
+GAGAL /chord/angger-bayu-aji-jadi-orang-kaya: Waiting failed: 10000ms exceeded
+OK /chord/nia-cincin-tunangan (399/1013)
+GAGAL /chord/angger-bayu-aji-nantikan-aku: Waiting failed: 10000ms exceeded
+OK /chord/ananta-prince-main-balakang (401/1013)
+OK /chord/diego-alexander-garing-mantan-jadi-besan (402/1013)
+OK /chord/chyran-astrid-cemburu-boleh-mar-bodok-jangan (403/1013)
+OK /chord/nova-sondakh-cinta-nyanda-jual (404/1013)
+GAGAL /chord/elsa-kapoh-tamang-deng-sayang: Waiting failed: 10000ms exceeded
+GAGAL /chord/isty-julistry-tidor-deng-kita-hati-for-dia: Waiting failed: 10000ms exceeded
+OK /chord/nadeera-bukan-lagi-kita (407/1013)
+GAGAL /chord/jeifi-kawengian-biar-jo-simpang-dihati: Waiting failed: 10000ms exceeded
+OK /chord/nadeera-dam-dim-dum-raya (409/1013)
+OK /chord/nadeera-cuba-jadi-aku (410/1013)
+OK /chord/menghayal-cinta-sonya-bara-x-jplanetz-x-bradley (411/1013)
+OK /chord/sonya-bara-ko-bikin-sa-down-feat-twentyf-dom (412/1013)
+GAGAL /chord/hael-husaini-nadeera-meriah-lain-macam: Waiting failed: 10000ms exceeded
+GAGAL /chord/hael-husaini-nadeera-peluk: Waiting failed: 10000ms exceeded
+GAGAL /chord/nadeera-restu-raya: Waiting failed: 10000ms exceeded
+OK /chord/next-level-sonya-bara-x-epo-dfenomeno-x-koko-yefta (416/1013)
+OK /chord/float-sementara (417/1013)
+OK /chord/float-emily (418/1013)
+OK /chord/little-big-town-hell-yeah (419/1013)
+GAGAL /chord/tika-mila-njogo-ati: Waiting failed: 10000ms exceeded
+GAGAL /chord/float-pulang: Waiting failed: 10000ms exceeded
+GAGAL /chord/float-waltz-musim-pelangi: Waiting failed: 10000ms exceeded
+OK /chord/little-big-town-mr-sun (423/1013)
+OK /chord/little-big-town-last-day-on-earth (424/1013)
+OK /chord/little-big-town-friends-of-mine (425/1013)
+OK /chord/little-big-town-song-back (426/1013)
+OK /chord/little-big-town-heaven-had-a-dance-floor (427/1013)
+GAGAL /chord/little-big-town-one-more-song: Waiting failed: 10000ms exceeded
+GAGAL /chord/little-big-town-different-without-you: Waiting failed: 10000ms exceeded
+GAGAL /chord/little-big-town-something-strong: Waiting failed: 10000ms exceeded
+OK /chord/little-big-town-whiskey-colored-eyes (431/1013)
+OK /chord/rahma-delinofira-pandayuang-patah-ditangah (432/1013)
+OK /chord/candria-feat-richie-five-minutes-jujur-saja (433/1013)
+OK /chord/candria-yang-kumau (434/1013)
+OK /chord/loy-bikin-panas-mengejar-impian (435/1013)
+GAGAL /chord/aku-yang-terluka-angga-candra-ft-rafi-gimbal-dellu-uyee: Waiting failed: 10000ms exceeded
+GAGAL /chord/fourtwnty-mangu-ft-charita-utami: Waiting failed: 10000ms exceeded
+GAGAL /chord/wis-bedo-bayu-blenk: Waiting failed: 10000ms exceeded
+OK /chord/munn-i-pick-loneliness-with-delanie-leclerc (439/1013)
+OK /chord/udur-pasaribu-taringot-tu-damang-parsinuan (440/1013)
+OK /chord/ian-kasela-1000-doa-feat-ratu-galuh (441/1013)
+OK /chord/ian-kasela-karena-cinta-ost-cinta-kedua (442/1013)
+OK /chord/ian-kasela-baper (443/1013)
+GAGAL /chord/munn-only-human-with-delanie-leclerc: Waiting failed: 10000ms exceeded
+GAGAL /chord/munn-this-house-is-not-a-home-with-delanie-leclerc: Waiting failed: 10000ms exceeded
+GAGAL /chord/ilham-sama-sama-happy: Waiting failed: 10000ms exceeded
+OK /chord/ian-kasela-maraju (447/1013)
+OK /chord/ian-kasela-sayang-kamu (448/1013)
+OK /chord/hugo-feat-ian-kasela-itu-dulu (449/1013)
+OK /chord/ian-kasela-istriku (450/1013)
+GAGAL /chord/ian-kasela-tak-ingin-kehilangan: Waiting failed: 10000ms exceeded
+GAGAL /chord/ian-kasela-lepasin-aje: Waiting failed: 10000ms exceeded
+OK /chord/ian-kasela-tak-tergantikan (453/1013)
+GAGAL /chord/ian-kasela-tak-mau-sendiri-new-versi: Waiting failed: 10000ms exceeded
+OK /chord/spontan-music-pamit (455/1013)
+OK /chord/enzana-tua-bersama (456/1013)
+OK /chord/morgan-wade-hardwood-floor (457/1013)
+OK /chord/morgan-wade-loves-insane (458/1013)
+GAGAL /chord/kenshi-band-sebelum-janur-kuning: Waiting failed: 10000ms exceeded
+GAGAL /chord/spontan-music-bedo: Waiting failed: 10000ms exceeded
+OK /chord/dek-soma-pelih-besik-dadi-siu (461/1013)
+GAGAL /chord/lin-yu-chun-finding-you-in-a-sea-of-people-you-are-the-apple-of-my-eye-ost: Waiting failed: 10000ms exceeded
+OK /chord/dek-soma-korban-pahlawan (463/1013)
+OK /chord/dek-soma-tetap-berjuang (464/1013)
+OK /chord/dek-soma-plaibang-lubak (465/1013)
+GAGAL /chord/dek-soma-ade-ngantiang-di-sisi: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-muani-belog: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-nu-ngelah-hati: Waiting failed: 10000ms exceeded
+OK /chord/dek-soma-feat-trias-saling-gelahang (469/1013)
+OK /chord/dek-soma-pelih-pejalan (470/1013)
+OK /chord/dek-soma-sing-jodoh (471/1013)
+OK /chord/dek-soma-sing-ada-pilihan (472/1013)
+OK /chord/dek-soma-kecewa (473/1013)
+GAGAL /chord/dek-soma-kopi-jumah-gula-di-sisi: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-tetap-bertahan: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-pipis-dadi-pemenang: Waiting failed: 10000ms exceeded
+OK /chord/dek-soma-pocol-ngarepang (477/1013)
+OK /chord/dek-soma-sia-sia-ngetohin-koplo (478/1013)
+OK /chord/dek-soma-buta-tumben-kedat (479/1013)
+OK /chord/dek-soma-tusing-jodoh (480/1013)
+GAGAL /chord/dek-soma-feat-edi-satya-nyaman-di-sisi: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-tuah-5-menit: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-kalah-di-lc: Waiting failed: 10000ms exceeded
+OK /chord/dek-soma-tresna-terlarang (484/1013)
+OK /chord/dek-soma-nuduh-tanpa-bukti (485/1013)
+OK /chord/widi-as-rindu (486/1013)
+OK /chord/marisha-putri-jangan-keluar-dulu (487/1013)
+GAGAL /chord/dek-soma-pemain-hati: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-kalahang-baan-harta: Waiting failed: 10000ms exceeded
+GAGAL /chord/dek-soma-beda-kelas: Waiting failed: 10000ms exceeded
+OK /chord/marisha-putri-terlanjur-kaya (491/1013)
+OK /chord/relawan-asmara-otw-sayang (492/1013)
+OK /chord/relawan-asmara-ft-damara-de-sewindu (493/1013)
+OK /chord/intan-selvi-dibalik-cahaya-ada-cinta (494/1013)
+GAGAL /chord/lion-babe-feat-oshun-its-okay: Waiting failed: 10000ms exceeded
+GAGAL /chord/siapa-cintaku-kata-band: Waiting failed: 10000ms exceeded
+OK /chord/intan-selvi-sarumah-bajauah-hati (497/1013)
+GAGAL /chord/relawan-asmara-tresno-tenan: Waiting failed: 10000ms exceeded
+OK /chord/intan-selvi-ft-roby-januarta-salah-manduo-hati (499/1013)
+OK /chord/ykp-akustik-ft-agustina-tak-ikhlaske (500/1013)
+OK /chord/yan-jaya-mantan-terindah (501/1013)
+GAGAL /chord/intan-selvi-galak-diateh-tangih: Waiting failed: 10000ms exceeded
+GAGAL /chord/intan-selvi-rundiang-pamisah-cinto: Waiting failed: 10000ms exceeded
+GAGAL /chord/bang-roy-purba-marboru-simalungun: Waiting failed: 10000ms exceeded
+OK /chord/yan-jaya-feat-wahyu-sebatas-mengagumi (505/1013)
+OK /chord/afandi-neomu-dengarkan-lagu-ini (506/1013)
+GAGAL /chord/tio-sitanggang-cinta-terlarang: Waiting failed: 10000ms exceeded
+GAGAL /chord/i-miss-you-ben2h5-ft-yorvix-boryaz-x-ichad-bless-x-kaka-eks: Waiting failed: 10000ms exceeded
+GAGAL /chord/macam-susah-jysnkind-ft-yosuaar-david-syom-ben2h5-stivndblacksmn: Waiting failed: 10000ms exceeded
+OK /chord/mas-jar-kowe-bahagia (510/1013)
+OK /chord/vivi-dc-official-pengorbanan-dan-harapan (511/1013)
+OK /chord/vivi-dc-kurasa-kau-berubah (512/1013)
+OK /chord/vivi-dc-feat-anggi-chandra-mencintaimu-khayalanku (513/1013)
+OK /chord/anggi-chandra-feat-vivi-dc-semua-harus-berakhir (514/1013)
+GAGAL /chord/mifthah-aulianti-ft-frans-ariesta-mengapa-tak-dari-dulu: Waiting failed: 10000ms exceeded
+GAGAL /chord/miftah-ft-jamal-bialah-kahilangan-pado-mandapekkan: Waiting failed: 10000ms exceeded
+GAGAL /chord/noah-davis-holy-water: Waiting failed: 10000ms exceeded
+OK /chord/vivi-dc-feat-ben-tusipa-jejak-memory-cinta (518/1013)
+OK /chord/thomas-day-wildflower (519/1013)
+OK /chord/tantari-rindu-hatiku-rindu (520/1013)
+OK /chord/hari-ini-hari-raya-personaliti-molek-fm-feat-tantari (521/1013)
+GAGAL /chord/muhammad-rasyid-menahan-luka: Waiting failed: 10000ms exceeded
+OK /chord/achey-tantari-biar (523/1013)
+GAGAL /chord/thomas-day-the-new-me: Waiting failed: 10000ms exceeded
+GAGAL /chord/thomas-day-not-my-job-anymore: Waiting failed: 10000ms exceeded
+OK /chord/tantari-putera-bobo-tangisan-1-syawal (526/1013)
+OK /chord/tantari-1-cinta-1-rindu (527/1013)
+OK /chord/nabila-taqiyyah-aku-cinta-kamu (528/1013)
+OK /chord/nabila-taqiyyah-tak-dianggap (529/1013)
+GAGAL /chord/tantari-rindu-hatiku-rindu-raya: Waiting failed: 10000ms exceeded
+GAGAL /chord/achey-tantari-baby-feaaa-ragam-raya: Waiting failed: 10000ms exceeded
+GAGAL /chord/achey-tantari-rayyan-dahlya-ibu-raya: Waiting failed: 10000ms exceeded
+OK /chord/nabila-taqiyyah-menghargai-kata-rindu (533/1013)
+OK /chord/nabila-taqiyyah-terpatah-terluka (534/1013)
+OK /chord/rizwan-fadilah-nabila-taqiyyah-tak-satu-cerita (535/1013)
+GAGAL /chord/nabila-taqiyyah-ku-ingin-pisah: Waiting failed: 10000ms exceeded
+GAGAL /chord/nabila-taqiyyah-hanya-lolongan: Waiting failed: 10000ms exceeded
+GAGAL /chord/insomniacks-nabila-taqiyyah-belum-mulai: Waiting failed: 10000ms exceeded
+OK /chord/nabila-taqiyyah-berjalan-tanpamu (539/1013)
+OK /chord/nabila-taqiyyah-sementara-bukan-selamanya (540/1013)
+OK /chord/nabila-taqiyyah-menikmati-kebohongan (541/1013)
+OK /chord/kim-nabila-taqiyyah-bayangan-cinta-yang-lalu (542/1013)
+GAGAL /chord/nabila-taqiyyah-cinta-sia-sia: Waiting failed: 10000ms exceeded
+GAGAL /chord/nabila-taqiyyah-pengagum-rahasia: Waiting failed: 10000ms exceeded
+GAGAL /chord/nabila-taqiyyah-salah-sangka: Waiting failed: 10000ms exceeded
+OK /chord/nabila-taqiyyah-cegil (546/1013)
+OK /chord/inna-azuri-tiada-yang-lain (547/1013)
+OK /chord/inna-azuri-satukan-hati-kami (548/1013)
+OK /chord/inna-azuri-cinto-tak-harus-memiliki (549/1013)
+GAGAL /chord/bob-yunus-kan-terganti: Waiting failed: 10000ms exceeded
+GAGAL /chord/alba-samallo-ambon-weda: Waiting failed: 10000ms exceeded
+OK /chord/inna-azuri-seso-dipamainkan (552/1013)
+GAGAL /chord/aespa-aespa-forever: Waiting failed: 10000ms exceeded
+OK /chord/raptama-trio-haccit-pambahenan-mon (554/1013)
+OK /chord/cinto-sataguah-karang-fatwa-saputra-ft-nella-nafritai (555/1013)
+OK /chord/tajul-feat-wany-hasrita-rindu-dalam-benci (556/1013)
+OK /chord/tajul-izinkan-aku (557/1013)
+GAGAL /chord/jhalo-jz-yang-ke-berapa-feat-edgar-stevano-brex32-kenshit-vgt-remco: Waiting failed: 10000ms exceeded
+GAGAL /chord/raptama-trio-gabe-boru-ni-raja: Waiting failed: 10000ms exceeded
+GAGAL /chord/ora-ketututan-anggara-official-ft-ardinarass: Waiting failed: 10000ms exceeded
+OK /chord/tajul-afieq-shazwan-malam-semakin-dingin (561/1013)
+OK /chord/tajul-afieq-shazwan-di-mana-janjimu-dulu (562/1013)
+OK /chord/tajul-afieq-shazwan-insan-ku-sayang-kini-menghilang-feat-spin (563/1013)
+OK /chord/tajul-bodohnya-aku (564/1013)
+GAGAL /chord/tajul-wany-hasrita-tragedi-cinta: Waiting failed: 10000ms exceeded
+OK /chord/tajul-muna-shahirah-resipi-berkasih (566/1013)
+GAGAL /chord/tajul-afieq-shazwan-resah-kerinduan: Waiting failed: 10000ms exceeded
+GAGAL /chord/tajul-serpihan-rindu: Waiting failed: 10000ms exceeded
+OK /chord/amyn-bayu-bek-curiga (569/1013)
+OK /chord/tuty-tomagola-di-weda-ale-balaeng (570/1013)
+OK /chord/janji-di-tugu-merpati-daniel-maestro-feat-julia-anugrah-putri (571/1013)
+OK /chord/mabuak-diseso-bayang-daniel-maestro-feat-nabilla-yuza (572/1013)
+GAGAL /chord/tajul-afieq-shazwan-hilangmu-tak-terganti: Waiting failed: 10000ms exceeded
+GAGAL /chord/eka-x-winky-summer-tears-feat-sorenza: Waiting failed: 10000ms exceeded
+GAGAL /chord/weird-genius-winky-wiryawan-heal-feat-venes: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-kasmaran (576/1013)
+OK /chord/rika-masya-ft-daniel-maestro-pautan-hati (577/1013)
+OK /chord/rayola-feat-daniel-maestro-cinto-sapasukuan (578/1013)
+OK /chord/daniel-maestro-pandemi (579/1013)
+GAGAL /chord/daniel-maestro-adiak-den-nanti-juo: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-arok-dinanti: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-cinto-nan-manang (582/1013)
+GAGAL /chord/rayola-feat-daniel-maestro-hilang-raso-picayo: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-ft-nabilla-yuza-janji-mu-palsu (584/1013)
+OK /chord/daniel-maestro-jawaban-korban-perceraian (585/1013)
+OK /chord/daniel-maestro-cando-karambia-condong (586/1013)
+OK /chord/bujang-tabuang-daniel-maestro (587/1013)
+GAGAL /chord/daniel-maestro-manampuah-galanggang-rami: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-ft-nabila-yuza-hapuih-carito-cinto: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-ft-nabila-yuza-cinto-di-padu: Waiting failed: 10000ms exceeded
+OK /chord/denai-taseso-uda-taluko-rayola-feat-daniel-maestro (591/1013)
+OK /chord/daniel-maestro-ft-icha-zagita-cimburu (592/1013)
+OK /chord/rayola-ft-daniel-maestro-mauik-pamisah-cinto (593/1013)
+OK /chord/rayola-ft-daniel-maestro-cinto-untuak-salamonyo (594/1013)
+GAGAL /chord/daniel-maestro-ft-icha-zagita-cinto-panabuih-hutang: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-tarumuak: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-mangalah-untuak-cinto (597/1013)
+GAGAL /chord/vany-thursdila-feat-daniel-maestro-indak-tatagah: Waiting failed: 10000ms exceeded
+OK /chord/rayola-ft-daniel-maestro-adiak-nan-denai-cinto (599/1013)
+OK /chord/daniel-maestro-ft-vany-thursdila-cinto-beda-agamo (600/1013)
+OK /chord/rayola-ft-daniel-maestro-indak-mungkin-kasiah-baulang (601/1013)
+OK /chord/daniel-maestro-cinto-tabangkalai (602/1013)
+GAGAL /chord/daniel-maestro-cinto-tak-pasti: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-nan-mahadang-jan-di-lawan: Waiting failed: 10000ms exceeded
+GAGAL /chord/sri-fayola-feat-daniel-maestro-alek-usai-talak-jatuah: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-ft-icha-zagita-setia-menanti (606/1013)
+OK /chord/rayola-ft-daniel-maestro-cimburu-tandonyo-sayang (607/1013)
+OK /chord/rayola-ft-daniel-maestro-simalang-jo-si-mujua (608/1013)
+OK /chord/julia-anugerah-putri-cinto-sataguah-tugu-marpati-ft-daniel-maestro (609/1013)
+OK /chord/daniel-maestro-samakin-tahino (610/1013)
+GAGAL /chord/daniel-maestro-ft-nabilla-yuza-rintang-parasaan: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-bagaluik-jo-parasaian: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-feat-nabilla-yuza-takicuah-dek-rupo: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-raso-kasampai (614/1013)
+OK /chord/daniel-maestro-lapiak-usang (615/1013)
+OK /chord/daniel-maestro-tadayo-hati (616/1013)
+OK /chord/daniel-maestro-ft-nabilla-yuza-raso-nan-salah (617/1013)
+GAGAL /chord/rayola-ft-daniel-maestro-rintangan-pasti-kito-hadang: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-barambun-di-pondok-tuo: Waiting failed: 10000ms exceeded
+GAGAL /chord/daniel-maestro-semua-tiada-arti: Waiting failed: 10000ms exceeded
+OK /chord/daniel-maestro-tuhan-tolonglah (621/1013)
+OK /chord/rindu-yang-terlarang-broery-marantika-ft-dewi-yull (622/1013)
+OK /chord/dewi-yull-diambang-sore (623/1013)
+OK /chord/dewi-yull-kau-dan-aku-sama (624/1013)
+GAGAL /chord/daniel-maestro-kasiah-dilarai-urang-tuo: Waiting failed: 10000ms exceeded
+OK /chord/dewi-yull-putri (626/1013)
+GAGAL /chord/daniel-maestro-bayang-manyeso-batin: Waiting failed: 10000ms exceeded
+GAGAL /chord/jangan-ada-dusta-di-antara-kita-broery-marantika-ft-dewi-yull: Waiting failed: 10000ms exceeded
+OK /chord/keisya-levronka-jadi-kekasihku-saja (629/1013)
+OK /chord/keisya-levronka-hidup-tanpamu (630/1013)
+OK /chord/keisya-levronka-better-on-my-own (631/1013)
+GAGAL /chord/arnada-trio-parhaseang-holong-hi: Waiting failed: 10000ms exceeded
+GAGAL /chord/keisya-levronka-tergesa: Waiting failed: 10000ms exceeded
+GAGAL /chord/keisya-levronka-tak-ingin-usai: Waiting failed: 10000ms exceeded
+OK /chord/keisya-levronka-tak-pantas-terluka (635/1013)
+OK /chord/keisya-levronka-nyoman-paul-denganmu-saja (636/1013)
+OK /chord/keisya-levronka-aku-bukan-dia (637/1013)
+OK /chord/keisya-levronka-lukis-hari-ini (638/1013)
+OK /chord/keisya-levronka-sembunyi-lebih-lama (639/1013)
+GAGAL /chord/keisya-levronka-tersemogakan: Waiting failed: 10000ms exceeded
+GAGAL /chord/keisya-levronka-bahagia-tanpaku: Waiting failed: 10000ms exceeded
+GAGAL /chord/keisya-levronka-tawamu: Waiting failed: 10000ms exceeded
+OK /chord/keisya-levronka-lagi-lagi-hanya-kamu (643/1013)
+OK /chord/the-siswondo-tak-sabar-bertemu-lagi (644/1013)
+OK /chord/the-siswondo-tak-sabar-bertemu-lagi-extended-version (645/1013)
+GAGAL /chord/keisya-levronka-pelarian: Waiting failed: 10000ms exceeded
+GAGAL /chord/keisya-levronka-rayakanlah: Waiting failed: 10000ms exceeded
+GAGAL /chord/keryl-begitu-terasa: Waiting failed: 10000ms exceeded
+OK /chord/the-siswondo-kau-adalah-rumahku (649/1013)
+OK /chord/freed-ghalib-muhasabah (650/1013)
+OK /chord/rikki-hwang-selalu-untukmu (651/1013)
+OK /chord/sendogarpu-lawan-dan-tunjukan (652/1013)
+GAGAL /chord/the-siswondo-penunggu-bayangan: Waiting failed: 10000ms exceeded
+GAGAL /chord/fonny-shencia-aku-satia-manunggu: Waiting failed: 10000ms exceeded
+GAGAL /chord/jacson-zeran-yang-terakhir-feat-nia-fernandes: Waiting failed: 10000ms exceeded
+OK /chord/sendogarpu-i-hate-you (656/1013)
+OK /chord/wayan-sumade-sesai-punyah (657/1013)
+OK /chord/wayan-sumade-kapok-punyah (658/1013)
+GAGAL /chord/silvy-carlina-dek-cinto-cilako-diri: Waiting failed: 10000ms exceeded
+GAGAL /chord/silvy-carlina-sadri-zarro-bausaho-basumbayang: Waiting failed: 10000ms exceeded
+GAGAL /chord/enka-ft-momon-karman-apa-aku-bisa: Waiting failed: 10000ms exceeded
+OK /chord/wayan-sumade-mewali-ke-bali (662/1013)
+OK /chord/aniq-muhai-mahakarya (663/1013)
+OK /chord/aniq-muhai-ft-adnin-roslan-jangan-risau (664/1013)
+GAGAL /chord/wayan-sumade-korban-tik-tok: Waiting failed: 10000ms exceeded
+GAGAL /chord/wayan-sumade-tresna-mengkeban: Waiting failed: 10000ms exceeded
+GAGAL /chord/wayan-sumade-percuma-berjuang: Waiting failed: 10000ms exceeded
+OK /chord/unic-ft-aniq-muhai-naufal-isa-jom-solat (668/1013)
+OK /chord/miftah-wahdini-anjas-wasae-kembalilah-engkau-sayang (669/1013)
+GAGAL /chord/kansas-dust-in-the-wind: Waiting failed: 10000ms exceeded
+GAGAL /chord/sakajawa-mblenjani-janji: Waiting failed: 10000ms exceeded
+GAGAL /chord/wah-ditya-nguangin-beban-rerama: Waiting failed: 10000ms exceeded
+OK /chord/anjas-wasae-parasaian-anak-piatu (673/1013)
+OK /chord/dante-nababan-kapa-dang (674/1013)
+OK /chord/bage-abu-dante-nababan-ft-dandy-barakati (675/1013)
+OK /chord/ta-lipa-lipa-dandy-barakati-ft-dante-nababan (676/1013)
+GAGAL /chord/trousdale-always-joni: Waiting failed: 10000ms exceeded
+GAGAL /chord/dandy-barakati-ft-dante-nababan-mode-pesawat: Waiting failed: 10000ms exceeded
+OK /chord/bae-mar-lama-ever-batkunde-ft-dante-nababan (679/1013)
+GAGAL /chord/so-omom-dandy-barakati-ft-melandy-jacobus-dante-nababan: Waiting failed: 10000ms exceeded
+OK /chord/benny-blanco-bts-snoop-dogg-bad-decisions (681/1013)
+GAGAL /chord/sardi-uwo-wija-tau-peddi-lellung-deceng: Waiting failed: 10000ms exceeded
+GAGAL /chord/sardi-uwo-mangkangulu-pale-lima: Waiting failed: 10000ms exceeded
+GAGAL /chord/antha-pryma-singetken-gelarku: Waiting failed: 10000ms exceeded
+GAGAL /chord/critoss-official-feat-oktavia-ojo-egois: Waiting failed: 10000ms exceeded
+OK /chord/ressa-febyolla-bingung-mamilih (686/1013)
+GAGAL /chord/vicky-kalea-kamu-yang-aku-bismillahkan: Waiting failed: 10000ms exceeded
+GAGAL /chord/vicky-kalea-takdir-yang-memilih: Waiting failed: 10000ms exceeded
+GAGAL /chord/dima-nagari-urang-minang-ado-benny-chan-feat-isnen-qori: Waiting failed: 10000ms exceeded
+OK /chord/indang-annes-ressa-febyolla-tikas-aku-baya-aku (690/1013)
+OK /chord/lian-karina-ehek (691/1013)
+OK /chord/steelheart-shes-gone (692/1013)
+GAGAL /chord/lintang-ivnda-feat-lintang-chya-ikhlas-ngeculke: Waiting failed: 10000ms exceeded
+GAGAL /chord/olivia-addams-never-say-never: Waiting failed: 10000ms exceeded
+GAGAL /chord/pinkan-mambo-dirimu-dirinya: Waiting failed: 10000ms exceeded
+OK /chord/steelheart-mama-dont-you-cry (696/1013)
+OK /chord/catur-arum-mendung (697/1013)
+OK /chord/catur-arum-ali-ali-moto-potih (698/1013)
+OK /chord/catur-arum-cemeng-kopi (699/1013)
+GAGAL /chord/sun-tutup-lawang-ati-catur-arum: Waiting failed: 10000ms exceeded
+OK /chord/catur-arum-kembange-ati (701/1013)
+GAGAL /chord/catur-arum-weleg: Waiting failed: 10000ms exceeded
+GAGAL /chord/catur-arum-jangget: Waiting failed: 10000ms exceeded
+OK /chord/catur-arum-awak-sak-awak (704/1013)
+OK /chord/catur-arum-tombo-kangene-ati-2 (705/1013)
+OK /chord/catur-arum-candu (706/1013)
+GAGAL /chord/catur-arum-ngertio: Waiting failed: 10000ms exceeded
+OK /chord/catur-arum-feat-ayu-surati-ikhlasno (708/1013)
+GAGAL /chord/satukan-langkah-candra-banyu-x-catur-arum: Waiting failed: 10000ms exceeded
+GAGAL /chord/catur-arum-kendang-tabuh-selisih: Waiting failed: 10000ms exceeded
+OK /chord/catur-arum-riko-kanggo-isun (711/1013)
+OK /chord/wijaya-80-malam-malam (712/1013)
+OK /chord/wijaya-80-masih-ada-kamu (713/1013)
+OK /chord/wijaya-80-feat-sal-priadi-bulan-bintang-garis-menyilang (714/1013)
+GAGAL /chord/catur-arum-lukisan-ati: Waiting failed: 10000ms exceeded
+GAGAL /chord/catur-arum-metenggengen: Waiting failed: 10000ms exceeded
+OK /chord/arsy-widianto-wijaya80-ini-adalah-cinta (717/1013)
+GAGAL /chord/wijaya-80-terakhir-kali: Waiting failed: 10000ms exceeded
+OK /chord/antik-cinta-sejati-cover-ari-lasso (719/1013)
+OK /chord/illenium-luv-me-a-little-feat-nina-nesbitt (720/1013)
+OK /chord/rieke-adriati-rindu-dalam-penantian (721/1013)
+GAGAL /chord/riyan-chaniago-feat-tiva-zalfan-manyasa: Waiting failed: 10000ms exceeded
+GAGAL /chord/the-brandals-feat-sukatani-jari-kasar: Waiting failed: 10000ms exceeded
+OK /chord/aja-dipikiri-farid-risqi-feat-yu-kor (724/1013)
+GAGAL /chord/qaish-ft-tresna-rasa-tak-terhenti: Waiting failed: 10000ms exceeded
+OK /chord/rama-arief-wayase-dompet-tipis (726/1013)
+OK /chord/asfan-shah-lia-aziz-pergilah-derita-ost-cukup-derita-itu (727/1013)
+OK /chord/asfan-shah-keka-nizam-dia-imamku-ost-dia-imamku (728/1013)
+GAGAL /chord/kaji-soher-ku-kan-pergi: Waiting failed: 10000ms exceeded
+GAGAL /chord/fearless-soul-dont-you-dare-give-up: Waiting failed: 10000ms exceeded
+OK /chord/pasto-terbaik-untuk-ku (731/1013)
+GAGAL /chord/rama-arief-wayase-sayonara: Waiting failed: 10000ms exceeded
+OK /chord/pasto-pertanyaan-bodoh (733/1013)
+OK /chord/pasto-cintamu-bukan-untukku-ost-dari-jendela-smp (734/1013)
+OK /chord/pasto-sayang-ost-dari-jendela-smp (735/1013)
+GAGAL /chord/ratu-aku-baik-baik-saja-pasto: Waiting failed: 10000ms exceeded
+GAGAL /chord/pasto-anak-hoki-ost-anak-hoki: Waiting failed: 10000ms exceeded
+GAGAL /chord/tanya-hati-pasto-chintya-gabriella-cover: Waiting failed: 10000ms exceeded
+OK /chord/pasto-milikku-seutuhnya (739/1013)
+OK /chord/jason-derulo-lifestyle-feat-adam-levine (740/1013)
+OK /chord/utara-band-lelah-langkahku-north (741/1013)
+OK /chord/utara-band-hujan-di-hatiku (742/1013)
+GAGAL /chord/pasto-menutup-hati: Waiting failed: 10000ms exceeded
+GAGAL /chord/boyolali-aku-bali-kang-jais: Waiting failed: 10000ms exceeded
+GAGAL /chord/adam-levine-lost-stars: Waiting failed: 10000ms exceeded
+OK /chord/delva-feat-gilga-sahid-sisihan (746/1013)
+OK /chord/gilga-sahid-ft-happy-asmara-ingin-temu (747/1013)
+OK /chord/gilga-sahid-feat-abah-kirun-sentir-lengo-potro (748/1013)
+GAGAL /chord/gilga-sahid-x-global-musik-nemu: Waiting failed: 10000ms exceeded
+GAGAL /chord/gilga-sahid-ft-mira-putri-janji-menakne: Waiting failed: 10000ms exceeded
+GAGAL /chord/gilga-sahid-rucah: Waiting failed: 10000ms exceeded
+OK /chord/gilga-sahid-ft-happy-asmara-pangestu (752/1013)
+OK /chord/gilga-sahid-ginarise-gusti (753/1013)
+GAGAL /chord/gilga-sahid-abab-poso: Waiting failed: 10000ms exceeded
+OK /chord/badai-romantic-project-tak-denganku (755/1013)
+GAGAL /chord/gilga-sahid-bapak-acoustic-version: Waiting failed: 10000ms exceeded
+GAGAL /chord/happy-asmara-feat-gilga-sahid-wegah-tukaran: Waiting failed: 10000ms exceeded
+OK /chord/fari-firdan-bawalah-kesetiaan (758/1013)
+OK /chord/aidilla-lamak-dek-awak-tapadiah-dek-kawan (759/1013)
+OK /chord/aidilla-abih-sakik-sanang-ka-tibo (760/1013)
+OK /chord/aidilla-ganggam-indak-sabara (761/1013)
+GAGAL /chord/badai-romantic-project-melamarmu: Waiting failed: 10000ms exceeded
+GAGAL /chord/fari-firdan-jumpa-pertama: Waiting failed: 10000ms exceeded
+GAGAL /chord/aidilla-cangok: Waiting failed: 10000ms exceeded
+OK /chord/aidilla-tagadang-anak-ula (765/1013)
+OK /chord/silet-open-up-x-kapthenpurek-kaka-main-salah (766/1013)
+OK /chord/kapthenpurek-berhenti-kasihan (767/1013)
+OK /chord/kapthenpurek-ft-andy-lo-wi-pace-laju (768/1013)
+GAGAL /chord/aidilla-babanak-ka-ampu-kaki: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-pantun-rakat-ft-gusti-senda-kanzer-pmc (770/1013)
+GAGAL /chord/aidilla-kabau-lapeh-pangimpau: Waiting failed: 10000ms exceeded
+GAGAL /chord/jeyma-monica-restu: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-sa-diam (773/1013)
+OK /chord/kapthenpurek-rindu-orang-pu-rusuk (774/1013)
+OK /chord/kapthenpurek-ko-ada-dua-ft-andy-lo-wi (775/1013)
+GAGAL /chord/kapthenpurek-telan-turun: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-rindu-tapi-takut: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-ko-bae: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-x-andy-lowy-ade-su-pulang-dar-malaysia (779/1013)
+OK /chord/kapthenpurek-tikam-saja (780/1013)
+OK /chord/kapthenpurek-sapa-sakit (781/1013)
+GAGAL /chord/kapthenpurek-jang-tahan-sa: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-sayang-keberapa-ft-andy-lo-wi-jaybee (783/1013)
+GAGAL /chord/kapthenpurek-rindu-ju-bae: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-sana-su-ft-wsk: Waiting failed: 10000ms exceeded
+OK /chord/anak-kompleks-feat-kapthenpurek-sapa-sayang (786/1013)
+GAGAL /chord/kapthenpurek-jangan-bilang: Waiting failed: 10000ms exceeded
+GAGAL /chord/ko-piara-kapthenpurek-feat-vinna-keraf-jaybee-andy-lo-wi-agwilo: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-kena-mental (789/1013)
+GAGAL /chord/kapthenpurek-semua-tipu: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-selalu-sa-salah (791/1013)
+OK /chord/busu-busu-setia-buset-kaka-andii-x-kapthenpurek (792/1013)
+OK /chord/kapthenpurek-su-tra-harap (793/1013)
+OK /chord/tambah-gaga-silet-open-up-x-kapthenpurek-x-kanzer-pmc (794/1013)
+GAGAL /chord/new-gvme-sa-yang-salah-feat-delite-amstergank: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-belajar-sendiri: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-berjuang-bukan-sembarang: Waiting failed: 10000ms exceeded
+OK /chord/delite-feat-kapthenpurek-kuat-di-bapa (798/1013)
+OK /chord/kapthenpurek-satu-kosong (799/1013)
+OK /chord/kapthenpurek-kapthenpurek-tinggal-janji (800/1013)
+GAGAL /chord/tinggal-tulang-kapthenpurek-ft-noldy-domaking-andre-tmk-astoozgila: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-sendiri-rasa (802/1013)
+GAGAL /chord/kapthenpurek-jaga-rindu-ft-kaka-andii-x-silet-open-up: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-belum-cukup-ka: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-lidah-tiada-tulang (805/1013)
+OK /chord/kapthenpurek-pisah-k-lanjut-ft-andy-lo-wi-jhalo-jz (806/1013)
+OK /chord/juan-reza-ft-kapthen-purek-mati-gaya (807/1013)
+GAGAL /chord/kapthenpurek-tiada-sisa: Waiting failed: 10000ms exceeded
+GAGAL /chord/kapthenpurek-jhalo-jz-tenaga-dalam-feat-jaybeevz-agwilo-pratel-rio: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-ft-juan-reza-kaka-gandeng (810/1013)
+GAGAL /chord/kapthenpurek-su-lantang-ft-jhalo-jz-andy-lo-wi: Waiting failed: 10000ms exceeded
+OK /chord/kapthenpurek-datang-hilang (812/1013)
+OK /chord/busu-busu-setia-2-kapthenpurek-ft-kaka-andii (813/1013)
+OK /chord/jovi-herlandi-x-billgoun-x-rizky-safaty-x-edwardo-palingu-pasang-gaya (814/1013)
+GAGAL /chord/kapthenpurek-lagu-lama-ft-son-dheztrow: Waiting failed: 10000ms exceeded
+OK /chord/onchy-wegu-jaga-ate (816/1013)
+GAGAL /chord/son-dheztrow-ft-kapthenpurek-lagu-baru: Waiting failed: 10000ms exceeded
+GAGAL /chord/kanzer-pmc-mau-nona-feat-son-dheztrow-fetoz-alfa-aris-ruing-kapthenpurek: Waiting failed: 10000ms exceeded
+OK /chord/salsa-billa-loro-dewe (819/1013)
+OK /chord/lady-roos-bantal-guling-bisa-bicara (820/1013)
+OK /chord/shallow-side-try-to-fight-it (821/1013)
+GAGAL /chord/theo-mustofa-kudu-bakoh: Waiting failed: 10000ms exceeded
+GAGAL /chord/bimbim-slank-every-junkie-song: Waiting failed: 10000ms exceeded
+GAGAL /chord/roxen-how-to-break-a-heart: Waiting failed: 10000ms exceeded
+OK /chord/irwan-wolfang-introspect-myself-feat-luluk-haryanti (825/1013)
+GAGAL /chord/andri-kancil-ngamplah: Waiting failed: 10000ms exceeded
+GAGAL /chord/axel-johansson-mortal: Waiting failed: 10000ms exceeded
+GAGAL /chord/kemot-bob-orkes-munara-rumpin: Waiting failed: 10000ms exceeded
+OK /chord/kemot-bob-indit-tunduh-teu-indit-butuh (829/1013)
+OK /chord/jay-jalalu-kepedihanku-feat-hendry-lamiri (830/1013)
+OK /chord/rio-wermasubun-ft-mario-yamlean-palsu (831/1013)
+OK /chord/kinur-sakit-bangat (832/1013)
+GAGAL /chord/kemot-bob-rumpin-broken-roads: Waiting failed: 10000ms exceeded
+GAGAL /chord/kemot-bob-akulah-si-gagal: Waiting failed: 10000ms exceeded
+GAGAL /chord/kemot-bob-terimakasih-untuk-kerasnya-malam-ini: Waiting failed: 10000ms exceeded
+OK /chord/kinur-mung-ban-serepmu (836/1013)
+OK /chord/simple-rock-lepas (837/1013)
+OK /chord/alvi-ananta-ft-koko-arya-sandiworo (838/1013)
+OK /chord/mesandal-keroncong-cemburu (839/1013)
+GAGAL /chord/ari-benjho-tandes: Waiting failed: 10000ms exceeded
+OK /chord/bintang-trada-sayang-julz-x-dongga-x-near (841/1013)
+GAGAL /chord/ari-benjho-ngempet-batin: Waiting failed: 10000ms exceeded
+GAGAL /chord/ari-benjho-sukowati-dadi-saksi: Waiting failed: 10000ms exceeded
+OK /chord/leni-paslah-bukik-bunian (844/1013)
+OK /chord/rina-fitriyani-br-pinen-anak-turang-bapa (845/1013)
+OK /chord/mario-g-klau-x-mone-band-pemain-lama (846/1013)
+GAGAL /chord/near-terserah-ft-chelz-dongga: Waiting failed: 10000ms exceeded
+OK /chord/apank-ks2k-pengantin-terbaru (848/1013)
+GAGAL /chord/eki-volad-kacang-lupa-kulitnya: Waiting failed: 10000ms exceeded
+GAGAL /chord/eki-voland-dirantau: Waiting failed: 10000ms exceeded
+OK /chord/alexa-jangan-pernah-pergi (851/1013)
+OK /chord/alexa-wajahmu-indahkan-duniaku (852/1013)
+OK /chord/alexa-pulang (853/1013)
+GAGAL /chord/alexa-dewi: Waiting failed: 10000ms exceeded
+GAGAL /chord/alexa-jangan-kau-lepas: Waiting failed: 10000ms exceeded
+GAGAL /chord/alexa-selalu-kukenang: Waiting failed: 10000ms exceeded
+OK /chord/alexa-hingga-saatnya-kan-tiba (857/1013)
+OK /chord/fahmi-bo-feat-yogi-andrian-gara-gara-cinta (858/1013)
+OK /chord/sehati-sejiwa-haslinda-malaysia (859/1013)
+OK /chord/obenk-gta-uroe-raya-ka-toe (860/1013)
+GAGAL /chord/rizki-hidayat-nuwus: Waiting failed: 10000ms exceeded
+GAGAL /chord/muka-timur-andre-tmk-ft-hasta-hanzo-victorias-queen-arra-boss-mancez: Waiting failed: 10000ms exceeded
+GAGAL /chord/ko-siapa-victorias-ft-queen-arra: Waiting failed: 10000ms exceeded
+OK /chord/ayu-amanda-ft-obenk-gta-aceh-minang (864/1013)
+OK /chord/ryan-junior-x-gans-polos-saat-berjumpa (865/1013)
+OK /chord/suci-nurjayanti-bersamamu-aku-berjuang (866/1013)
+OK /chord/suci-nurjayanti-marinir-cinta-kasihku (867/1013)
+GAGAL /chord/obenk-gta-x-arul-x-nanda-faul-buroeng-tujoh: Waiting failed: 10000ms exceeded
+GAGAL /chord/cinta-petir-ferry-myh: Waiting failed: 10000ms exceeded
+GAGAL /chord/bintangku-ferry-myh-feat-arini-latavita: Waiting failed: 10000ms exceeded
+OK /chord/falado-trio-holan-paradian-mu (871/1013)
+OK /chord/epep-cindy-marenta-goblok-mbatek (872/1013)
+OK /chord/iqbal-salah-menaruh-hati (873/1013)
+OK /chord/jackie-chan-feat-kim-hee-seon-endless-love-ost-the-myth (874/1013)
+GAGAL /chord/falado-trio-dang-martading-hata: Waiting failed: 10000ms exceeded
+GAGAL /chord/falado-trio-asa-taruli-ho: Waiting failed: 10000ms exceeded
+GAGAL /chord/epep-feat-cindy-marenta-dalane-urip: Waiting failed: 10000ms exceeded
+OK /chord/made-ada-adi-sekadi-rejeki-asri (878/1013)
+OK /chord/made-ada-pagar-tresna (879/1013)
+OK /chord/martin-hill-serba-salah-ft-geby-wuy-icell-chesylino (880/1013)
+OK /chord/geby-wuy-seng-rasa-ft-niken-soge-tian-dj (881/1013)
+GAGAL /chord/made-ada-kapahin-nyebeng: Waiting failed: 10000ms exceeded
+GAGAL /chord/made-ada-ft-lugra-boye-lagu-jaruh: Waiting failed: 10000ms exceeded
+GAGAL /chord/made-ada-jaba-wanen: Waiting failed: 10000ms exceeded
+OK /chord/geby-wuy-enak-ee-ft-chesylino-martin-hill-ari-liman (885/1013)
+OK /chord/moh-oqinawa-ft-alya-pangesty (886/1013)
+OK /chord/lovarian-perpisahan-termanis (887/1013)
+OK /chord/lovarian-vin (888/1013)
+GAGAL /chord/alsa-persimpangan: Waiting failed: 10000ms exceeded
+GAGAL /chord/alsa-lihai: Waiting failed: 10000ms exceeded
+GAGAL /chord/alsa-i-wanna: Waiting failed: 10000ms exceeded
+OK /chord/lovarian-melupakanmu (892/1013)
+OK /chord/netty-vera-br-bangun-dua-tampuk-na (893/1013)
+OK /chord/dek-pekir-ngejuk-lindung (894/1013)
+OK /chord/deama-feat-dek-pekir-siluman-tungu (895/1013)
+GAGAL /chord/lovarian-sang-pengagum: Waiting failed: 10000ms exceeded
+GAGAL /chord/lovarian-kekasih-sahabatku: Waiting failed: 10000ms exceeded
+GAGAL /chord/netty-vera-br-bangun-sampur-sangap-simehuli-sss: Waiting failed: 10000ms exceeded
+OK /chord/elsyana-talambek-nyatokan-cinto (899/1013)
+OK /chord/mallfin-marandof-natalia-ft-badara-nhotr-debal-ebenn-oneda (900/1013)
+OK /chord/sanggam-manurung-holong-mi-dang-lao-di-au (901/1013)
+GAGAL /chord/elsyana-feat-rozac-tanjung-labiah-hutang-pado-dapek: Waiting failed: 10000ms exceeded
+GAGAL /chord/elsyana-talanjua-luko: Waiting failed: 10000ms exceeded
+GAGAL /chord/sore-ze-band-surya-jelang-menepi: Waiting failed: 10000ms exceeded
+OK /chord/sa-tra-rela-bangdil13-x-reyy-black-x-vall-prc-x-wondanak20 (905/1013)
+OK /chord/dept-truman-show-feat-barmuda-kelsey-kuan (906/1013)
+OK /chord/khilaf-faiz-aizif-x-diyla-jazz (907/1013)
+OK /chord/cut-rani-auliza-cinta-bukan-layang-layang (908/1013)
+GAGAL /chord/adnan-bustam-ammakku-surugaku: Waiting failed: 10000ms exceeded
+GAGAL /chord/senandika-tak-berdaya: Waiting failed: 10000ms exceeded
+GAGAL /chord/as-last-hope-semoga-bahagia: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-kejam-feat-laguna (912/1013)
+OK /chord/cut-rani-auliza-rindu-kasih-bunda (913/1013)
+OK /chord/ramlan-yahya-feat-cut-rani-tiada-mungkin (914/1013)
+OK /chord/cut-rani-terlalu-sakit (915/1013)
+GAGAL /chord/bergek-feat-cut-rani-kesungguhan-hati: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-gaseh-suci: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-penyesalan: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-cinta-tega-mendua (919/1013)
+OK /chord/cut-rani-persinggahan (920/1013)
+OK /chord/cut-rani-bencimu-kusangka-cinta (921/1013)
+GAGAL /chord/cut-rani-auliza-dua-hate-saboh-rasa: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-pergi-tanpa-alasan (923/1013)
+GAGAL /chord/cut-rani-doa-rindu: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-semenjak-engkau-hadir: Waiting failed: 10000ms exceeded
+OK /chord/sabee-lam-doa-ferdian-nozza-lb-feat-cut-rani-auliza (926/1013)
+OK /chord/ziell-ferdian-feat-cut-rani-sewaktu-kita-bersama (927/1013)
+OK /chord/cut-rani-tak-seindah-janji (928/1013)
+GAGAL /chord/cut-rani-auliza-teuhalang-cinta: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-teganya-dirimu: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-kurela-kehilangan (931/1013)
+GAGAL /chord/cut-rani-auliza-hambar-kepucuk: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-cinta-pinjaman (933/1013)
+OK /chord/cut-rani-auliza-mengapa-masih-disini (934/1013)
+OK /chord/cut-rani-rindu-tapi-malu (935/1013)
+GAGAL /chord/cut-rani-auliza-orang-ketiga: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-lam-tirai-hate (937/1013)
+GAGAL /chord/cut-rani-auliza-rela-terluka: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-apa-yang-kau-mau: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-aku-hargai-keputusanmu (940/1013)
+OK /chord/cut-rani-dile-na-droneuh-kanda (941/1013)
+OK /chord/cut-rani-salahmu-sendiri (942/1013)
+GAGAL /chord/cut-rani-menduakan-cintaku: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-bahagiamu-melukaiku: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-kesetiaanku: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-dustakan (946/1013)
+OK /chord/cut-rani-doa-pada-pemilik-cinta (947/1013)
+OK /chord/cut-rani-tak-punya-hati (948/1013)
+OK /chord/cut-rani-sama-sama-menjaga-cinta (949/1013)
+GAGAL /chord/cut-rani-auliza-terkecoh: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-auliza-sesal-tiada-bertepi: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-auliza-cinta-sejati (952/1013)
+GAGAL /chord/cut-rani-auliza-rasa-hate-ho-lon-me-jiwa-hampa: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-menangis-sendiri (954/1013)
+OK /chord/cut-rani-demimu (955/1013)
+OK /chord/cut-rani-patah-hatiku-patah (956/1013)
+GAGAL /chord/cut-rani-madu-beracun: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-relakan-ku-pergi: Waiting failed: 10000ms exceeded
+GAGAL /chord/cut-rani-terbuang-sia-sia: Waiting failed: 10000ms exceeded
+OK /chord/cut-rani-terbiar-sepi (960/1013)
+OK /chord/floor-88-jombalika (961/1013)
+OK /chord/floor-88-x-masmona-muli (962/1013)
+GAGAL /chord/floor-88-yang-benar: Waiting failed: 10000ms exceeded
+GAGAL /chord/floor-88-masa-pkp: Waiting failed: 10000ms exceeded
+GAGAL /chord/floor-88-raffa-affar-cincin: Waiting failed: 10000ms exceeded
+OK /chord/floor-88-bukan-milikku (966/1013)
+OK /chord/floor-88-kaamatan-medley (967/1013)
+OK /chord/mario-g-klau-ft-angelo-klau-terlalu-rindu (968/1013)
+OK /chord/olivia-dean-merry-christmas-everyone (969/1013)
+GAGAL /chord/floor-88-semarakkan-merdeka: Waiting failed: 10000ms exceeded
+OK /chord/virgi-karena-dia (971/1013)
+GAGAL /chord/floor-88-baby-shima-lagi-lagi-tak-dapat-raya: Waiting failed: 10000ms exceeded
+GAGAL /chord/floor-88-f: Waiting failed: 10000ms exceeded
+OK /chord/nining-meida-kumaha-lagu-sunda (974/1013)
+OK /chord/mira-kirana-tresnoku-sundul-langit (975/1013)
+OK /chord/mira-kirana-pamer-gendakan (976/1013)
+GAGAL /chord/stick-figure-way-of-life-feat-slightly-stoopid: Waiting failed: 10000ms exceeded
+GAGAL /chord/kabaya-beureum-nazmi-nadia-x-nining-meida: Waiting failed: 10000ms exceeded
+GAGAL /chord/mira-kirana-sewu-wiso: Waiting failed: 10000ms exceeded
+OK /chord/mira-kirana-stasiun-gambir (980/1013)
+OK /chord/dewi-purwati-bangku-tua-jadi-saksi (981/1013)
+OK /chord/retno-susanti-tersanjung-ost-sinetron-tersanjung (982/1013)
+OK /chord/guntur-arisandy-sio-sio (983/1013)
+GAGAL /chord/neiked-mae-muller-polo-g-better-days: Waiting failed: 10000ms exceeded
+OK /chord/willy-anggawinata-sahabat-yang-mencintai (985/1013)
+GAGAL /chord/ifnyn-oh-ibu: Waiting failed: 10000ms exceeded
+GAGAL /chord/ifnyn-feat-kaffah-almira-acuhkan-saja: Waiting failed: 10000ms exceeded
+OK /chord/willy-anggawinata-hoodie-coklat (988/1013)
+OK /chord/willy-anggawinata-sunyinya-malam (989/1013)
+GAGAL /chord/willy-anggawinata-kurangnya-aku: Waiting failed: 10000ms exceeded
+OK /chord/willy-anggawinata-mimpi-indahku (991/1013)
+GAGAL /chord/willy-anggawinata-bye: Waiting failed: 10000ms exceeded
+GAGAL /chord/willy-anggawinata-ft-brigitta-tifanny-cerita-kita: Waiting failed: 10000ms exceeded
+OK /chord/willy-anggawinata-akankah (994/1013)
+OK /chord/willy-anggawinata-surga-kecilku (995/1013)
+OK /chord/vicky-salamor-tuhan-beta-mau-dia-lagu-ambon (996/1013)
+GAGAL /chord/willy-anggawinata-cinta-yang-nyaman: Waiting failed: 10000ms exceeded
+OK /chord/lian-karoho-cinta-beda-agama-vicky-salamor (998/1013)
+GAGAL /chord/avolia-willy-anggawinata-adam-zeins-no-no-no: Waiting failed: 10000ms exceeded
+GAGAL /chord/willy-anggawinata-semanis-kamu: Waiting failed: 10000ms exceeded
+OK /chord/vicky-salamor-sulit (1001/1013)
+OK /chord/vicky-salamor-langit-yang-sama (1002/1013)
+OK /chord/vicky-salamor-waktu-dan-rasa (1003/1013)
+OK /chord/vicky-salamor-stengah-hati (1004/1013)
+GAGAL /chord/vicky-salamor-untuk-yang-pernah-pergi: Waiting failed: 10000ms exceeded
+GAGAL /chord/vicky-salamor-sembuhkan-bangsa-ini: Waiting failed: 10000ms exceeded
+GAGAL /chord/vicky-salamor-beta-masih-butuh: Waiting failed: 10000ms exceeded
+OK /chord/vicky-salamor-ft-new-gvme-mantan (1008/1013)
+OK /chord/vicky-salamor-ku-menanti-cipt-loela-drakel (1009/1013)
+OK /chord/vicky-salamor-monalisa (1010/1013)
+OK /chord/vicky-salamor-menanti (1011/1013)
+OK /chord/vicky-salamor-penantian-tak-pasti-cipt-loela-drakel (1012/1013)
+OK /chord/vicky-salamor-kapan-kau-kembali (1013/1013)
+Selesai: 667/1013 halaman ter-pre-render
 Generating sitemap from Supabase...
 Found 678 songs
 Sitemap written to dist/sitemap.xml (678 songs, 333 artists)
-Pre-render 1017 halaman...
-OK /
-OK /artists
-OK /about
-OK /contact
-OK /privacy
-OK /terms
-OK /chord/cabiak-alek-sudah-upek-tibo
-OK /chord/rayola-feat-daniel-maestro-hilang-raso-picayo
-OK /chord/dewi-yull-kau-dan-aku-sama
-OK /chord/ari-benjho-tandes
-OK /chord/anyqu-feat-cabiak-umbuak-pilanak
-OK /chord/caeleb-ft-hendro-mc-marisa-marah-tapi-sayang
-OK /chord/josua-natanael-dera-masih-baru
-OK /chord/jeifi-kawengian-biar-jo-simpang-dihati
-OK /chord/caesario-lestari
-OK /chord/caffeine-tiara
-OK /chord/cabiak-sagalo-gadang
-OK /chord/tenxi-jemsii-josua-natanael-dia-puting-beliung
-OK /chord/lovarian-melupakanmu
-OK /chord/cabiak-betty-anak-juragan
-OK /chord/angger-bayu-aji-nantikan-aku
-OK /chord/nadeera-bukan-lagi-kita
-OK /chord/nada-zahrani-iqbal-mahesa-ft-cabiak-saba-mananti
-OK /chord/caessaria-feat-ariel-noah-little-old-man
-OK /chord/caffeine-kau-yang-tlah-pergi
-OK /chord/rudy-caffein-aku-memilih-dia
-OK /chord/riku-josua-natanael-naykilla-na
-OK /chord/daniel-maestro-ft-nabilla-yuza-rintang-parasaan
-OK /chord/angger-bayu-aji-oh-kasihku
-OK /chord/caca-da5-nia-anak-surga
-OK /chord/caca-handika-semua-tau
-OK /chord/caca-jiga-balapik-cinta
-OK /chord/caca-olivia-cinta-tak-terlukai
-OK /chord/rayola-ft-daniel-maestro-simalang-jo-si-mujua
-OK /chord/caessaria-feat-astrid-gelap-mata
-OK /chord/caffeine-berdua
-OK /chord/iwan-fals-feat-danilla-riyadi-penghibur-hati
-OK /chord/caca-da5-cinta-kutanam-kau-balas-dusta
-OK /chord/dek-soma-nu-ngelah-hati
-OK /chord/caca-handika-air-mata-bawang
-OK /chord/caca-olivia-kerinduan-hati
-OK /chord/caca-olivia-buruang-tabang-sangkak-lah-tingga
-OK /chord/caessaria-infeksi
-OK /chord/caca-handika-orang-sekampung
-OK /chord/caffeine-hidupku-kan-damaikan-hatimu
-OK /chord/caffeine-cinta-sejati
-OK /chord/nia-cincin-tunangan
-OK /chord/floor-88-kaamatan-medley
-OK /chord/caca-da5-feat-al-ibnu-adijaya-pikia-pikia-bana
-OK /chord/caca-olivia-muara-kasih-ibu
-OK /chord/tunggara-caca-veronica
-OK /chord/caffeine-aku-takkan-memiliki
-OK /chord/cut-rani-kesetiaanku
-OK /chord/yang-tak-pernah-caffeine
-OK /chord/caca-da5-hanya-butiran-debu
-OK /chord/caca-handika-gantungan-baju
-OK /chord/arif-lida-feat-caca-olivia-bidadari-hidupku
-OK /chord/caffein-bayangkan
-OK /chord/hael-husaini-nadeera-peluk
-OK /chord/caffeine-seperti-bidadari
-OK /chord/nova-sondakh-cinta-nyanda-jual
-OK /chord/nadeera-dam-dim-dum-raya
-OK /chord/justin-bieber-honest-feat-don-toliver
-OK /chord/caca-da5-sayo-da
-OK /chord/caca-handika-cincin-putih
-OK /chord/nadeera-restu-raya
-OK /chord/caca-olivia-sebatang-kara
-OK /chord/caffeine-tiga-kata
-OK /chord/don-toliver-tiramisu
-OK /chord/angger-bayu-aji-raih-bersama
-OK /chord/elsa-kapoh-tamang-deng-sayang
-OK /chord/caca-da5-sakiknyo-denai
-OK /chord/caca-handika-angka-satu
-OK /chord/arif-lida-feat-caca-olivia-semua-tau
-OK /chord/rudy-caffeine-kunci-hati
-OK /chord/angger-bayu-aji-pergi-tuk-kembali
-OK /chord/isty-julistry-tidor-deng-kita-hati-for-dia
-OK /chord/diego-alexander-garing-mantan-jadi-besan
-OK /chord/cacaiska-tentang-kepastian
-OK /chord/v2last-seperti-bintang
-OK /chord/angger-bayu-aji-jadi-orang-kaya
-OK /chord/ananta-prince-main-balakang
-OK /chord/chyran-astrid-cemburu-boleh-mar-bodok-jangan
-OK /chord/hael-husaini-nadeera-meriah-lain-macam
-OK /chord/ayu-amanda-ridho-zulma-ft-cabiak-agiah-bana
-OK /chord/munn-i-pick-loneliness-with-delanie-leclerc
-OK /chord/cabiak-mantan-samo-jo-kantuik
-OK /chord/cabiak-kanai-hao
-OK /chord/cabiak-upiak-bulu-cewek-mintak-kawin
-OK /chord/cade-thompson-eyes-of-god
-OK /chord/v2last-feat-firman-x-factor-indonesia-gagal-tersakiti
-OK /chord/angger-bayu-aji-kau-ku-kenang-saja
-OK /chord/nadeera-cuba-jadi-aku
-OK /chord/udur-pasaribu-taringot-tu-damang-parsinuan
-OK /chord/menghayal-cinta-sonya-bara-x-jplanetz-x-bradley
-OK /chord/sonya-bara-ko-bikin-sa-down-feat-twentyf-dom
-OK /chord/next-level-sonya-bara-x-epo-dfenomeno-x-koko-yefta
-OK /chord/ilham-sama-sama-happy
-OK /chord/tika-mila-njogo-ati
-OK /chord/float-pulang
-OK /chord/catur-arum-candu
-OK /chord/float-waltz-musim-pelangi
-OK /chord/cut-rani-dile-na-droneuh-kanda
-OK /chord/float-emily
-OK /chord/little-big-town-mr-sun
-OK /chord/little-big-town-different-without-you
-OK /chord/little-big-town-last-day-on-earth
-OK /chord/little-big-town-song-back
-OK /chord/float-sementara
-OK /chord/little-big-town-hell-yeah
-OK /chord/little-big-town-one-more-song
-OK /chord/little-big-town-something-strong
-OK /chord/little-big-town-friends-of-mine
-OK /chord/little-big-town-heaven-had-a-dance-floor
-OK /chord/aku-yang-terluka-angga-candra-ft-rafi-gimbal-dellu-uyee
-OK /chord/little-big-town-whiskey-colored-eyes
-OK /chord/fourtwnty-mangu-ft-charita-utami
-OK /chord/rahma-delinofira-pandayuang-patah-ditangah
-OK /chord/candria-yang-kumau
-OK /chord/munn-this-house-is-not-a-home-with-delanie-leclerc
-OK /chord/wis-bedo-bayu-blenk
-OK /chord/candria-feat-richie-five-minutes-jujur-saja
-OK /chord/loy-bikin-panas-mengejar-impian
-OK /chord/munn-only-human-with-delanie-leclerc
-OK /chord/ian-kasela-1000-doa-feat-ratu-galuh
-OK /chord/ian-kasela-karena-cinta-ost-cinta-kedua
-OK /chord/ian-kasela-baper
-OK /chord/ian-kasela-maraju
-OK /chord/vicky-salamor-waktu-dan-rasa
-OK /chord/ian-kasela-tak-ingin-kehilangan
-OK /chord/dek-soma-buta-tumben-kedat
-OK /chord/catur-arum-feat-ayu-surati-ikhlasno
-OK /chord/ian-kasela-lepasin-aje
-OK /chord/ian-kasela-sayang-kamu
-OK /chord/hugo-feat-ian-kasela-itu-dulu
-OK /chord/daniel-maestro-bagaluik-jo-parasaian
-OK /chord/ian-kasela-tak-tergantikan
-OK /chord/spontan-music-bedo
-OK /chord/lin-yu-chun-finding-you-in-a-sea-of-people-you-are-the-apple-of-my-eye-ost
-OK /chord/dek-soma-tetap-berjuang
-OK /chord/ian-kasela-tak-mau-sendiri-new-versi
-OK /chord/ian-kasela-istriku
-OK /chord/kenshi-band-sebelum-janur-kuning
-OK /chord/spontan-music-pamit
-OK /chord/intan-selvi-ft-roby-januarta-salah-manduo-hati
-OK /chord/enzana-tua-bersama
-OK /chord/morgan-wade-loves-insane
-OK /chord/dek-soma-ade-ngantiang-di-sisi
-OK /chord/dek-soma-korban-pahlawan
-OK /chord/morgan-wade-hardwood-floor
-OK /chord/dek-soma-pelih-besik-dadi-siu
-OK /chord/dek-soma-muani-belog
-OK /chord/dek-soma-plaibang-lubak
-OK /chord/dek-soma-feat-trias-saling-gelahang
-OK /chord/tuty-tomagola-di-weda-ale-balaeng
-OK /chord/dek-soma-kopi-jumah-gula-di-sisi
-OK /chord/dek-soma-pipis-dadi-pemenang
-OK /chord/dek-soma-pelih-pejalan
-OK /chord/dek-soma-sing-ada-pilihan
-OK /chord/dek-soma-kecewa
-OK /chord/dek-soma-feat-edi-satya-nyaman-di-sisi
-OK /chord/dek-soma-kalah-di-lc
-OK /chord/ari-benjho-ngempet-batin
-OK /chord/dek-soma-tetap-bertahan
-OK /chord/dek-soma-sing-jodoh
-OK /chord/dek-soma-pocol-ngarepang
-OK /chord/dek-soma-tuah-5-menit
-OK /chord/dek-soma-sia-sia-ngetohin-koplo
-OK /chord/dek-soma-tusing-jodoh
-OK /chord/dek-soma-pemain-hati
-OK /chord/dek-soma-beda-kelas
-OK /chord/dek-soma-tresna-terlarang
-OK /chord/dek-soma-kalahang-baan-harta
-OK /chord/tajul-afieq-shazwan-hilangmu-tak-terganti
-OK /chord/marisha-putri-terlanjur-kaya
-OK /chord/siapa-cintaku-kata-band
-OK /chord/relawan-asmara-otw-sayang
-OK /chord/intan-selvi-dibalik-cahaya-ada-cinta
-OK /chord/intan-selvi-rundiang-pamisah-cinto
-OK /chord/dek-soma-nuduh-tanpa-bukti
-OK /chord/widi-as-rindu
-OK /chord/marisha-putri-jangan-keluar-dulu
-OK /chord/lion-babe-feat-oshun-its-okay
-OK /chord/relawan-asmara-tresno-tenan
-OK /chord/relawan-asmara-ft-damara-de-sewindu
-OK /chord/intan-selvi-sarumah-bajauah-hati
-OK /chord/daniel-maestro-ft-nabila-yuza-cinto-di-padu
-OK /chord/lady-roos-bantal-guling-bisa-bicara
-OK /chord/intan-selvi-galak-diateh-tangih
-OK /chord/hari-ini-hari-raya-personaliti-molek-fm-feat-tantari
-OK /chord/bang-roy-purba-marboru-simalungun
-OK /chord/ykp-akustik-ft-agustina-tak-ikhlaske
-OK /chord/elsyana-talambek-nyatokan-cinto
-OK /chord/yan-jaya-feat-wahyu-sebatas-mengagumi
-OK /chord/i-miss-you-ben2h5-ft-yorvix-boryaz-x-ichad-bless-x-kaka-eks
-OK /chord/nabila-taqiyyah-tak-dianggap
-OK /chord/afandi-neomu-dengarkan-lagu-ini
-OK /chord/alexa-pulang
-OK /chord/mabuak-diseso-bayang-daniel-maestro-feat-nabilla-yuza
-OK /chord/daniel-maestro-arok-dinanti
-OK /chord/bujang-tabuang-daniel-maestro
-OK /chord/yan-jaya-mantan-terindah
-OK /chord/tio-sitanggang-cinta-terlarang
-OK /chord/macam-susah-jysnkind-ft-yosuaar-david-syom-ben2h5-stivndblacksmn
-OK /chord/mas-jar-kowe-bahagia
-OK /chord/mifthah-aulianti-ft-frans-ariesta-mengapa-tak-dari-dulu
-OK /chord/miftah-ft-jamal-bialah-kahilangan-pado-mandapekkan
-OK /chord/noah-davis-holy-water
-OK /chord/tajul-afieq-shazwan-di-mana-janjimu-dulu
-OK /chord/andri-kancil-ngamplah
-OK /chord/vivi-dc-official-pengorbanan-dan-harapan
-OK /chord/vivi-dc-kurasa-kau-berubah
-OK /chord/vivi-dc-feat-anggi-chandra-mencintaimu-khayalanku
-OK /chord/anggi-chandra-feat-vivi-dc-semua-harus-berakhir
-OK /chord/axel-johansson-mortal
-OK /chord/rayola-feat-daniel-maestro-cinto-sapasukuan
-OK /chord/aidilla-abih-sakik-sanang-ka-tibo
-OK /chord/vivi-dc-feat-ben-tusipa-jejak-memory-cinta
-OK /chord/thomas-day-the-new-me
-OK /chord/thomas-day-wildflower
-OK /chord/kemot-bob-orkes-munara-rumpin
-OK /chord/tantari-rindu-hatiku-rindu
-OK /chord/wayan-sumade-korban-tik-tok
-OK /chord/achey-tantari-biar
-OK /chord/tantari-putera-bobo-tangisan-1-syawal
-OK /chord/muhammad-rasyid-menahan-luka
-OK /chord/thomas-day-not-my-job-anymore
-OK /chord/tantari-rindu-hatiku-rindu-raya
-OK /chord/achey-tantari-rayyan-dahlya-ibu-raya
-OK /chord/nabila-taqiyyah-aku-cinta-kamu
-OK /chord/nabila-taqiyyah-menghargai-kata-rindu
-OK /chord/nabila-taqiyyah-hanya-lolongan
-OK /chord/daniel-maestro-tadayo-hati
-OK /chord/daniel-maestro-bayang-manyeso-batin
-OK /chord/jangan-ada-dusta-di-antara-kita-broery-marantika-ft-dewi-yull
-OK /chord/dewi-yull-putri
-OK /chord/kemot-bob-indit-tunduh-teu-indit-butuh
-OK /chord/achey-tantari-baby-feaaa-ragam-raya
-OK /chord/tantari-1-cinta-1-rindu
-OK /chord/nabila-taqiyyah-ku-ingin-pisah
-OK /chord/insomniacks-nabila-taqiyyah-belum-mulai
-OK /chord/rizwan-fadilah-nabila-taqiyyah-tak-satu-cerita
-OK /chord/the-siswondo-tak-sabar-bertemu-lagi-extended-version
-OK /chord/nabila-taqiyyah-terpatah-terluka
-OK /chord/nabila-taqiyyah-berjalan-tanpamu
-OK /chord/nabila-taqiyyah-pengagum-rahasia
-OK /chord/keisya-levronka-tawamu
-OK /chord/keisya-levronka-sembunyi-lebih-lama
-OK /chord/nabila-taqiyyah-sementara-bukan-selamanya
-OK /chord/kim-nabila-taqiyyah-bayangan-cinta-yang-lalu
-OK /chord/keisya-levronka-nyoman-paul-denganmu-saja
-OK /chord/keisya-levronka-lagi-lagi-hanya-kamu
-OK /chord/bob-yunus-kan-terganti
-OK /chord/nabila-taqiyyah-cinta-sia-sia
-OK /chord/nabila-taqiyyah-salah-sangka
-OK /chord/nabila-taqiyyah-menikmati-kebohongan
-OK /chord/nabila-taqiyyah-cegil
-OK /chord/alba-samallo-ambon-weda
-OK /chord/inna-azuri-tiada-yang-lain
-OK /chord/inna-azuri-cinto-tak-harus-memiliki
-OK /chord/aespa-aespa-forever
-OK /chord/inna-azuri-satukan-hati-kami
-OK /chord/inna-azuri-seso-dipamainkan
-OK /chord/raptama-trio-gabe-boru-ni-raja
-OK /chord/ora-ketututan-anggara-official-ft-ardinarass
-OK /chord/tajul-feat-wany-hasrita-rindu-dalam-benci
-OK /chord/jhalo-jz-yang-ke-berapa-feat-edgar-stevano-brex32-kenshit-vgt-remco
-OK /chord/tajul-bodohnya-aku
-OK /chord/raptama-trio-haccit-pambahenan-mon
-OK /chord/cinto-sataguah-karang-fatwa-saputra-ft-nella-nafritai
-OK /chord/tajul-izinkan-aku
-OK /chord/tajul-wany-hasrita-tragedi-cinta
-OK /chord/mesandal-keroncong-cemburu
-OK /chord/tajul-serpihan-rindu
-OK /chord/tajul-afieq-shazwan-insan-ku-sayang-kini-menghilang-feat-spin
-OK /chord/tajul-afieq-shazwan-malam-semakin-dingin
-OK /chord/tajul-afieq-shazwan-resah-kerinduan
-OK /chord/julia-anugerah-putri-cinto-sataguah-tugu-marpati-ft-daniel-maestro
-OK /chord/eka-x-winky-summer-tears-feat-sorenza
-OK /chord/tajul-muna-shahirah-resipi-berkasih
-OK /chord/amyn-bayu-bek-curiga
-OK /chord/weird-genius-winky-wiryawan-heal-feat-venes
-OK /chord/janji-di-tugu-merpati-daniel-maestro-feat-julia-anugrah-putri
-OK /chord/daniel-maestro-kasmaran
-OK /chord/daniel-maestro-jawaban-korban-perceraian
-OK /chord/bae-mar-lama-ever-batkunde-ft-dante-nababan
-OK /chord/daniel-maestro-pandemi
-OK /chord/daniel-maestro-adiak-den-nanti-juo
-OK /chord/rika-masya-ft-daniel-maestro-pautan-hati
-OK /chord/daniel-maestro-cinto-nan-manang
-OK /chord/daniel-maestro-manampuah-galanggang-rami
-OK /chord/daniel-maestro-ft-nabila-yuza-hapuih-carito-cinto
-OK /chord/daniel-maestro-ft-nabilla-yuza-janji-mu-palsu
-OK /chord/daniel-maestro-feat-nabilla-yuza-takicuah-dek-rupo
-OK /chord/daniel-maestro-cando-karambia-condong
-OK /chord/daniel-maestro-tarumuak
-OK /chord/rayola-ft-daniel-maestro-cinto-untuak-salamonyo
-OK /chord/rayola-ft-daniel-maestro-adiak-nan-denai-cinto
-OK /chord/catur-arum-lukisan-ati
-OK /chord/daniel-maestro-cinto-tabangkalai
-OK /chord/daniel-maestro-samakin-tahino
-OK /chord/denai-taseso-uda-taluko-rayola-feat-daniel-maestro
-OK /chord/kemot-bob-akulah-si-gagal
-OK /chord/daniel-maestro-ft-icha-zagita-cimburu
-OK /chord/daniel-maestro-cinto-tak-pasti
-OK /chord/daniel-maestro-ft-vany-thursdila-cinto-beda-agamo
-OK /chord/rayola-ft-daniel-maestro-rintangan-pasti-kito-hadang
-OK /chord/daniel-maestro-ft-icha-zagita-cinto-panabuih-hutang
-OK /chord/rayola-ft-daniel-maestro-mauik-pamisah-cinto
-OK /chord/daniel-maestro-nan-mahadang-jan-di-lawan
-OK /chord/rayola-ft-daniel-maestro-indak-mungkin-kasiah-baulang
-OK /chord/daniel-maestro-barambun-di-pondok-tuo
-OK /chord/daniel-maestro-ft-nabilla-yuza-raso-nan-salah
-OK /chord/vany-thursdila-feat-daniel-maestro-indak-tatagah
-OK /chord/daniel-maestro-mangalah-untuak-cinto
-OK /chord/alsa-persimpangan
-OK /chord/sri-fayola-feat-daniel-maestro-alek-usai-talak-jatuah
-OK /chord/daniel-maestro-ft-icha-zagita-setia-menanti
-OK /chord/rayola-ft-daniel-maestro-cimburu-tandonyo-sayang
-OK /chord/daniel-maestro-raso-kasampai
-OK /chord/rindu-yang-terlarang-broery-marantika-ft-dewi-yull
-OK /chord/daniel-maestro-lapiak-usang
-OK /chord/daniel-maestro-kasiah-dilarai-urang-tuo
-OK /chord/daniel-maestro-semua-tiada-arti
-OK /chord/daniel-maestro-tuhan-tolonglah
-OK /chord/enka-ft-momon-karman-apa-aku-bisa
-OK /chord/arnada-trio-parhaseang-holong-hi
-OK /chord/keisya-levronka-hidup-tanpamu
-OK /chord/keisya-levronka-bahagia-tanpaku
-OK /chord/keisya-levronka-lukis-hari-ini
-OK /chord/dewi-yull-diambang-sore
-OK /chord/keisya-levronka-jadi-kekasihku-saja
-OK /chord/keisya-levronka-tergesa
-OK /chord/keisya-levronka-tak-ingin-usai
-OK /chord/keisya-levronka-better-on-my-own
-OK /chord/keisya-levronka-tak-pantas-terluka
-OK /chord/keisya-levronka-tersemogakan
-OK /chord/keisya-levronka-aku-bukan-dia
-OK /chord/keisya-levronka-pelarian
-OK /chord/jacson-zeran-yang-terakhir-feat-nia-fernandes
-OK /chord/sendogarpu-i-hate-you
-OK /chord/sehati-sejiwa-haslinda-malaysia
-OK /chord/keryl-begitu-terasa
-OK /chord/the-siswondo-penunggu-bayangan
-OK /chord/the-siswondo-tak-sabar-bertemu-lagi
-OK /chord/fonny-shencia-aku-satia-manunggu
-OK /chord/keisya-levronka-rayakanlah
-OK /chord/the-siswondo-kau-adalah-rumahku
-OK /chord/freed-ghalib-muhasabah
-OK /chord/rikki-hwang-selalu-untukmu
-OK /chord/sendogarpu-lawan-dan-tunjukan
-OK /chord/silvy-carlina-dek-cinto-cilako-diri
-OK /chord/silvy-carlina-sadri-zarro-bausaho-basumbayang
-OK /chord/wayan-sumade-sesai-punyah
-OK /chord/wayan-sumade-kapok-punyah
-OK /chord/vicky-kalea-kamu-yang-aku-bismillahkan
-OK /chord/wayan-sumade-mewali-ke-bali
-OK /chord/wayan-sumade-tresna-mengkeban
-OK /chord/unic-ft-aniq-muhai-naufal-isa-jom-solat
-OK /chord/anjas-wasae-parasaian-anak-piatu
-OK /chord/dandy-barakati-ft-dante-nababan-mode-pesawat
-OK /chord/ta-lipa-lipa-dandy-barakati-ft-dante-nababan
-OK /chord/indang-annes-ressa-febyolla-tikas-aku-baya-aku
-OK /chord/aniq-muhai-mahakarya
-OK /chord/miftah-wahdini-anjas-wasae-kembalilah-engkau-sayang
-OK /chord/trousdale-always-joni
-OK /chord/bage-abu-dante-nababan-ft-dandy-barakati
-OK /chord/sardi-uwo-wija-tau-peddi-lellung-deceng
-OK /chord/antha-pryma-singetken-gelarku
-OK /chord/wayan-sumade-percuma-berjuang
-OK /chord/sakajawa-mblenjani-janji
-OK /chord/wah-ditya-nguangin-beban-rerama
-OK /chord/dante-nababan-kapa-dang
-OK /chord/benny-blanco-bts-snoop-dogg-bad-decisions
-OK /chord/dima-nagari-urang-minang-ado-benny-chan-feat-isnen-qori
-OK /chord/aniq-muhai-ft-adnin-roslan-jangan-risau
-OK /chord/lintang-ivnda-feat-lintang-chya-ikhlas-ngeculke
-OK /chord/kansas-dust-in-the-wind
-OK /chord/so-omom-dandy-barakati-ft-melandy-jacobus-dante-nababan
-OK /chord/sardi-uwo-mangkangulu-pale-lima
-OK /chord/catur-arum-cemeng-kopi
-OK /chord/cut-rani-auliza-penyesalan
-OK /chord/catur-arum-kendang-tabuh-selisih
-OK /chord/critoss-official-feat-oktavia-ojo-egois
-OK /chord/ressa-febyolla-bingung-mamilih
-OK /chord/olivia-addams-never-say-never
-OK /chord/steelheart-shes-gone
-OK /chord/catur-arum-jangget
-OK /chord/catur-arum-kembange-ati
-OK /chord/catur-arum-tombo-kangene-ati-2
-OK /chord/obenk-gta-uroe-raya-ka-toe
-OK /chord/vicky-kalea-takdir-yang-memilih
-OK /chord/steelheart-mama-dont-you-cry
-OK /chord/pinkan-mambo-dirimu-dirinya
-OK /chord/lian-karina-ehek
-OK /chord/catur-arum-weleg
-OK /chord/catur-arum-mendung
-OK /chord/satukan-langkah-candra-banyu-x-catur-arum
-OK /chord/sun-tutup-lawang-ati-catur-arum
-OK /chord/catur-arum-ali-ali-moto-potih
-OK /chord/catur-arum-ngertio
-OK /chord/catur-arum-awak-sak-awak
-OK /chord/catur-arum-riko-kanggo-isun
-OK /chord/catur-arum-metenggengen
-OK /chord/wijaya-80-terakhir-kali
-OK /chord/wijaya-80-malam-malam
-OK /chord/wijaya-80-masih-ada-kamu
-OK /chord/wijaya-80-feat-sal-priadi-bulan-bintang-garis-menyilang
-OK /chord/arsy-widianto-wijaya80-ini-adalah-cinta
-OK /chord/jay-jalalu-kepedihanku-feat-hendry-lamiri
-OK /chord/riyan-chaniago-feat-tiva-zalfan-manyasa
-OK /chord/the-brandals-feat-sukatani-jari-kasar
-OK /chord/cut-rani-auliza-rindu-kasih-bunda
-OK /chord/antik-cinta-sejati-cover-ari-lasso
-OK /chord/qaish-ft-tresna-rasa-tak-terhenti
-OK /chord/illenium-luv-me-a-little-feat-nina-nesbitt
-OK /chord/rieke-adriati-rindu-dalam-penantian
-OK /chord/aja-dipikiri-farid-risqi-feat-yu-kor
-OK /chord/kaji-soher-ku-kan-pergi
-OK /chord/fearless-soul-dont-you-dare-give-up
-OK /chord/rama-arief-wayase-dompet-tipis
-OK /chord/rama-arief-wayase-sayonara
-OK /chord/asfan-shah-lia-aziz-pergilah-derita-ost-cukup-derita-itu
-OK /chord/elsyana-feat-rozac-tanjung-labiah-hutang-pado-dapek
-OK /chord/asfan-shah-keka-nizam-dia-imamku-ost-dia-imamku
-OK /chord/pasto-terbaik-untuk-ku
-OK /chord/ratu-aku-baik-baik-saja-pasto
-OK /chord/pasto-anak-hoki-ost-anak-hoki
-OK /chord/pasto-pertanyaan-bodoh
-OK /chord/tanya-hati-pasto-chintya-gabriella-cover
-OK /chord/aidilla-ganggam-indak-sabara
-OK /chord/pasto-cintamu-bukan-untukku-ost-dari-jendela-smp
-OK /chord/pasto-sayang-ost-dari-jendela-smp
-OK /chord/pasto-milikku-seutuhnya
-OK /chord/pasto-menutup-hati
-OK /chord/boyolali-aku-bali-kang-jais
-OK /chord/adam-levine-lost-stars
-OK /chord/jason-derulo-lifestyle-feat-adam-levine
-OK /chord/utara-band-lelah-langkahku-north
-OK /chord/utara-band-hujan-di-hatiku
-OK /chord/delva-feat-gilga-sahid-sisihan
-OK /chord/gilga-sahid-x-global-musik-nemu
-OK /chord/gilga-sahid-ft-mira-putri-janji-menakne
-OK /chord/gilga-sahid-bapak-acoustic-version
-OK /chord/gilga-sahid-rucah
-OK /chord/gilga-sahid-ft-happy-asmara-ingin-temu
-OK /chord/gilga-sahid-feat-abah-kirun-sentir-lengo-potro
-OK /chord/gilga-sahid-ft-happy-asmara-pangestu
-OK /chord/gilga-sahid-abab-poso
-OK /chord/happy-asmara-feat-gilga-sahid-wegah-tukaran
-OK /chord/aidilla-tagadang-anak-ula
-OK /chord/gilga-sahid-ginarise-gusti
-OK /chord/badai-romantic-project-tak-denganku
-OK /chord/badai-romantic-project-melamarmu
-OK /chord/fari-firdan-bawalah-kesetiaan
-OK /chord/fari-firdan-jumpa-pertama
-OK /chord/aidilla-cangok
-OK /chord/aidilla-lamak-dek-awak-tapadiah-dek-kawan
-OK /chord/aidilla-babanak-ka-ampu-kaki
-OK /chord/aidilla-kabau-lapeh-pangimpau
-OK /chord/jeyma-monica-restu
-OK /chord/silet-open-up-x-kapthenpurek-kaka-main-salah
-OK /chord/kapthenpurek-berhenti-kasihan
-OK /chord/kapthenpurek-ft-andy-lo-wi-pace-laju
-OK /chord/kapthenpurek-sapa-sakit
-OK /chord/kapthenpurek-pantun-rakat-ft-gusti-senda-kanzer-pmc
-OK /chord/kapthenpurek-telan-turun
-OK /chord/kapthenpurek-sa-diam
-OK /chord/deama-feat-dek-pekir-siluman-tungu
-OK /chord/kapthenpurek-rindu-tapi-takut
-OK /chord/kapthenpurek-ko-bae
-OK /chord/kapthenpurek-rindu-orang-pu-rusuk
-OK /chord/kemot-bob-rumpin-broken-roads
-OK /chord/kapthenpurek-ko-ada-dua-ft-andy-lo-wi
-OK /chord/kapthenpurek-x-andy-lowy-ade-su-pulang-dar-malaysia
-OK /chord/kapthenpurek-jang-tahan-sa
-OK /chord/kapthenpurek-rindu-ju-bae
-OK /chord/kapthenpurek-sana-su-ft-wsk
-OK /chord/kapthenpurek-tikam-saja
-OK /chord/kapthenpurek-sayang-keberapa-ft-andy-lo-wi-jaybee
-OK /chord/kapthenpurek-jangan-bilang
-OK /chord/anak-kompleks-feat-kapthenpurek-sapa-sayang
-OK /chord/ko-piara-kapthenpurek-feat-vinna-keraf-jaybee-andy-lo-wi-agwilo
-OK /chord/kapthenpurek-semua-tipu
-OK /chord/kanzer-pmc-mau-nona-feat-son-dheztrow-fetoz-alfa-aris-ruing-kapthenpurek
-OK /chord/kapthenpurek-kena-mental
-OK /chord/ramlan-yahya-feat-cut-rani-tiada-mungkin
-OK /chord/new-gvme-sa-yang-salah-feat-delite-amstergank
-OK /chord/kapthenpurek-belajar-sendiri
-OK /chord/kapthenpurek-selalu-sa-salah
-OK /chord/kapthenpurek-berjuang-bukan-sembarang
-OK /chord/busu-busu-setia-buset-kaka-andii-x-kapthenpurek
-OK /chord/kapthenpurek-su-tra-harap
-OK /chord/tambah-gaga-silet-open-up-x-kapthenpurek-x-kanzer-pmc
-OK /chord/delite-feat-kapthenpurek-kuat-di-bapa
-OK /chord/tinggal-tulang-kapthenpurek-ft-noldy-domaking-andre-tmk-astoozgila
-OK /chord/kapthenpurek-jaga-rindu-ft-kaka-andii-x-silet-open-up
-OK /chord/kapthenpurek-belum-cukup-ka
-OK /chord/kapthenpurek-satu-kosong
-OK /chord/busu-busu-setia-2-kapthenpurek-ft-kaka-andii
-OK /chord/kapthenpurek-kapthenpurek-tinggal-janji
-OK /chord/rio-wermasubun-ft-mario-yamlean-palsu
-OK /chord/kapthenpurek-sendiri-rasa
-OK /chord/nining-meida-kumaha-lagu-sunda
-OK /chord/kapthenpurek-tiada-sisa
-OK /chord/kapthenpurek-lidah-tiada-tulang
-OK /chord/kinur-sakit-bangat
-OK /chord/kapthenpurek-jhalo-jz-tenaga-dalam-feat-jaybeevz-agwilo-pratel-rio
-OK /chord/kapthenpurek-su-lantang-ft-jhalo-jz-andy-lo-wi
-OK /chord/kapthenpurek-pisah-k-lanjut-ft-andy-lo-wi-jhalo-jz
-OK /chord/juan-reza-ft-kapthen-purek-mati-gaya
-OK /chord/jovi-herlandi-x-billgoun-x-rizky-safaty-x-edwardo-palingu-pasang-gaya
-OK /chord/kapthenpurek-ft-juan-reza-kaka-gandeng
-OK /chord/kapthenpurek-lagu-lama-ft-son-dheztrow
-OK /chord/son-dheztrow-ft-kapthenpurek-lagu-baru
-OK /chord/kapthenpurek-datang-hilang
-OK /chord/onchy-wegu-jaga-ate
-OK /chord/theo-mustofa-kudu-bakoh
-OK /chord/salsa-billa-loro-dewe
-OK /chord/bimbim-slank-every-junkie-song
-OK /chord/roxen-how-to-break-a-heart
-OK /chord/cabiak-payah-cari-karajo
-OK /chord/made-ada-adi-sekadi-rejeki-asri
-OK /chord/kabaya-beureum-nazmi-nadia-x-nining-meida
-OK /chord/ayu-amanda-ft-obenk-gta-aceh-minang
-OK /chord/vicky-salamor-sulit
-OK /chord/suci-nurjayanti-bersamamu-aku-berjuang
-OK /chord/shallow-side-try-to-fight-it
-OK /chord/irwan-wolfang-introspect-myself-feat-luluk-haryanti
-OK /chord/kemot-bob-terimakasih-untuk-kerasnya-malam-ini
-OK /chord/kinur-mung-ban-serepmu
-OK /chord/ari-benjho-sukowati-dadi-saksi
-OK /chord/simple-rock-lepas
-OK /chord/alvi-ananta-ft-koko-arya-sandiworo
-OK /chord/bintang-trada-sayang-julz-x-dongga-x-near
-OK /chord/epep-cindy-marenta-goblok-mbatek
-OK /chord/near-terserah-ft-chelz-dongga
-OK /chord/leni-paslah-bukik-bunian
-OK /chord/eki-volad-kacang-lupa-kulitnya
-OK /chord/eki-voland-dirantau
-OK /chord/made-ada-jaba-wanen
-OK /chord/rina-fitriyani-br-pinen-anak-turang-bapa
-OK /chord/mario-g-klau-x-mone-band-pemain-lama
-OK /chord/apank-ks2k-pengantin-terbaru
-OK /chord/alexa-dewi
-OK /chord/alexa-jangan-pernah-pergi
-OK /chord/alexa-jangan-kau-lepas
-OK /chord/alexa-selalu-kukenang
-OK /chord/alexa-wajahmu-indahkan-duniaku
-OK /chord/alexa-hingga-saatnya-kan-tiba
-OK /chord/rizki-hidayat-nuwus
-OK /chord/muka-timur-andre-tmk-ft-hasta-hanzo-victorias-queen-arra-boss-mancez
-OK /chord/ko-siapa-victorias-ft-queen-arra
-OK /chord/fahmi-bo-feat-yogi-andrian-gara-gara-cinta
-OK /chord/obenk-gta-x-arul-x-nanda-faul-buroeng-tujoh
-OK /chord/cinta-petir-ferry-myh
-OK /chord/bintangku-ferry-myh-feat-arini-latavita
-OK /chord/ryan-junior-x-gans-polos-saat-berjumpa
-OK /chord/lovarian-vin
-OK /chord/suci-nurjayanti-marinir-cinta-kasihku
-OK /chord/falado-trio-holan-paradian-mu
-OK /chord/falado-trio-dang-martading-hata
-OK /chord/falado-trio-asa-taruli-ho
-OK /chord/epep-feat-cindy-marenta-dalane-urip
-OK /chord/lovarian-kekasih-sahabatku
-OK /chord/iqbal-salah-menaruh-hati
-OK /chord/jackie-chan-feat-kim-hee-seon-endless-love-ost-the-myth
-OK /chord/made-ada-kapahin-nyebeng
-OK /chord/made-ada-ft-lugra-boye-lagu-jaruh
-OK /chord/made-ada-pagar-tresna
-OK /chord/martin-hill-serba-salah-ft-geby-wuy-icell-chesylino
-OK /chord/geby-wuy-seng-rasa-ft-niken-soge-tian-dj
-OK /chord/geby-wuy-enak-ee-ft-chesylino-martin-hill-ari-liman
-OK /chord/alsa-lihai
-OK /chord/netty-vera-br-bangun-sampur-sangap-simehuli-sss
-OK /chord/alsa-i-wanna
-OK /chord/moh-oqinawa-ft-alya-pangesty
-OK /chord/lovarian-perpisahan-termanis
-OK /chord/lovarian-sang-pengagum
-OK /chord/netty-vera-br-bangun-dua-tampuk-na
-OK /chord/dek-pekir-ngejuk-lindung
-OK /chord/elsyana-talanjua-luko
-OK /chord/sore-ze-band-surya-jelang-menepi
-OK /chord/mallfin-marandof-natalia-ft-badara-nhotr-debal-ebenn-oneda
-OK /chord/sanggam-manurung-holong-mi-dang-lao-di-au
-OK /chord/bergek-feat-cut-rani-kesungguhan-hati
-OK /chord/sa-tra-rela-bangdil13-x-reyy-black-x-vall-prc-x-wondanak20
-OK /chord/adnan-bustam-ammakku-surugaku
-OK /chord/senandika-tak-berdaya
-OK /chord/as-last-hope-semoga-bahagia
-OK /chord/cut-rani-auliza-gaseh-suci
-OK /chord/dept-truman-show-feat-barmuda-kelsey-kuan
-OK /chord/khilaf-faiz-aizif-x-diyla-jazz
-OK /chord/cut-rani-auliza-cinta-bukan-layang-layang
-OK /chord/cut-rani-auliza-kejam-feat-laguna
-OK /chord/cut-rani-terlalu-sakit
-OK /chord/cut-rani-cinta-tega-mendua
-OK /chord/cut-rani-auliza-dua-hate-saboh-rasa
-OK /chord/cut-rani-doa-rindu
-OK /chord/cut-rani-auliza-semenjak-engkau-hadir
-OK /chord/cut-rani-persinggahan
-OK /chord/cut-rani-bencimu-kusangka-cinta
-OK /chord/cut-rani-pergi-tanpa-alasan
-OK /chord/cut-rani-auliza-teuhalang-cinta
-OK /chord/sabee-lam-doa-ferdian-nozza-lb-feat-cut-rani-auliza
-OK /chord/cut-rani-auliza-teganya-dirimu
-OK /chord/cut-rani-auliza-hambar-kepucuk
-OK /chord/ziell-ferdian-feat-cut-rani-sewaktu-kita-bersama
-OK /chord/cut-rani-tak-seindah-janji
-OK /chord/cut-rani-auliza-kurela-kehilangan
-OK /chord/cut-rani-auliza-orang-ketiga
-OK /chord/cut-rani-auliza-apa-yang-kau-mau
-OK /chord/cut-rani-auliza-cinta-pinjaman
-OK /chord/cut-rani-auliza-rela-terluka
-OK /chord/cut-rani-auliza-mengapa-masih-disini
-OK /chord/cut-rani-rindu-tapi-malu
-OK /chord/cut-rani-lam-tirai-hate
-OK /chord/cut-rani-doa-pada-pemilik-cinta
-OK /chord/cut-rani-menduakan-cintaku
-OK /chord/cut-rani-auliza-aku-hargai-keputusanmu
-OK /chord/cut-rani-auliza-bahagiamu-melukaiku
-OK /chord/cut-rani-salahmu-sendiri
-OK /chord/cut-rani-auliza-dustakan
-OK /chord/cut-rani-auliza-terkecoh
-OK /chord/cut-rani-auliza-sesal-tiada-bertepi
-OK /chord/cut-rani-auliza-rasa-hate-ho-lon-me-jiwa-hampa
-OK /chord/cut-rani-tak-punya-hati
-OK /chord/cut-rani-sama-sama-menjaga-cinta
-OK /chord/cut-rani-auliza-cinta-sejati
-OK /chord/cut-rani-madu-beracun
-OK /chord/cut-rani-relakan-ku-pergi
-OK /chord/cut-rani-menangis-sendiri
-OK /chord/cut-rani-terbuang-sia-sia
-OK /chord/cut-rani-demimu
-OK /chord/cut-rani-patah-hatiku-patah
-OK /chord/cut-rani-terbiar-sepi
-OK /chord/floor-88-yang-benar
-OK /chord/floor-88-masa-pkp
-OK /chord/floor-88-raffa-affar-cincin
-OK /chord/floor-88-jombalika
-OK /chord/floor-88-x-masmona-muli
-OK /chord/floor-88-bukan-milikku
-OK /chord/floor-88-semarakkan-merdeka
-OK /chord/floor-88-baby-shima-lagi-lagi-tak-dapat-raya
-OK /chord/floor-88-f
-OK /chord/mario-g-klau-ft-angelo-klau-terlalu-rindu
-OK /chord/olivia-dean-merry-christmas-everyone
-OK /chord/virgi-karena-dia
-OK /chord/stick-figure-way-of-life-feat-slightly-stoopid
-OK /chord/ifnyn-feat-kaffah-almira-acuhkan-saja
-OK /chord/mira-kirana-sewu-wiso
-OK /chord/mira-kirana-tresnoku-sundul-langit
-OK /chord/mira-kirana-pamer-gendakan
-OK /chord/mira-kirana-stasiun-gambir
-OK /chord/neiked-mae-muller-polo-g-better-days
-OK /chord/ifnyn-oh-ibu
-OK /chord/dewi-purwati-bangku-tua-jadi-saksi
-OK /chord/retno-susanti-tersanjung-ost-sinetron-tersanjung
-OK /chord/guntur-arisandy-sio-sio
-OK /chord/willy-anggawinata-sahabat-yang-mencintai
-OK /chord/willy-anggawinata-kurangnya-aku
-OK /chord/willy-anggawinata-hoodie-coklat
-OK /chord/willy-anggawinata-bye
-OK /chord/willy-anggawinata-ft-brigitta-tifanny-cerita-kita
-OK /chord/willy-anggawinata-sunyinya-malam
-OK /chord/willy-anggawinata-mimpi-indahku
-OK /chord/willy-anggawinata-cinta-yang-nyaman
-OK /chord/willy-anggawinata-akankah
-OK /chord/vicky-salamor-stengah-hati
-OK /chord/avolia-willy-anggawinata-adam-zeins-no-no-no
-OK /chord/willy-anggawinata-semanis-kamu
-OK /chord/willy-anggawinata-surga-kecilku
-OK /chord/vicky-salamor-tuhan-beta-mau-dia-lagu-ambon
-OK /chord/vicky-salamor-ft-new-gvme-mantan
-OK /chord/lian-karoho-cinta-beda-agama-vicky-salamor
-OK /chord/vicky-salamor-untuk-yang-pernah-pergi
-OK /chord/vicky-salamor-sembuhkan-bangsa-ini
-OK /chord/vicky-salamor-beta-masih-butuh
-OK /chord/vicky-salamor-langit-yang-sama
-OK /chord/vicky-salamor-kapan-kau-kembali
-OK /chord/vicky-salamor-penantian-tak-pasti-cipt-loela-drakel
-OK /chord/vicky-salamor-menanti
-OK /chord/vicky-salamor-ku-menanti-cipt-loela-drakel
-OK /chord/vicky-salamor-monalisa
-OK /artist/cabiak
-OK /artist/rayola-feat-daniel-maestro
-OK /artist/dewi-yull
-OK /artist/ari-benjho
-OK /artist/anyqu-feat-cabiak
-OK /artist/caeleb-ft-hendro-mc
-OK /artist/josua-natanael-dera
-OK /artist/jeifi-kawengian
-OK /artist/caesario
-OK /artist/caffeine
-OK /artist/tenxi-jemsii-josua-natanael-dia
-OK /artist/lovarian
-OK /artist/angger-bayu-aji
-OK /artist/nadeera
-OK /artist/nada-zahrani-iqbal-mahesa-ft-cabiak
-OK /artist/caessaria-feat-ariel-noah
-OK /artist/rudy-caffein
-OK /artist/riku-josua-natanael-naykilla
-OK /artist/daniel-maestro-ft-nabilla-yuza
-OK /artist/caca-da5
-OK /artist/caca-handika
-OK /artist/caca-jiga
-OK /artist/caca-olivia
-OK /artist/rayola-ft-daniel-maestro
-OK /artist/caessaria-feat-astrid
-OK /artist/iwan-fals-feat-danilla-riyadi
-OK /artist/dek-soma
-OK /artist/caessaria
-OK /artist/nia
-OK /artist/floor-88
-OK /artist/caca-da5-feat-al-ibnu-adijaya
-OK /artist/tunggara
-OK /artist/cut-rani
-OK /artist/yang-tak-pernah
-OK /artist/arif-lida-feat-caca-olivia
-OK /artist/caffein
-OK /artist/hael-husaini-nadeera
-OK /artist/nova-sondakh
-OK /artist/justin-bieber
-OK /artist/don-toliver
-OK /artist/elsa-kapoh
-OK /artist/rudy-caffeine
-OK /artist/isty-julistry
-OK /artist/diego-alexander-garing
-OK /artist/cacaiska
-OK /artist/v2last
-OK /artist/ananta-prince
-OK /artist/chyran-astrid
-OK /artist/ayu-amanda-ridho-zulma-ft-cabiak
-OK /artist/munn
-OK /artist/cabiak-upiak-bulu
-OK /artist/cade-thompson
-OK /artist/v2last-feat-firman-x-factor-indonesia
-OK /artist/udur-pasaribu
-OK /artist/menghayal-cinta
-OK /artist/sonya-bara
-OK /artist/next-level
-OK /artist/ilham
-OK /artist/tika-mila
-OK /artist/float
-OK /artist/catur-arum
-OK /artist/little-big-town
-OK /artist/aku-yang-terluka
-OK /artist/fourtwnty
-OK /artist/rahma-delinofira
-OK /artist/candria
-OK /artist/wis-bedo
-OK /artist/candria-feat-richie-five-minutes
-OK /artist/loy-bikin-panas
-OK /artist/ian-kasela
-OK /artist/vicky-salamor
-OK /artist/catur-arum-feat-ayu-surati
-OK /artist/hugo-feat-ian-kasela
-OK /artist/daniel-maestro
-OK /artist/spontan-music
-OK /artist/lin-yu-chun
-OK /artist/kenshi-band
-OK /artist/intan-selvi-ft-roby-januarta
-OK /artist/enzana
-OK /artist/morgan-wade
-OK /artist/dek-soma-feat-trias
-OK /artist/tuty-tomagola
-OK /artist/dek-soma-feat-edi-satya
-OK /artist/tajul-afieq-shazwan
-OK /artist/marisha-putri
-OK /artist/siapa-cintaku
-OK /artist/relawan-asmara
-OK /artist/intan-selvi
-OK /artist/widi-as
-OK /artist/lion-babe-feat-oshun
-OK /artist/relawan-asmara-ft-damara-de
-OK /artist/daniel-maestro-ft-nabila-yuza
-OK /artist/lady-roos
-OK /artist/hari-ini-hari-raya
-OK /artist/bang-roy-purba
-OK /artist/ykp-akustik-ft-agustina
-OK /artist/elsyana
-OK /artist/yan-jaya-feat-wahyu
-OK /artist/i-miss-you
-OK /artist/nabila-taqiyyah
-OK /artist/afandi-neomu
-OK /artist/alexa
-OK /artist/mabuak-diseso-bayang
-OK /artist/bujang-tabuang
-OK /artist/yan-jaya
-OK /artist/tio-sitanggang
-OK /artist/macam-susah
-OK /artist/mas-jar
-OK /artist/mifthah-aulianti-ft-frans-ariesta
-OK /artist/miftah-ft-jamal
-OK /artist/noah-davis
-OK /artist/andri-kancil
-OK /artist/vivi-dc-official
-OK /artist/vivi-dc
-OK /artist/vivi-dc-feat-anggi-chandra
-OK /artist/anggi-chandra-feat-vivi-dc
-OK /artist/axel-johansson
-OK /artist/aidilla
-OK /artist/vivi-dc-feat-ben-tusipa
-OK /artist/thomas-day
-OK /artist/kemot-bob
-OK /artist/tantari
-OK /artist/wayan-sumade
-OK /artist/achey-tantari
-OK /artist/tantari-putera-bobo
-OK /artist/muhammad-rasyid
-OK /artist/achey-tantari-rayyan-dahlya
-OK /artist/jangan-ada-dusta-di-antara-kita
-OK /artist/achey-tantari-baby-feaaa
-OK /artist/insomniacks-nabila-taqiyyah
-OK /artist/rizwan-fadilah-nabila-taqiyyah
-OK /artist/the-siswondo
-OK /artist/keisya-levronka
-OK /artist/kim-nabila-taqiyyah
-OK /artist/keisya-levronka-nyoman-paul
-OK /artist/bob-yunus
-OK /artist/alba-samallo
-OK /artist/inna-azuri
-OK /artist/aespa
-OK /artist/raptama-trio
-OK /artist/ora-ketututan
-OK /artist/tajul-feat-wany-hasrita
-OK /artist/jhalo-jz
-OK /artist/tajul
-OK /artist/cinto-sataguah-karang
-OK /artist/tajul-wany-hasrita
-OK /artist/mesandal-keroncong
-OK /artist/julia-anugerah-putri
-OK /artist/eka-x-winky
-OK /artist/tajul-muna-shahirah
-OK /artist/amyn-bayu
-OK /artist/weird-genius-winky-wiryawan
-OK /artist/janji-di-tugu-merpati
-OK /artist/bae-mar-lama
-OK /artist/rika-masya-ft-daniel-maestro
-OK /artist/daniel-maestro-feat-nabilla-yuza
-OK /artist/denai-taseso-uda-taluko
-OK /artist/daniel-maestro-ft-icha-zagita
-OK /artist/daniel-maestro-ft-vany-thursdila
-OK /artist/vany-thursdila-feat-daniel-maestro
-OK /artist/alsa
-OK /artist/sri-fayola-feat-daniel-maestro
-OK /artist/rindu-yang-terlarang
-OK /artist/enka-ft-momon-karman
-OK /artist/arnada-trio
-OK /artist/jacson-zeran
-OK /artist/sendogarpu
-OK /artist/sehati-sejiwa
-OK /artist/keryl
-OK /artist/fonny-shencia
-OK /artist/freed-ghalib
-OK /artist/rikki-hwang
-OK /artist/silvy-carlina
-OK /artist/silvy-carlina-sadri-zarro
-OK /artist/vicky-kalea
-OK /artist/unic-ft-aniq-muhai-naufal-isa
-OK /artist/anjas-wasae
-OK /artist/dandy-barakati-ft-dante-nababan
-OK /artist/ta-lipa-lipa
-OK /artist/indang-annes-ressa-febyolla
-OK /artist/aniq-muhai
-OK /artist/miftah-wahdini-anjas-wasae
-OK /artist/trousdale
-OK /artist/bage-abu
-OK /artist/sardi-uwo
-OK /artist/antha-pryma
-OK /artist/sakajawa
-OK /artist/wah-ditya
-OK /artist/dante-nababan
-OK /artist/benny-blanco-bts-snoop-dogg
-OK /artist/dima-nagari-urang-minang-ado
-OK /artist/aniq-muhai-ft-adnin-roslan
-OK /artist/lintang-ivnda-feat-lintang-chya
-OK /artist/kansas
-OK /artist/so-omom
-OK /artist/cut-rani-auliza
-OK /artist/critoss-official-feat-oktavia
-OK /artist/ressa-febyolla
-OK /artist/olivia-addams
-OK /artist/steelheart
-OK /artist/obenk-gta
-OK /artist/pinkan-mambo
-OK /artist/lian-karina
-OK /artist/satukan-langkah
-OK /artist/sun-tutup-lawang-ati
-OK /artist/wijaya-80
-OK /artist/wijaya-80-feat-sal-priadi
-OK /artist/arsy-widianto-wijaya80
-OK /artist/jay-jalalu
-OK /artist/riyan-chaniago-feat-tiva-zalfan
-OK /artist/the-brandals-feat-sukatani
-OK /artist/antik
-OK /artist/qaish-ft-tresna
-OK /artist/illenium
-OK /artist/rieke-adriati
-OK /artist/aja-dipikiri
-OK /artist/kaji-soher
-OK /artist/fearless-soul
-OK /artist/rama-arief
-OK /artist/asfan-shah-lia-aziz
-OK /artist/elsyana-feat-rozac-tanjung
-OK /artist/asfan-shah-keka-nizam
-OK /artist/pasto
-OK /artist/ratu
-OK /artist/tanya-hati
-OK /artist/boyolali-aku-bali
-OK /artist/adam-levine
-OK /artist/jason-derulo
-OK /artist/utara-band
-OK /artist/delva-feat-gilga-sahid
-OK /artist/gilga-sahid-x-global-musik
-OK /artist/gilga-sahid-ft-mira-putri
-OK /artist/gilga-sahid
-OK /artist/gilga-sahid-ft-happy-asmara
-OK /artist/gilga-sahid-feat-abah-kirun
-OK /artist/happy-asmara-feat-gilga-sahid
-OK /artist/badai-romantic-project
-OK /artist/fari-firdan
-OK /artist/jeyma-monica
-OK /artist/silet-open-up-x-kapthenpurek
-OK /artist/kapthenpurek
-OK /artist/kapthenpurek-ft-andy-lo-wi
-OK /artist/deama-feat-dek-pekir
-OK /artist/kapthenpurek-x-andy-lowy
-OK /artist/anak-kompleks-feat-kapthenpurek
-OK /artist/ko-piara
-OK /artist/kanzer-pmc
-OK /artist/ramlan-yahya-feat-cut-rani
-OK /artist/new-gvme
-OK /artist/busu-busu-setia-buset
-OK /artist/tambah-gaga
-OK /artist/delite-feat-kapthenpurek
-OK /artist/tinggal-tulang
-OK /artist/busu-busu-setia-2
-OK /artist/rio-wermasubun-ft-mario-yamlean
-OK /artist/nining-meida
-OK /artist/kinur
-OK /artist/kapthenpurek-jhalo-jz
-OK /artist/juan-reza-ft-kapthen-purek
-OK /artist/jovi-herlandi-x-billgoun-x-rizky-safaty-x-edwardo-palingu
-OK /artist/kapthenpurek-ft-juan-reza
-OK /artist/son-dheztrow-ft-kapthenpurek
-OK /artist/onchy-wegu
-OK /artist/theo-mustofa
-OK /artist/salsa-billa
-OK /artist/bimbim-slank
-OK /artist/roxen
-OK /artist/made-ada
-OK /artist/kabaya-beureum
-OK /artist/ayu-amanda-ft-obenk-gta
-OK /artist/suci-nurjayanti
-OK /artist/shallow-side
-OK /artist/irwan-wolfang
-OK /artist/simple-rock
-OK /artist/alvi-ananta-ft-koko-arya
-OK /artist/bintang-trada-sayang
-OK /artist/epep-cindy-marenta
-OK /artist/near
-OK /artist/leni-paslah
-OK /artist/eki-volad
-OK /artist/eki-voland
-OK /artist/rina-fitriyani-br-pinen
-OK /artist/mario-g-klau-x-mone-band
-OK /artist/apank-ks2k
-OK /artist/rizki-hidayat
-OK /artist/muka-timur
-OK /artist/ko-siapa
-OK /artist/fahmi-bo-feat-yogi-andrian
-OK /artist/obenk-gta-x-arul-x-nanda-faul
-OK /artist/cinta-petir
-OK /artist/bintangku
-OK /artist/ryan-junior-x-gans-polos
-OK /artist/falado-trio
-OK /artist/epep-feat-cindy-marenta
-OK /artist/iqbal
-OK /artist/jackie-chan-feat-kim-hee-seon
-OK /artist/made-ada-ft-lugra
-OK /artist/martin-hill
-OK /artist/geby-wuy
-OK /artist/netty-vera-br-bangun
-OK /artist/moh
-OK /artist/dek-pekir
-OK /artist/sore-ze-band
-OK /artist/mallfin-marandof
-OK /artist/sanggam-manurung
-OK /artist/bergek-feat-cut-rani
-OK /artist/sa-tra-rela
-OK /artist/adnan-bustam
-OK /artist/senandika
-OK /artist/as-last-hope
-OK /artist/dept
-OK /artist/khilaf
-OK /artist/sabee-lam-doa
-OK /artist/ziell-ferdian-feat-cut-rani
-OK /artist/floor-88-raffa-affar
-OK /artist/floor-88-x-masmona
-OK /artist/floor-88-baby-shima
-OK /artist/mario-g-klau-ft-angelo-klau
-OK /artist/olivia-dean
-OK /artist/virgi
-OK /artist/stick-figure
-OK /artist/ifnyn-feat-kaffah-almira
-OK /artist/mira-kirana
-OK /artist/neiked-mae-muller-polo-g
-OK /artist/ifnyn
-OK /artist/dewi-purwati
-OK /artist/retno-susanti
-OK /artist/guntur-arisandy
-OK /artist/willy-anggawinata
-OK /artist/willy-anggawinata-ft-brigitta-tifanny
-OK /artist/avolia-willy-anggawinata-adam-zeins
-OK /artist/vicky-salamor-ft-new-gvme
-OK /artist/lian-karoho
-Selesai: 1017/1017 halaman ter-pre-render

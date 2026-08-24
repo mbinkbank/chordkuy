@@ -3,8 +3,8 @@
  * Cache disimpan di .prerender-cache/ oleh preserve-prerender.mjs.
  */
 import puppeteer from "puppeteer";
-import { readFile, writeFile, mkdir, rm, cpSync } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
+import { existsSync, cpSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const DIST = "dist";
@@ -107,7 +107,7 @@ async function rewriteAssetRefs() {
 }
 
 /** Mulai server statis untuk Puppeteer */
-function startServer() {
+async function startServer() {
   const { createServer } = await import("node:http");
   const { readFile: rf } = await import("node:fs/promises");
   const { extname } = await import("node:path");
