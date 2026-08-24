@@ -61,14 +61,9 @@ export default function HomePage() {
   const [loadingRecent, setLoadingRecent] = useState(page !== 1);
 
   useEffect(() => {
-    if (page === 1) {
-      setRecent(BAKED_RECENT);
-      setRecentTotal(buildData.songCount);
-      setLoadingRecent(false);
-      return;
-    }
     let cancelled = false;
-    setLoadingRecent(true);
+    if (page !== 1) setLoadingRecent(true);
+    // Halaman 1 tetap tampil instan dari data baked, lalu di-refresh senyap agar total akurat
     getRecentSongsPage(page)
       .then(({ songs, total }) => {
         if (cancelled) return;
