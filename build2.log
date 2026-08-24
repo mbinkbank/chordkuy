@@ -1,0 +1,359 @@
+
+> react-vite-tailwind@0.0.0 build
+> node scripts/fetch-build-data.mjs && node scripts/preserve-prerender.mjs && vite build && node scripts/prerender.mjs && node scripts/generate-sitemap.mjs
+
+Fetching build data...
+build-data.json: 678 lagu, 342 artis (popular 8, recent 50)
+Cache: chord/
+Cache: artist/
+[36mvite v7.3.2 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 1914 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                  [39m[1m[2m  4.12 kB[22m[1m[22m[2m │ gzip:   1.67 kB[22m
+[2mdist/[22m[35massets/index-D3lcabce.css   [39m[1m[2m 24.63 kB[22m[1m[22m[2m │ gzip:   5.59 kB[22m
+[2mdist/[22m[36massets/browser-M1QfABy2.js  [39m[1m[2m  0.62 kB[22m[1m[22m[2m │ gzip:   0.43 kB[22m
+[2mdist/[22m[36massets/index-BW1pq8UO.js    [39m[1m[2m369.32 kB[22m[1m[22m[2m │ gzip: 111.78 kB[22m
+[32m✓ built in 2.06s[39m
+Lagu di DB: 678
+Pre-render 335/1013 halaman (1013 di-skip)...
+OK /artists (1/335)
+OK / (2/335)
+OK /artist/anyqu-feat-cabiak (3/335)
+OK /artist/nada-zahrani-iqbal-mahesa-ft-cabiak (4/335)
+OK /artist/caca-da5 (5/335)
+OK /artist/caca-da5-feat-al-ibnu-adijaya (6/335)
+OK /artist/caca-handika (7/335)
+GAGAL /artist/cabiak: Waiting failed: 10000ms exceeded
+GAGAL /artist/ayu-amanda-ridho-zulma-ft-cabiak: Waiting failed: 10000ms exceeded
+OK /artist/caca-jiga (10/335)
+GAGAL /artist/cabiak-upiak-bulu: Waiting failed: 10000ms exceeded
+OK /artist/tunggara (12/335)
+OK /artist/cade-thompson (13/335)
+OK /artist/caeleb-ft-hendro-mc (14/335)
+OK /artist/caesario (15/335)
+OK /artist/caessaria-feat-ariel-noah (16/335)
+OK /artist/caessaria-feat-astrid (17/335)
+OK /artist/caessaria (18/335)
+OK /artist/caffeine (19/335)
+OK /artist/caffein (20/335)
+GAGAL /artist/arif-lida-feat-caca-olivia: Waiting failed: 10000ms exceeded
+GAGAL /artist/caca-olivia: Waiting failed: 10000ms exceeded
+OK /artist/yang-tak-pernah (23/335)
+GAGAL /artist/cacaiska: Waiting failed: 10000ms exceeded
+OK /artist/v2last-feat-firman-x-factor-indonesia (25/335)
+OK /artist/v2last (26/335)
+OK /artist/tenxi-jemsii-josua-natanael-dia (27/335)
+OK /artist/riku-josua-natanael-naykilla (28/335)
+OK /artist/justin-bieber (29/335)
+OK /artist/don-toliver (30/335)
+OK /artist/angger-bayu-aji (31/335)
+OK /artist/iwan-fals-feat-danilla-riyadi (32/335)
+OK /artist/nia (33/335)
+OK /artist/elsa-kapoh (34/335)
+OK /artist/isty-julistry (35/335)
+GAGAL /artist/rudy-caffeine: Waiting failed: 10000ms exceeded
+GAGAL /artist/rudy-caffein: Waiting failed: 10000ms exceeded
+OK /artist/ananta-prince (38/335)
+GAGAL /artist/josua-natanael-dera: Waiting failed: 10000ms exceeded
+OK /artist/chyran-astrid (40/335)
+OK /artist/nadeera (41/335)
+OK /artist/hael-husaini-nadeera (42/335)
+OK /artist/menghayal-cinta (43/335)
+OK /artist/sonya-bara (44/335)
+OK /artist/next-level (45/335)
+OK /artist/tika-mila (46/335)
+OK /artist/float (47/335)
+GAGAL /artist/jeifi-kawengian: Waiting failed: 10000ms exceeded
+GAGAL /artist/diego-alexander-garing: Waiting failed: 10000ms exceeded
+OK /artist/little-big-town (50/335)
+GAGAL /artist/nova-sondakh: Waiting failed: 10000ms exceeded
+OK /artist/wis-bedo (52/335)
+OK /artist/rahma-delinofira (53/335)
+OK /artist/candria-feat-richie-five-minutes (54/335)
+OK /artist/loy-bikin-panas (55/335)
+OK /artist/munn (56/335)
+OK /artist/ilham (57/335)
+OK /artist/udur-pasaribu (58/335)
+OK /artist/ian-kasela (59/335)
+OK /artist/hugo-feat-ian-kasela (60/335)
+OK /artist/kenshi-band (61/335)
+GAGAL /artist/aku-yang-terluka: Waiting failed: 10000ms exceeded
+GAGAL /artist/fourtwnty: Waiting failed: 10000ms exceeded
+OK /artist/spontan-music (64/335)
+OK /artist/morgan-wade (65/335)
+GAGAL /artist/candria: Waiting failed: 10000ms exceeded
+OK /artist/dek-soma (67/335)
+OK /artist/dek-soma-feat-trias (68/335)
+OK /artist/dek-soma-feat-edi-satya (69/335)
+OK /artist/widi-as (70/335)
+OK /artist/marisha-putri (71/335)
+OK /artist/siapa-cintaku (72/335)
+OK /artist/relawan-asmara (73/335)
+OK /artist/relawan-asmara-ft-damara-de (74/335)
+OK /artist/intan-selvi (75/335)
+OK /artist/intan-selvi-ft-roby-januarta (76/335)
+GAGAL /artist/lin-yu-chun: Waiting failed: 10000ms exceeded
+GAGAL /artist/enzana: Waiting failed: 10000ms exceeded
+OK /artist/bang-roy-purba (79/335)
+OK /artist/ykp-akustik-ft-agustina (80/335)
+OK /artist/yan-jaya (81/335)
+OK /artist/yan-jaya-feat-wahyu (82/335)
+OK /artist/macam-susah (83/335)
+OK /artist/afandi-neomu (84/335)
+OK /artist/mas-jar (85/335)
+GAGAL /artist/lion-babe-feat-oshun: Waiting failed: 10000ms exceeded
+OK /artist/mifthah-aulianti-ft-frans-ariesta (87/335)
+OK /artist/miftah-ft-jamal (88/335)
+OK /artist/noah-davis (89/335)
+OK /artist/vivi-dc (90/335)
+OK /artist/vivi-dc-feat-anggi-chandra (91/335)
+OK /artist/anggi-chandra-feat-vivi-dc (92/335)
+OK /artist/vivi-dc-feat-ben-tusipa (93/335)
+OK /artist/muhammad-rasyid (94/335)
+GAGAL /artist/tio-sitanggang: Waiting failed: 10000ms exceeded
+GAGAL /artist/i-miss-you: Waiting failed: 10000ms exceeded
+OK /artist/thomas-day (97/335)
+OK /artist/achey-tantari (98/335)
+OK /artist/tantari-putera-bobo (99/335)
+OK /artist/achey-tantari-baby-feaaa (100/335)
+GAGAL /artist/vivi-dc-official: Waiting failed: 10000ms exceeded
+OK /artist/achey-tantari-rayyan-dahlya (102/335)
+OK /artist/insomniacks-nabila-taqiyyah (103/335)
+OK /artist/rizwan-fadilah-nabila-taqiyyah (104/335)
+OK /artist/kim-nabila-taqiyyah (105/335)
+OK /artist/bob-yunus (106/335)
+OK /artist/alba-samallo (107/335)
+GAGAL /artist/tantari: Waiting failed: 10000ms exceeded
+GAGAL /artist/hari-ini-hari-raya: Waiting failed: 10000ms exceeded
+OK /artist/aespa (110/335)
+OK /artist/raptama-trio (111/335)
+OK /artist/ora-ketututan (112/335)
+OK /artist/cinto-sataguah-karang (113/335)
+OK /artist/tajul-feat-wany-hasrita (114/335)
+GAGAL /artist/nabila-taqiyyah: Waiting failed: 10000ms exceeded
+OK /artist/tajul (116/335)
+OK /artist/tajul-wany-hasrita (117/335)
+OK /artist/tajul-muna-shahirah (118/335)
+OK /artist/amyn-bayu (119/335)
+OK /artist/eka-x-winky (120/335)
+GAGAL /artist/jhalo-jz: Waiting failed: 10000ms exceeded
+GAGAL /artist/inna-azuri: Waiting failed: 10000ms exceeded
+OK /artist/weird-genius-winky-wiryawan (123/335)
+OK /artist/tuty-tomagola (124/335)
+OK /artist/mabuak-diseso-bayang (125/335)
+OK /artist/daniel-maestro (126/335)
+OK /artist/rayola-feat-daniel-maestro (127/335)
+OK /artist/daniel-maestro-ft-nabila-yuza (128/335)
+OK /artist/daniel-maestro-ft-nabilla-yuza (129/335)
+GAGAL /artist/tajul-afieq-shazwan: Waiting failed: 10000ms exceeded
+OK /artist/bujang-tabuang (131/335)
+OK /artist/denai-taseso-uda-taluko (132/335)
+OK /artist/daniel-maestro-ft-icha-zagita (133/335)
+OK /artist/vany-thursdila-feat-daniel-maestro (134/335)
+OK /artist/rayola-ft-daniel-maestro (135/335)
+OK /artist/sri-fayola-feat-daniel-maestro (136/335)
+OK /artist/daniel-maestro-ft-vany-thursdila (137/335)
+OK /artist/julia-anugerah-putri (138/335)
+GAGAL /artist/janji-di-tugu-merpati: Waiting failed: 10000ms exceeded
+OK /artist/jangan-ada-dusta-di-antara-kita (140/335)
+OK /artist/dewi-yull (141/335)
+GAGAL /artist/rika-masya-ft-daniel-maestro: Waiting failed: 10000ms exceeded
+OK /artist/arnada-trio (143/335)
+OK /artist/keisya-levronka-nyoman-paul (144/335)
+OK /artist/keryl (145/335)
+OK /artist/the-siswondo (146/335)
+OK /artist/fonny-shencia (147/335)
+OK /artist/jacson-zeran (148/335)
+OK /artist/freed-ghalib (149/335)
+GAGAL /artist/daniel-maestro-feat-nabilla-yuza: Waiting failed: 10000ms exceeded
+OK /artist/rikki-hwang (151/335)
+OK /artist/silvy-carlina (152/335)
+GAGAL /artist/rindu-yang-terlarang: Waiting failed: 10000ms exceeded
+OK /artist/silvy-carlina-sadri-zarro (154/335)
+OK /artist/enka-ft-momon-karman (155/335)
+OK /artist/wayan-sumade (156/335)
+OK /artist/aniq-muhai (157/335)
+GAGAL /artist/keisya-levronka: Waiting failed: 10000ms exceeded
+OK /artist/aniq-muhai-ft-adnin-roslan (159/335)
+OK /artist/sakajawa (160/335)
+OK /artist/wah-ditya (161/335)
+OK /artist/miftah-wahdini-anjas-wasae (162/335)
+OK /artist/anjas-wasae (163/335)
+OK /artist/trousdale (164/335)
+OK /artist/dandy-barakati-ft-dante-nababan (165/335)
+GAGAL /artist/sendogarpu: Waiting failed: 10000ms exceeded
+OK /artist/so-omom (167/335)
+OK /artist/dante-nababan (168/335)
+OK /artist/ta-lipa-lipa (169/335)
+OK /artist/bage-abu (170/335)
+OK /artist/sardi-uwo (171/335)
+OK /artist/bae-mar-lama (172/335)
+OK /artist/benny-blanco-bts-snoop-dogg (173/335)
+GAGAL /artist/unic-ft-aniq-muhai-naufal-isa: Waiting failed: 10000ms exceeded
+OK /artist/antha-pryma (175/335)
+GAGAL /artist/kansas: Waiting failed: 10000ms exceeded
+OK /artist/vicky-kalea (177/335)
+OK /artist/critoss-official-feat-oktavia (178/335)
+OK /artist/lintang-ivnda-feat-lintang-chya (179/335)
+OK /artist/olivia-addams (180/335)
+OK /artist/pinkan-mambo (181/335)
+OK /artist/lian-karina (182/335)
+OK /artist/steelheart (183/335)
+OK /artist/sun-tutup-lawang-ati (184/335)
+OK /artist/catur-arum (185/335)
+OK /artist/satukan-langkah (186/335)
+OK /artist/catur-arum-feat-ayu-surati (187/335)
+GAGAL /artist/dima-nagari-urang-minang-ado: Waiting failed: 10000ms exceeded
+GAGAL /artist/ressa-febyolla: Waiting failed: 10000ms exceeded
+OK /artist/wijaya-80 (190/335)
+GAGAL /artist/indang-annes-ressa-febyolla: Waiting failed: 10000ms exceeded
+OK /artist/riyan-chaniago-feat-tiva-zalfan (192/335)
+OK /artist/antik (193/335)
+OK /artist/qaish-ft-tresna (194/335)
+OK /artist/illenium (195/335)
+OK /artist/rieke-adriati (196/335)
+OK /artist/aja-dipikiri (197/335)
+OK /artist/kaji-soher (198/335)
+OK /artist/fearless-soul (199/335)
+OK /artist/rama-arief (200/335)
+GAGAL /artist/wijaya-80-feat-sal-priadi: Waiting failed: 10000ms exceeded
+GAGAL /artist/arsy-widianto-wijaya80: Waiting failed: 10000ms exceeded
+OK /artist/asfan-shah-lia-aziz (203/335)
+GAGAL /artist/the-brandals-feat-sukatani: Waiting failed: 10000ms exceeded
+OK /artist/ratu (205/335)
+OK /artist/boyolali-aku-bali (206/335)
+OK /artist/adam-levine (207/335)
+OK /artist/jason-derulo (208/335)
+OK /artist/utara-band (209/335)
+OK /artist/delva-feat-gilga-sahid (210/335)
+OK /artist/gilga-sahid-x-global-musik (211/335)
+OK /artist/gilga-sahid-ft-mira-putri (212/335)
+OK /artist/gilga-sahid (213/335)
+GAGAL /artist/asfan-shah-keka-nizam: Waiting failed: 10000ms exceeded
+GAGAL /artist/pasto: Waiting failed: 10000ms exceeded
+OK /artist/gilga-sahid-ft-happy-asmara (216/335)
+GAGAL /artist/tanya-hati: Waiting failed: 10000ms exceeded
+OK /artist/gilga-sahid-feat-abah-kirun (218/335)
+OK /artist/badai-romantic-project (219/335)
+OK /artist/jeyma-monica (220/335)
+OK /artist/silet-open-up-x-kapthenpurek (221/335)
+OK /artist/kapthenpurek (222/335)
+OK /artist/kapthenpurek-ft-andy-lo-wi (223/335)
+OK /artist/kapthenpurek-x-andy-lowy (224/335)
+OK /artist/anak-kompleks-feat-kapthenpurek (225/335)
+OK /artist/ko-piara (226/335)
+OK /artist/new-gvme (227/335)
+GAGAL /artist/happy-asmara-feat-gilga-sahid: Waiting failed: 10000ms exceeded
+GAGAL /artist/aidilla: Waiting failed: 10000ms exceeded
+OK /artist/busu-busu-setia-buset (230/335)
+GAGAL /artist/fari-firdan: Waiting failed: 10000ms exceeded
+OK /artist/tambah-gaga (232/335)
+OK /artist/tinggal-tulang (233/335)
+OK /artist/kapthenpurek-ft-juan-reza (234/335)
+OK /artist/son-dheztrow-ft-kapthenpurek (235/335)
+OK /artist/kanzer-pmc (236/335)
+OK /artist/busu-busu-setia-2 (237/335)
+OK /artist/jovi-herlandi-x-billgoun-x-rizky-safaty-x-edwardo-palingu (238/335)
+OK /artist/onchy-wegu (239/335)
+OK /artist/theo-mustofa (240/335)
+GAGAL /artist/kapthenpurek-jhalo-jz: Waiting failed: 10000ms exceeded
+GAGAL /artist/delite-feat-kapthenpurek: Waiting failed: 10000ms exceeded
+OK /artist/salsa-billa (243/335)
+GAGAL /artist/juan-reza-ft-kapthen-purek: Waiting failed: 10000ms exceeded
+OK /artist/lady-roos (245/335)
+OK /artist/irwan-wolfang (246/335)
+OK /artist/andri-kancil (247/335)
+OK /artist/axel-johansson (248/335)
+OK /artist/kemot-bob (249/335)
+OK /artist/jay-jalalu (250/335)
+OK /artist/rio-wermasubun-ft-mario-yamlean (251/335)
+OK /artist/kinur (252/335)
+OK /artist/ari-benjho (253/335)
+GAGAL /artist/bimbim-slank: Waiting failed: 10000ms exceeded
+OK /artist/simple-rock (255/335)
+GAGAL /artist/shallow-side: Waiting failed: 10000ms exceeded
+GAGAL /artist/roxen: Waiting failed: 10000ms exceeded
+OK /artist/mesandal-keroncong (258/335)
+OK /artist/leni-paslah (259/335)
+OK /artist/eki-volad (260/335)
+OK /artist/eki-voland (261/335)
+OK /artist/rina-fitriyani-br-pinen (262/335)
+OK /artist/mario-g-klau-x-mone-band (263/335)
+OK /artist/apank-ks2k (264/335)
+OK /artist/alexa (265/335)
+OK /artist/rizki-hidayat (266/335)
+OK /artist/muka-timur (267/335)
+GAGAL /artist/alvi-ananta-ft-koko-arya: Waiting failed: 10000ms exceeded
+GAGAL /artist/bintang-trada-sayang: Waiting failed: 10000ms exceeded
+OK /artist/ko-siapa (270/335)
+GAGAL /artist/near: Waiting failed: 10000ms exceeded
+OK /artist/obenk-gta (272/335)
+OK /artist/obenk-gta-x-arul-x-nanda-faul (273/335)
+OK /artist/cinta-petir (274/335)
+OK /artist/bintangku (275/335)
+OK /artist/ryan-junior-x-gans-polos (276/335)
+OK /artist/suci-nurjayanti (277/335)
+OK /artist/falado-trio (278/335)
+OK /artist/epep-feat-cindy-marenta (279/335)
+OK /artist/epep-cindy-marenta (280/335)
+GAGAL /artist/fahmi-bo-feat-yogi-andrian: Waiting failed: 10000ms exceeded
+OK /artist/iqbal (282/335)
+GAGAL /artist/ayu-amanda-ft-obenk-gta: Waiting failed: 10000ms exceeded
+GAGAL /artist/sehati-sejiwa: Waiting failed: 10000ms exceeded
+OK /artist/jackie-chan-feat-kim-hee-seon (285/335)
+OK /artist/made-ada (286/335)
+OK /artist/alsa (287/335)
+OK /artist/moh (288/335)
+OK /artist/lovarian (289/335)
+OK /artist/netty-vera-br-bangun (290/335)
+OK /artist/dek-pekir (291/335)
+OK /artist/deama-feat-dek-pekir (292/335)
+OK /artist/elsyana (293/335)
+OK /artist/elsyana-feat-rozac-tanjung (294/335)
+OK /artist/sore-ze-band (295/335)
+GAGAL /artist/made-ada-ft-lugra: Waiting failed: 10000ms exceeded
+GAGAL /artist/geby-wuy: Waiting failed: 10000ms exceeded
+GAGAL /artist/martin-hill: Waiting failed: 10000ms exceeded
+OK /artist/mallfin-marandof (299/335)
+OK /artist/senandika (300/335)
+OK /artist/as-last-hope (301/335)
+OK /artist/dept (302/335)
+OK /artist/khilaf (303/335)
+OK /artist/cut-rani-auliza (304/335)
+OK /artist/bergek-feat-cut-rani (305/335)
+OK /artist/ramlan-yahya-feat-cut-rani (306/335)
+OK /artist/cut-rani (307/335)
+OK /artist/sabee-lam-doa (308/335)
+GAGAL /artist/sanggam-manurung: Waiting failed: 10000ms exceeded
+GAGAL /artist/adnan-bustam: Waiting failed: 10000ms exceeded
+GAGAL /artist/sa-tra-rela: Waiting failed: 10000ms exceeded
+OK /artist/ziell-ferdian-feat-cut-rani (312/335)
+OK /artist/floor-88-baby-shima (313/335)
+OK /artist/mario-g-klau-ft-angelo-klau (314/335)
+OK /artist/olivia-dean (315/335)
+OK /artist/virgi (316/335)
+OK /artist/stick-figure (317/335)
+OK /artist/nining-meida (318/335)
+OK /artist/kabaya-beureum (319/335)
+OK /artist/mira-kirana (320/335)
+OK /artist/neiked-mae-muller-polo-g (321/335)
+GAGAL /artist/floor-88-raffa-affar: Waiting failed: 10000ms exceeded
+GAGAL /artist/floor-88-x-masmona: Waiting failed: 10000ms exceeded
+OK /artist/ifnyn-feat-kaffah-almira (324/335)
+GAGAL /artist/floor-88: Waiting failed: 10000ms exceeded
+OK /artist/retno-susanti (326/335)
+OK /artist/willy-anggawinata (327/335)
+OK /artist/willy-anggawinata-ft-brigitta-tifanny (328/335)
+OK /artist/avolia-willy-anggawinata-adam-zeins (329/335)
+OK /artist/vicky-salamor (330/335)
+OK /artist/lian-karoho (331/335)
+OK /artist/vicky-salamor-ft-new-gvme (332/335)
+OK /artist/ifnyn (333/335)
+OK /artist/dewi-purwati (334/335)
+OK /artist/guntur-arisandy (335/335)
+Selesai: 267/335 halaman ter-pre-render
+Generating sitemap from Supabase...
+Found 678 songs
+Sitemap written to dist/sitemap.xml (678 songs, 333 artists)
