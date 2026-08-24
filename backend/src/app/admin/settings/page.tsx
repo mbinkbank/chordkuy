@@ -182,18 +182,30 @@ export default function SettingsPage() {
         <div className="space-y-2">
           {[
             { method: "POST", path: "/api/auth/login" },
+            { method: "POST", path: "/api/auth/logout" },
+            { method: "GET", path: "/api/auth/me" },
+            { method: "POST", path: "/api/auth/change-password" },
             { method: "GET", path: "/api/songs" },
-            { method: "GET", path: "/api/songs/:judul/:penyanyi" },
             { method: "POST", path: "/api/songs" },
+            { method: "GET", path: "/api/songs/:judul/:penyanyi" },
             { method: "PUT", path: "/api/songs/:judul/:penyanyi" },
             { method: "DELETE", path: "/api/songs/:judul/:penyanyi" },
             { method: "POST", path: "/api/songs/bulk" },
-            { method: "GET", path: "/api/albums" },
+            { method: "GET", path: "/api/songs/export" },
+            { method: "POST", path: "/api/songs/import" },
             { method: "GET", path: "/api/dashboard/stats" },
+            { method: "GET", path: "/api/dashboard/recent" },
+            { method: "GET", path: "/api/dashboard/language-stats" },
+            { method: "GET", path: "/api/youtube/stats" },
+            { method: "POST", path: "/api/youtube/bulk" },
             { method: "GET", path: "/api/export/json" },
             { method: "GET", path: "/api/export/csv" },
+            { method: "POST", path: "/api/import/json" },
+            { method: "POST", path: "/api/import/csv" },
+            { method: "GET", path: "/api/sync/status" },
+            { method: "GET", path: "/api/health" },
           ].map((ep) => (
-            <div key={ep.path} className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2">
+            <div key={`${ep.method}-${ep.path}`} className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2">
               <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${
                 ep.method === "GET" ? "bg-emerald-100 text-emerald-700" :
                 ep.method === "POST" ? "bg-blue-100 text-blue-700" :
