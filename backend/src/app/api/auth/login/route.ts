@@ -1,8 +1,6 @@
 import { NextRequest } from "next/server";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { signToken, comparePassword } from "@/lib/auth";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { signToken } from "@/lib/auth";
 import { successResponse, errorResponse } from "@/lib/api-response";
 import { cookies } from "next/headers";
 
@@ -15,26 +13,25 @@ export async function POST(request: NextRequest) {
       return errorResponse("Email dan password wajib diisi", 400);
     }
 
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email.toLowerCase()))
-      .limit(1);
+    // Validasi kredensial lewat Supabase Auth (user yang terdaftar di dashboard)
+    const { data, error: authError } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (!user) {
+    if (authError || !data.user) {
       return errorResponse("Email atau password salah", 401);
     }
 
-    const valid = await comparePassword(password, user.password_hash);
-    if (!valid) {
-      return errorResponse("Email atau password salah", 401);
-    }
+    const user = data.user;
+    const name = (user.user_metadata?.name as string) || email.split("@")[0];
+    const role = (user.user_metadata?.role as string) || "admin";
 
     const token = await signToken({
       userId: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
+      email: user.email || email,
+      name,
+      role,
     });
 
     const cookieStore = await cookies();
@@ -52,11 +49,11 @@ export async function POST(request: NextRequest) {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name,
-          role: user.role,
+          name,
+          role,
         },
       },
-      "Login berhasil"
+      "Login berhasil",
     );
   } catch (error) {
     console.error("Login error:", error);

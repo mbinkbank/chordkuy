@@ -1,10 +1,8 @@
 import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/middleware";
 import { successResponse, errorResponse } from "@/lib/api-response";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { comparePassword, hashPassword } from "@/lib/auth";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { signInForVerification } from "@/lib/supabase-admin";
 
 export async function POST(request: NextRequest) {
   const authUser = await requireAuth(request);
@@ -21,22 +19,19 @@ export async function POST(request: NextRequest) {
     return errorResponse("Password baru minimal 6 karakter", 400);
   }
 
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, authUser.userId))
-    .limit(1);
+  // Verifikasi password lama dengan mencoba login
+  const { error: verifyError } = await supabaseAdmin.auth.signInWithPassword({
+    email: authUser.email,
+    password: current_password,
+  });
+  if (verifyError) return errorResponse("Password lama salah", 401);
 
-  if (!user) return errorResponse("User tidak ditemukan", 404);
-
-  const valid = await comparePassword(current_password, user.password_hash);
-  if (!valid) return errorResponse("Password lama salah", 401);
-
-  const newHash = await hashPassword(new_password);
-  await db
-    .update(users)
-    .set({ password_hash: newHash })
-    .where(eq(users.id, authUser.userId));
+  // Update password di Supabase Auth
+  const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+    authUser.userId,
+    { password: new_password }
+  );
+  if (updateError) return errorResponse(updateError.message, 500);
 
   return successResponse(null, "Password berhasil diubah");
 }
