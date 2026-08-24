@@ -14,7 +14,7 @@ type Summary = {
   totalVisitors: number;
   today: { pageViews: number; visitors: number; firstTime: number };
   usersOnline: number;
-  onlineDetails: { visitor_id: string; last_seen: string; last_path: string; last_title: string; pages: number }[];
+  onlineDetails: { visitor_id: string; last_seen: string; paths: string[]; titles: string[]; countries: string[]; pages: number }[];
   avgDuration: string;
   pagesPerVisit: number;
   referrers: { label: string; c: number }[];
@@ -203,36 +203,77 @@ export default function AnalyticsPage() {
       {showOnline && (
         <div
           onClick={() => setShowOnline(false)}
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "grid", placeItems: "center", zIndex: 50, padding: 16 }}
+          style={{ position: "fixed", inset: 0, background: "rgba(8,8,12,0.6)", backdropFilter: "blur(6px)", display: "grid", placeItems: "center", zIndex: 50, padding: 16 }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="panel"
-            style={{ width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "auto" }}
+            style={{ width: "100%", maxWidth: 640, maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column", padding: 0 }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <h3 style={{ margin: 0 }}>Users online — detail tab</h3>
-              <button className="secondary" onClick={() => setShowOnline(false)}>Tutup</button>
+            <div style={{ padding: "16px 18px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 15, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 999, background: "#22c55e", display: "inline-block", boxShadow: "0 0 0 5px #22c55e22" }} />
+                  Users online
+                  <span className="badge" style={{ background: "#22c55e", color: "#052e16", borderColor: "transparent", fontWeight: 700 }}>{(data.onlineDetails || []).length}</span>
+                </h3>
+                <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>Tab yang dibuka dalam 5 menit terakhir — 1 visitor bisa punya beberapa tab</p>
+              </div>
+              <button className="secondary" onClick={() => setShowOnline(false)} style={{ borderRadius: 999, padding: "6px 10px" }}>Tutup</button>
             </div>
-            {(data.onlineDetails || []).length === 0 ? (
-              <p className="muted" style={{ fontSize: 13 }}>Tidak ada pengunjung online saat ini.</p>
-            ) : (
-              <table>
-                <thead><tr><th>Visitor</th><th>Tab terakhir</th><th>Halaman</th></tr></thead>
-                <tbody>
-                  {(data.onlineDetails || []).map((u: any) => (
-                    <tr key={u.visitor_id}>
-                      <td style={{ fontFamily: "monospace", fontSize: 11 }}>{u.visitor_id.slice(0, 8)}…</td>
-                      <td style={{ maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={u.last_path}>
-                        {u.last_path || "/"}
-                      </td>
-                      <td style={{ fontSize: 12, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={u.last_title}>{u.last_title || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <p className="muted" style={{ fontSize: 11, marginTop: 10 }}>Menampilkan tab terakhir per visitor dalam 5 menit. Buka 2 tab = 1 visitor, 1 baris.</p>
+
+            <div style={{ overflow: "auto", padding: 14, display: "grid", gap: 12 }}>
+              {(data.onlineDetails || []).length === 0 ? (
+                <div style={{ textAlign: "center", padding: "28px 16px" }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 14, background: "#22c55e18", color: "#22c55e", display: "grid", placeItems: "center", margin: "0 auto 10px" }}>
+                    <Users size={20} />
+                  </div>
+                  <p style={{ margin: 0, fontWeight: 600 }}>Tidak ada pengunjung online</p>
+                  <p className="muted" style={{ fontSize: 13, marginTop: 4 }}>Buka chord di HP lain lalu refresh halaman ini.</p>
+                </div>
+              ) : (
+                (data.onlineDetails || []).map((u: any) => {
+                  const paths: string[] = Array.isArray(u.paths) ? u.paths : u.last_path ? [u.last_path] : [];
+                  const titles: string[] = Array.isArray(u.titles) ? u.titles : u.last_title ? [u.last_title] : [];
+                  const country = Array.isArray(u.countries) ? u.countries[0] : u.countries;
+                  const minsAgo = Math.max(0, Math.round((Date.now() - new Date(u.last_seen).getTime()) / 60000));
+                  return (
+                    <div key={u.visitor_id} className="panel" style={{ padding: 12, background: "var(--bg)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: "#4ade8020", color: "#4ade80", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 12 }}>
+                          {u.visitor_id.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "monospace" }}>{u.visitor_id.slice(0, 8)}…</div>
+                          <div className="muted" style={{ fontSize: 11 }}>{country ? `🌍 ${country} · ` : ""}{u.pages} halaman · {minsAgo === 0 ? "baru saja" : `${minsAgo} menit lalu`}</div>
+                        </div>
+                        <span className="badge" style={{ background: "#22c55e", color: "#052e16", border: 0 }}>{u.pages} tab</span>
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {paths.map((p: string, i: number) => {
+                          const t = titles[i] || "";
+                          const label = t ? `${t}` : p || "/";
+                          const href = p.startsWith("/") ? `https://chordkuy.id${p}` : p;
+                          return (
+                            <a
+                              key={`${u.visitor_id}-${i}`}
+                              href={href}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="badge"
+                              style={{ maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none", background: "var(--panel)", borderColor: "var(--border)" }}
+                              title={`${p}${t ? ` — ${t}` : ""}`}
+                            >
+                              {label}
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
       )}

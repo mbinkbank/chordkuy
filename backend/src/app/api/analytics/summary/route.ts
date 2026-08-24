@@ -48,8 +48,9 @@ export async function GET(request: NextRequest) {
       db.execute(sql`
         select visitor_id,
                max(created_at) as last_seen,
-               (array_agg(path order by created_at desc))[1] as last_path,
-               (array_agg(title order by created_at desc))[1] as last_title,
+               array_agg(path order by created_at desc) as paths,
+               array_agg(title order by created_at desc) as titles,
+               array_agg(country order by created_at desc) as countries,
                count(*)::int as pages
         from pageviews
         where created_at >= ${fiveMinAgo.toISOString()}
