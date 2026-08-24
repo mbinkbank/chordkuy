@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/fetch-build-data.mjs && node scripts/preserve-prerender.mjs && vite build && node scripts/prerender.mjs && node scripts/generate-sitemap.mjs",
+    "build": "node scripts/fetch-build-data.mjs && vite build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
