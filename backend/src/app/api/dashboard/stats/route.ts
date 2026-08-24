@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { tbChord } from "@/db/schema";
-import { sql, ne } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { successResponse, errorResponse } from "@/lib/api-response";
 import { format } from "date-fns";
 
@@ -13,11 +13,6 @@ export async function GET(_request: NextRequest) {
       .select({ count: sql<number>`count(*)::int` })
       .from(tbChord);
 
-    const [totalAlbums] = await db
-      .select({ count: sql<number>`count(distinct album)::int` })
-      .from(tbChord)
-      .where(ne(tbChord.album, ""));
-
     const [newThisMonth] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(tbChord)
@@ -28,7 +23,6 @@ export async function GET(_request: NextRequest) {
         judul: tbChord.judul,
         penyanyi: tbChord.penyanyi,
         lastmod: tbChord.lastmod,
-        album: tbChord.album,
       })
       .from(tbChord)
       .orderBy(sql`lastmod DESC`)
@@ -37,7 +31,7 @@ export async function GET(_request: NextRequest) {
     return successResponse(
       {
         total_songs: Number(totalSongs?.count ?? 0),
-        total_albums: Number(totalAlbums?.count ?? 0),
+        total_albums: 0,
         new_this_month: Number(newThisMonth?.count ?? 0),
         last_updated: lastUpdated[0] || null,
       },

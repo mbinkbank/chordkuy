@@ -80,24 +80,23 @@ export async function PUT(request: NextRequest, { params }: Params) {
         judul: newJudul,
         penyanyi: newPenyanyi,
         base_key: body.base_key ?? old[0].base_key,
-        album: body.album ?? old[0].album,
-        album_image: body.album_image ?? old[0].album_image,
+        tuning: body.tuning ?? (old[0] as any).tuning,
+        capo: body.capo ?? (old[0] as any).capo,
+        difficulty: body.difficulty ?? (old[0] as any).difficulty,
+        rating: body.rating ?? (old[0] as any).rating,
         lastmod,
         isi_chord: body.isi_chord ?? old[0].isi_chord,
         language: body.language ?? old[0].language,
         youtube_url: body.youtube_url ?? old[0].youtube_url,
-        songwriter: body.songwriter ?? old[0].songwriter,
-        year: body.year ?? old[0].year,
-        songtype: body.songtype ?? old[0].songtype,
-      }).returning();
+      } as any).returning();
       return successResponse(created, "Lagu berhasil diperbarui");
     }
 
-    const updateData: Partial<typeof tbChord.$inferInsert> = { lastmod };
+    const updateData: Partial<typeof tbChord.$inferInsert> = { lastmod } as any;
 
     const fields = [
-      "base_key", "album", "album_image", "isi_chord",
-      "language", "youtube_url", "songwriter", "year", "songtype",
+      "base_key", "tuning", "capo", "difficulty", "rating",
+      "isi_chord", "language", "youtube_url",
     ] as const;
 
     for (const field of fields) {

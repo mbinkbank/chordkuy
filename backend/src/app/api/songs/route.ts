@@ -14,10 +14,12 @@ const SORT_COLUMNS: Record<string, any> = {
   judul: tbChord.judul,
   penyanyi: tbChord.penyanyi,
   base_key: tbChord.base_key,
-  album: tbChord.album,
   language: tbChord.language,
   youtube_url: tbChord.youtube_url,
   lastmod: tbChord.lastmod,
+  tuning: tbChord.tuning,
+  difficulty: tbChord.difficulty,
+  rating: tbChord.rating,
 };
 
 export async function GET(request: NextRequest) {
@@ -27,8 +29,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
     const search = searchParams.get("search") || "";
     const language = searchParams.get("language") || "";
-    const songtype = searchParams.get("songtype") || "";
-    const album = searchParams.get("album") || "";
+    const difficulty = searchParams.get("difficulty") || "";
     const baseKey = searchParams.get("base_key") || "";
     const hasYoutube = searchParams.get("has_youtube") || "";
     const sortBy = searchParams.get("sort_by") || "lastmod";
@@ -41,14 +42,12 @@ export async function GET(request: NextRequest) {
       conditions.push(
         or(
           ilike(tbChord.judul, `%${search}%`),
-          ilike(tbChord.penyanyi, `%${search}%`),
-          ilike(tbChord.songwriter, `%${search}%`)
+          ilike(tbChord.penyanyi, `%${search}%`)
         )
       );
     }
     if (language) conditions.push(eq(tbChord.language, language));
-    if (songtype) conditions.push(eq(tbChord.songtype, songtype));
-    if (album) conditions.push(ilike(tbChord.album, `%${album}%`));
+    if (difficulty) conditions.push(eq(tbChord.difficulty, difficulty));
     if (baseKey) conditions.push(eq(tbChord.base_key, baseKey));
     if (hasYoutube === "yes") conditions.push(sql`${tbChord.youtube_url} != ''`);
     if (hasYoutube === "no") conditions.push(sql`${tbChord.youtube_url} = ''`);
@@ -88,14 +87,13 @@ export async function POST(request: NextRequest) {
       judul,
       penyanyi,
       base_key = "",
-      album = "",
-      album_image = "",
-      isi_chord = "",
-      language = "",
+      tuning = "E A D G B E",
+      capo = "",
+      difficulty = "intermediate",
+      rating = null,
+      language = "ID",
       youtube_url = "",
-      songwriter = "",
-      year = "",
-      songtype = "",
+      isi_chord = "",
     } = body;
 
     if (!judul || !penyanyi) {
@@ -124,16 +122,15 @@ export async function POST(request: NextRequest) {
         judul,
         penyanyi,
         base_key,
-        album,
-        album_image,
-        lastmod,
-        isi_chord,
+        tuning,
+        capo,
+        difficulty,
+        rating: rating != null && rating !== "" ? String(rating) : null,
         language,
         youtube_url,
-        songwriter,
-        year,
-        songtype,
-      })
+        isi_chord,
+        lastmod,
+      } as any)
       .returning();
 
     return successResponse(created, "Lagu berhasil ditambahkan", 201);

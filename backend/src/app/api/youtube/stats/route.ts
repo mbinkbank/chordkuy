@@ -22,7 +22,6 @@ export async function GET(_request: NextRequest) {
       .select({
         judul: tbChord.judul,
         penyanyi: tbChord.penyanyi,
-        album: tbChord.album,
         language: tbChord.language,
       })
       .from(tbChord)

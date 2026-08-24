@@ -10,10 +10,8 @@ export async function GET(_request: NextRequest) {
       .select({
         judul: tbChord.judul,
         penyanyi: tbChord.penyanyi,
-        album: tbChord.album,
         base_key: tbChord.base_key,
         language: tbChord.language,
-        songtype: tbChord.songtype,
         youtube_url: tbChord.youtube_url,
         lastmod: tbChord.lastmod,
       })

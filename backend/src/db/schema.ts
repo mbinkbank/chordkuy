@@ -11,13 +11,8 @@ export const tbChord = pgTable("chords", {
   difficulty: text("difficulty").default("intermediate").notNull(),
   rating: numeric("rating"),
   language: text("language").default("ID").notNull(),
-  album: text("album").default("").notNull(),
-  album_image: text("album_image").default("").notNull(),
   lastmod: text("lastmod").default("").notNull(),
   youtube_url: text("youtube_url").default("").notNull(),
-  songwriter: text("songwriter").default("").notNull(),
-  year: text("year").default("").notNull(),
-  songtype: text("songtype").default("").notNull(),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

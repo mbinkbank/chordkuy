@@ -13,19 +13,22 @@ const KEYS = [
   "Cm", "C#m", "Dbm", "Dm", "D#m", "Ebm", "Em", "Fm",
   "F#m", "Gbm", "Gm", "G#m", "Abm", "Am", "A#m", "Bbm", "Bm",
 ];
-const LANGUAGES = ["Indonesia", "English", "Mandarin", "Korea", "Lainnya"];
-const SONGTYPES = ["Lagu", "Nasiid", "Kidung", "Praise", "Worship"];
+const LANGUAGES = ["ID", "EN"];
+const DIFFICULTIES = [
+  { value: "novice", label: "Pemula" },
+  { value: "intermediate", label: "Menengah" },
+  { value: "advanced", label: "Mahir" },
+];
 
 export interface SongFormData {
   judul: string;
   penyanyi: string;
   base_key: string;
-  album: string;
-  album_image: string;
+  tuning: string;
+  capo: string;
+  difficulty: string;
+  rating: string;
   language: string;
-  songtype: string;
-  songwriter: string;
-  year: string;
   youtube_url: string;
   isi_chord: string;
 }
@@ -34,12 +37,11 @@ const defaultForm: SongFormData = {
   judul: "",
   penyanyi: "",
   base_key: "",
-  album: "",
-  album_image: "",
-  language: "",
-  songtype: "",
-  songwriter: "",
-  year: "",
+  tuning: "E A D G B E",
+  capo: "",
+  difficulty: "intermediate",
+  rating: "",
+  language: "ID",
   youtube_url: "",
   isi_chord: "",
 };
@@ -190,12 +192,12 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                       {KEYS.map((k) => <option key={k} value={k}>{k}</option>)}
                     </select>
                   </Field>
-                  <Field label="Tahun">
+                  <Field label="Tuning">
                     <input
                       type="text"
-                      value={form.year}
-                      onChange={(e) => handleChange("year", e.target.value)}
-                      placeholder="2024"
+                      value={form.tuning}
+                      onChange={(e) => handleChange("tuning", e.target.value)}
+                      placeholder="E A D G B E"
                       className="input"
                     />
                   </Field>
@@ -211,61 +213,41 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                       {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
                     </select>
                   </Field>
-                  <Field label="Tipe Lagu">
-                    <select
-                      value={form.songtype}
-                      onChange={(e) => handleChange("songtype", e.target.value)}
+                  <Field label="Capo">
+                    <input
+                      type="text"
+                      value={form.capo}
+                      onChange={(e) => handleChange("capo", e.target.value)}
+                      placeholder="fret 2 atau kosong"
                       className="input"
-                    >
-                      <option value="">Pilih Tipe</option>
-                      {SONGTYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                    </select>
+                    />
                   </Field>
                 </div>
-                <Field label="Pencipta Lagu">
-                  <input
-                    type="text"
-                    value={form.songwriter}
-                    onChange={(e) => handleChange("songwriter", e.target.value)}
-                    placeholder="Nama pencipta lagu"
-                    className="input"
-                  />
-                </Field>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Kesulitan">
+                    <select
+                      value={form.difficulty}
+                      onChange={(e) => handleChange("difficulty", e.target.value)}
+                      className="input"
+                    >
+                      {DIFFICULTIES.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Rating">
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="5"
+                      value={form.rating}
+                      onChange={(e) => handleChange("rating", e.target.value)}
+                      placeholder="4.8"
+                      className="input"
+                    />
+                  </Field>
+                </div>
               </div>
 
-              {/* Album */}
-              <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 space-y-4">
-                <h3 className="font-semibold text-slate-700 text-sm uppercase tracking-wide">Album</h3>
-                <Field label="Nama Album">
-                  <input
-                    type="text"
-                    value={form.album}
-                    onChange={(e) => handleChange("album", e.target.value)}
-                    placeholder="Nama album"
-                    className="input"
-                  />
-                </Field>
-                <Field label="URL Gambar Album">
-                  <input
-                    type="url"
-                    value={form.album_image}
-                    onChange={(e) => handleChange("album_image", e.target.value)}
-                    placeholder="https://..."
-                    className="input"
-                  />
-                </Field>
-                {form.album_image && (
-                  <div className="rounded-lg overflow-hidden border border-slate-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={form.album_image}
-                      alt="Album"
-                      className="w-full h-32 object-cover"
-                      onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
-                    />
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Right - YouTube */}
