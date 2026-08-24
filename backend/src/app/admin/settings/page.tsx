@@ -27,12 +27,17 @@ export default function SettingsPage() {
 
   useEffect(() => {
     async function load() {
-      const res = await api.get<UserInfo>("/api/auth/me");
-      if (res.success) {
-        setUser(res.data);
-        setNameForm({ name: res.data.name });
+      try {
+        const res = await api.get<UserInfo>("/api/auth/me");
+        if (res.success) {
+          setUser(res.data);
+          setNameForm({ name: res.data.name });
+        }
+      } catch {
+        // ignore
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     load();
   }, []);
