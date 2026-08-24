@@ -57,6 +57,16 @@ export async function GET(request: NextRequest) {
         order by last_seen desc
       `),
       db.execute(sql`select referrer as label, count(*)::int as c from pageviews where referrer <> '' group by referrer order by c desc limit 10`),
+      db.execute(sql`select country as label, count(*)::int as c from pageviews where country <> '' group by country order by c desc limit 10`),
+      db.execute(sql`select path as label, count(*)::int as c from pageviews group by path order by c desc limit 10`),
+      db.execute(sql`select title as label, count(*)::int as c from pageviews where title <> '' group by title order by c desc limit 10`),
+      db.execute(sql`select to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as d, count(*)::int as pv, count(distinct visitor_id)::int as uv from pageviews where created_at >= now() - interval '30 days' group by d order by d`),
+      db.execute(sql`
+        with first_seen as (select visitor_id, min(created_at)::date as d from pageviews group by visitor_id)
+        select count(*)::int as c from first_seen where d = current_date
+      `),
+      db.execute(sql`select visitor_id, created_at from pageviews where created_at >= ${todayStart.toISOString()} order by visitor_id, created_at`),
+    ]);
 
     const totalRow: any = (totalRes as any).rows?.[0] || {};
     const todayRow: any = (todayRes as any).rows?.[0] || {};
