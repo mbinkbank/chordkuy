@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
       titleRes,
       dailyRes,
       firstTimeRes,
+      todayRowsRes,
     ] = await Promise.all([
       db.execute(sql`select count(*)::int as c, count(distinct visitor_id)::int as uv from pageviews`),
       db.execute(sql`select count(*)::int as pv, count(distinct visitor_id)::int as uv from pageviews where created_at >= ${todayStart.toISOString()}`),
@@ -52,12 +53,59 @@ export async function GET(request: NextRequest) {
         with first_seen as (select visitor_id, min(created_at)::date as d from pageviews group by visitor_id)
         select count(*)::int as c from first_seen where d = current_date
       `),
+      db.execute(sql`select visitor_id, created_at from pageviews where created_at >= ${todayStart.toISOString()} order by visitor_id, created_at`),
     ]);
 
     const totalRow: any = (totalRes as any).rows?.[0] || {};
     const todayRow: any = (todayRes as any).rows?.[0] || {};
     const onlineRow: any = (onlineRes as any).rows?.[0] || {};
     const firstRow: any = (firstTimeRes as any).rows?.[0] || {};
+
+    // hitung sesi hari ini: jeda >30 menit = kunjungan baru
+    const todayRows: any[] = (todayRowsRes as any).rows || [];
+    let sessions = 0;
+    let totalDurationMs = 0;
+    let totalPagesInSessions = 0;
+    let curVisitor: string | null = null;
+    let sessionStart: number | null = null;
+    let lastTime: number | null = null;
+    let pagesInSession = 0;
+
+    function flushSession() {
+      if (sessionStart !== null && lastTime !== null) {
+        totalDurationMs += lastTime - sessionStart;
+        totalPagesInSessions += pagesInSession;
+        sessions++;
+      }
+    }
+
+    for (const r of todayRows) {
+      const vid = r.visitor_id as string;
+      const t = new Date(r.created_at).getTime();
+      if (vid !== curVisitor) {
+        flushSession();
+        curVisitor = vid;
+        sessionStart = t;
+        lastTime = t;
+        pagesInSession = 1;
+      } else if (lastTime !== null && t - lastTime > 30 * 60 * 1000) {
+        flushSession();
+        sessionStart = t;
+        lastTime = t;
+        pagesInSession = 1;
+      } else {
+        lastTime = t;
+        pagesInSession++;
+      }
+    }
+    flushSession();
+
+    const avgDurationMs = sessions > 0 ? Math.round(totalDurationMs / sessions) : 0;
+    const avgDuration =
+      avgDurationMs === 0
+        ? "0s"
+        : `${Math.floor(avgDurationMs / 60000)}m ${Math.round((avgDurationMs % 60000) / 1000)}s`;
+    const pagesPerVisit = sessions > 0 ? Number((totalPagesInSessions / sessions).toFixed(2)) : 0;
 
     return successResponse({
       totalPageViews: Number(totalRow.c || 0),
@@ -68,6 +116,9 @@ export async function GET(request: NextRequest) {
         firstTime: Number(firstRow.c || 0),
       },
       usersOnline: Number(onlineRow.c || 0),
+      avgDuration,
+      avgDurationMs,
+      pagesPerVisit,
       referrers: (refRes as any).rows || [],
       countries: (countryRes as any).rows || [],
       topUrls: (urlRes as any).rows || [],
