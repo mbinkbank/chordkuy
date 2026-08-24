@@ -7,7 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const tbChord = pgTable(
-  "tb_chord",
+  "chords",
   {
     judul: text("judul").notNull(),
     penyanyi: text("penyanyi").notNull(),
