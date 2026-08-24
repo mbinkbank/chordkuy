@@ -20,6 +20,10 @@ interface Song {
   youtube_url: string;
   isi_chord: string;
   lastmod: string;
+  tuning: string;
+  capo: string;
+  difficulty: string;
+  rating: string | number | null;
 }
 
 function getYouTubeEmbedId(url: string): string | null {
@@ -120,12 +124,12 @@ export default function SongDetailPage() {
             <h3 className="font-semibold text-slate-700 mb-4">Informasi Lagu</h3>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: <Key className="w-4 h-4" />, label: "Base Key", value: song.base_key },
-                { icon: <Globe className="w-4 h-4" />, label: "Bahasa", value: song.language },
-                { icon: <Tag className="w-4 h-4" />, label: "Tipe", value: song.songtype },
-                { icon: <User className="w-4 h-4" />, label: "Pencipta", value: song.songwriter },
-                { icon: <Calendar className="w-4 h-4" />, label: "Tahun", value: song.year },
-                { icon: <Disc3 className="w-4 h-4" />, label: "Album", value: song.album },
+                { icon: <Music className="w-4 h-4" />, label: "Tuning", value: song.tuning || "E A D G B E" },
+                { icon: <Globe className="w-4 h-4" />, label: "Bahasa", value: song.language || "ID" },
+                { icon: <Key className="w-4 h-4" />, label: "Kunci Dasar", value: song.base_key || "-" },
+                { icon: <Tag className="w-4 h-4" />, label: "Capo", value: song.capo || "Tanpa capo" },
+                { icon: <Disc3 className="w-4 h-4" />, label: "Kesulitan", value: song.difficulty || "-" },
+                { icon: <Tag className="w-4 h-4" />, label: "Rating", value: song.rating != null ? String(song.rating) : "-" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <div className="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 flex-shrink-0 mt-0.5">

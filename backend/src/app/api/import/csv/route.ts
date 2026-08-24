@@ -51,10 +51,10 @@ export async function POST(request: NextRequest) {
           language: song.language || "", youtube_url: song.youtube_url || "",
           songwriter: song.songwriter || "", year: song.year || "", songtype: song.songtype || "" };
         if (existing.length > 0) {
-          await db.update(tbChord).set(values).where(and(eq(tbChord.judul, judul), eq(tbChord.penyanyi, penyanyi)));
+          await db.update(tbChord).set(values as any).where(and(eq(tbChord.judul, judul), eq(tbChord.penyanyi, penyanyi)));
           updated++;
         } else {
-          await db.insert(tbChord).values(values);
+          await db.insert(tbChord).values(values as any);
           inserted++;
         }
       } catch (e) { errors.push(`Error "${judul}": ${e}`); }

@@ -1,31 +1,25 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  primaryKey,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, bigint, numeric } from "drizzle-orm/pg-core";
 
-export const tbChord = pgTable(
-  "chords",
-  {
-    judul: text("judul").notNull(),
-    penyanyi: text("penyanyi").notNull(),
-    base_key: text("base_key").default("").notNull(),
-    album: text("album").default("").notNull(),
-    album_image: text("album_image").default("").notNull(),
-    lastmod: text("lastmod").default("").notNull(),
-    isi_chord: text("isi_chord").default("").notNull(),
-    language: text("language").default("").notNull(),
-    youtube_url: text("youtube_url").default("").notNull(),
-    songwriter: text("songwriter").default("").notNull(),
-    year: text("year").default("").notNull(),
-    songtype: text("songtype").default("").notNull(),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.judul, table.penyanyi] }),
-  })
-);
+export const tbChord = pgTable("chords", {
+  id: bigint("id", { mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  judul: text("title").notNull(),
+  penyanyi: text("artist").notNull(),
+  base_key: text("key_name").default("").notNull(),
+  isi_chord: text("content").default("").notNull(),
+  tuning: text("tuning").default("E A D G B E").notNull(),
+  capo: text("capo").default("").notNull(),
+  difficulty: text("difficulty").default("intermediate").notNull(),
+  rating: numeric("rating"),
+  language: text("language").default("ID").notNull(),
+  album: text("album").default("").notNull(),
+  album_image: text("album_image").default("").notNull(),
+  lastmod: text("lastmod").default("").notNull(),
+  youtube_url: text("youtube_url").default("").notNull(),
+  songwriter: text("songwriter").default("").notNull(),
+  year: text("year").default("").notNull(),
+  songtype: text("songtype").default("").notNull(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
