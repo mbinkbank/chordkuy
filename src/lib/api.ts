@@ -67,14 +67,23 @@ export async function getAllSongs(): Promise<Song[]> {
   }
 }
 
+let lightCache: any[] | null = null;
+let lightCacheTime = 0;
+const LIGHT_TTL = 5 * 60 * 1000;
+
+async function getLightRows(): Promise<any[]> {
+  if (lightCache && Date.now() - lightCacheTime < LIGHT_TTL) return lightCache;
+  const { data, error } = await supabase.from("chords").select("id,title,artist").order("id", { ascending: false });
+  if (error || !data) return lightCache || [];
+  lightCache = data as any[];
+  lightCacheTime = Date.now();
+  return lightCache;
+}
+
 export async function getSongBySlug(slug: string): Promise<Song | null> {
   try {
-    const { data: light, error: e1 } = await supabase
-      .from("chords")
-      .select("id,title,artist")
-      .order("id", { ascending: false });
-    if (e1 || !light) return null;
-    const match = (light as any[]).find(
+    const light = await getLightRows();
+    const match = light.find(
       (r) => `${slugify(r.artist)}-${slugify(r.title)}` === slug || `${slugify(r.artist)}-${slugify(r.title)}` === slug.replace(/-\d+$/, ""),
     );
     if (!match) return null;
@@ -88,14 +97,8 @@ export async function getSongBySlug(slug: string): Promise<Song | null> {
 
 export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
   try {
-    const { data: light, error: e1 } = await supabase
-      .from("chords")
-      .select("id,title,artist")
-      .order("id", { ascending: false });
-    if (e1 || !light) return [];
-    const ids = (light as any[])
-      .filter((r) => slugify(r.artist) === artistSlug)
-      .map((r) => r.id);
+    const light = await getLightRows();
+    const ids = light.filter((r) => slugify(r.artist) === artistSlug).map((r) => r.id);
     if (ids.length === 0) return [];
     const { data, error } = await supabase.from("chords").select("*").in("id", ids).order("id", { ascending: false });
     if (error || !data) return [];
