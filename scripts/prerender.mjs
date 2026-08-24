@@ -86,31 +86,43 @@ async function main() {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 900 });
 
+  const CONCURRENCY = 4;
   let ok = 0;
-  for (const route of routes) {
-    try {
-      await page.goto(`http://127.0.0.1:${PORT}${encodeURI(route)}`, {
-        waitUntil: "networkidle2",
-        timeout: 30000,
-      });
-      await page.waitForFunction(
-        () => document.querySelector("#main")?.children.length > 0,
-        { timeout: 10000 },
-      );
-      await new Promise((r) => setTimeout(r, 120)); // beri waktu paint terakhir
-      const html = await page.content();
-      const outPath = route === "/" ? join(DIST, "index.html") : join(DIST, route, "index.html");
-      await mkdir(dirname(outPath), { recursive: true });
-      await writeFile(outPath, html, "utf-8");
-      ok++;
-      console.log(`OK ${route}`);
-    } catch (e) {
-      console.error(`GAGAL ${route}: ${e.message}`);
+  let done = 0;
+  let index = 0;
+
+  async function worker(id: number) {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    while (index < routes.length) {
+      const route = routes[index++];
+      try {
+        await page.goto(`http://127.0.0.1:${PORT}${encodeURI(route)}`, {
+          waitUntil: "networkidle2",
+          timeout: 30000,
+        });
+        await page.waitForFunction(
+          () => document.querySelector("#main")?.children.length > 0,
+          { timeout: 10000 },
+        );
+        await new Promise((r) => setTimeout(r, 120)); // beri waktu paint terakhir
+        const html = await page.content();
+        const outPath = route === "/" ? join(DIST, "index.html") : join(DIST, route, "index.html");
+        await mkdir(dirname(outPath), { recursive: true });
+        await writeFile(outPath, html, "utf-8");
+        ok++;
+        done++;
+        console.log(`OK ${route} (${done}/${routes.length})`);
+      } catch (e: any) {
+        done++;
+        console.error(`GAGAL ${route}: ${e.message}`);
+      }
     }
+    await page.close();
   }
+
+  await Promise.all(Array.from({ length: CONCURRENCY }, (_, i) => worker(i)));
 
   await browser.close();
   server.close();
