@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { COUNTRIES } from "@/lib/countries";
 import toast from "react-hot-toast";
 import { Save, ArrowLeft, Eye, Music } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +14,6 @@ const KEYS = [
   "Cm", "C#m", "Dbm", "Dm", "D#m", "Ebm", "Em", "Fm",
   "F#m", "Gbm", "Gm", "G#m", "Abm", "Am", "A#m", "Bbm", "Bm",
 ];
-const LANGUAGES = ["ID", "EN"];
 const DIFFICULTIES = [
   { value: "novice", label: "Pemula" },
   { value: "intermediate", label: "Menengah" },
@@ -41,7 +41,7 @@ const defaultForm: SongFormData = {
   capo: "",
   difficulty: "intermediate",
   rating: "",
-  language: "ID",
+  language: "Indonesia",
   youtube_url: "",
   isi_chord: "",
 };
@@ -210,7 +210,7 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                       className="input"
                     >
                       <option value="">Pilih Bahasa</option>
-                      {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                      {COUNTRIES.map(([v, flag]) => <option key={v} value={v}>{flag} {v}</option>)}
                     </select>
                   </Field>
                   <Field label="Capo">

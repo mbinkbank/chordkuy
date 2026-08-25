@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
+import { COUNTRIES } from "@/lib/countries";
 import toast from "react-hot-toast";
 import {
   Plus,
@@ -39,7 +40,6 @@ interface Pagination {
   totalPages: number;
 }
 
-const LANGUAGES = ["Indonesia", "English", "Mandarin", "Lainnya"];
 const SONGTYPES = ["Lagu", "Nasiid", "Kidung", "Praise", "Worship"];
 
 export default function SongsPage() {
@@ -187,8 +187,8 @@ export default function SongsPage() {
                 className="pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white"
               >
                 <option value="">Semua Bahasa</option>
-                {LANGUAGES.map((l) => (
-                  <option key={l} value={l}>{l}</option>
+                {COUNTRIES.map(([v, flag]) => (
+                  <option key={v} value={v}>{flag} {v}</option>
                 ))}
               </select>
             </div>
