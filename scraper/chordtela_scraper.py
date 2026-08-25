@@ -549,9 +549,17 @@ def _run():
                         print(f"[SKIP] sudah ada: {artist} - {title}", flush=True)
                         continue
 
+                    def slugify(text: str) -> str:
+                        t = (text or "").lower().strip()
+                        t = re.sub(r"[^a-z0-9_ -]", "", t)
+                        t = re.sub(r"[-\s_]+", "-", t)
+                        return t.strip("-")
+
                     record = {
                         "title": title,
                         "artist": artist,
+                        "slug": f"{slugify(artist)}-{slugify(title)}",
+                        "artist_slug": slugify(artist),
                         **parsed,
                     }
 

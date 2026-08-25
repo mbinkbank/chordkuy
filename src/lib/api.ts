@@ -63,8 +63,8 @@ function extractChords(content: string): string[] {
 export function mapDbRowToSong(row: any): Song {
   const title = row.title || "Untitled";
   const artist = row.artist || "Unknown Artist";
-  const slug = `${slugify(artist)}-${slugify(title)}`;
-  const artistSlug = slugify(artist);
+  const slug = row.slug || `${slugify(artist)}-${slugify(title)}`;
+  const artistSlug = row.artist_slug || slugify(artist);
   const capoNum = row.capo && row.capo.includes("fret")
     ? parseInt(row.capo.replace(/\D/g, ""), 10) || 0
     : 0;
@@ -104,43 +104,16 @@ export async function getAllSongs(): Promise<Song[]> {
   return rows.map(mapDbRowToSong);
 }
 
-let lightCache: any[] | null = null;
-let lightCacheTime = 0;
-const LIGHT_TTL = 5 * 60 * 1000;
-
-async function getLightRows(): Promise<any[]> {
-  if (lightCache && Date.now() - lightCacheTime < LIGHT_TTL) return lightCache;
-  const rows = await restAll(`chords?select=id,title,artist&order=id.asc`);
-  if (!rows.length) return lightCache || [];
-  lightCache = rows;
-  lightCacheTime = Date.now();
-  return lightCache;
-}
-
 export async function getSongBySlug(slug: string): Promise<Song | null> {
-  try {
-    const light = await getLightRows();
-    const match = light.find(
-      (r) => `${slugify(r.artist)}-${slugify(r.title)}` === slug || `${slugify(r.artist)}-${slugify(r.title)}` === slug.replace(/-\d+$/, ""),
-    );
-    if (!match) return null;
-    const { rows } = await rest(`chords?select=*&id=eq.${match.id}`);
-    return rows[0] ? mapDbRowToSong(rows[0]) : null;
-  } catch {
-    return null;
-  }
+  const { rows } = await rest(`chords?select=*&slug=eq.${encodeURIComponent(slug)}`);
+  return rows[0] ? mapDbRowToSong(rows[0]) : null;
 }
 
 export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
-  try {
-    const light = await getLightRows();
-    const ids = light.filter((r) => slugify(r.artist) === artistSlug).map((r) => r.id);
-    if (ids.length === 0) return [];
-    const { rows } = await rest(`chords?select=*&id=in.(${ids.join(",")})&order=id.desc`);
-    return rows.map(mapDbRowToSong);
-  } catch {
-    return [];
-  }
+  const { rows } = await rest(
+    `chords?select=*&artist_slug=eq.${encodeURIComponent(artistSlug)}&order=id.desc`,
+  );
+  return rows.map(mapDbRowToSong);
 }
 
 export async function getPopularSongs(limit = 8): Promise<Song[]> {
