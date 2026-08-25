@@ -17,7 +17,7 @@ export default function Header() {
         <div className="header-inner">
           <button
             type="button"
-            className="btn btn-sm btn-icon nav-toggle"
+            className="nav-toggle"
             aria-expanded={open}
             aria-controls="mobile-nav"
             onClick={() => setOpen((v) => !v)}
