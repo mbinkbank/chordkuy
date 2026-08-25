@@ -99,6 +99,7 @@ export default function SearchBar({
           enterKeyHint="search"
           placeholder={placeholder}
           aria-label={label}
+          role="combobox"
           aria-autocomplete="list"
           aria-controls={suggestions.length ? listId : undefined}
           aria-expanded={open && suggestions.length > 0}
