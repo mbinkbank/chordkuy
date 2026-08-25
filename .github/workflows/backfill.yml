@@ -1,0 +1,40 @@
+name: Backfill Chordtela
+
+on:
+  schedule:
+    - cron: "30 18 * * *" # 01:30 WIB
+    - cron: "30 21 * * *" # 04:30 WIB
+  workflow_dispatch:
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Run backfill
+        working-directory: scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SCRAPE_PROXY_URL: "https://chordkuy.id"
+          SCRAPE_PROXY_TOKEN: ${{ secrets.SCRAPE_PROXY_TOKEN }}
+          BACKFILL_LIMIT: "800"
+        run: python backfill.py
+
+      - name: Commit cursor
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add scraper/backfill_cursor.json
+          git add scraper/backfill_failed.jsonl 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "backfill: update kursor [skip deploy]"
+          git push
