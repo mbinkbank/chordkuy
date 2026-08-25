@@ -2,9 +2,9 @@
 export type ScriptLang = "KR" | "JP" | "CN" | "RU";
 
 export function detectScriptLang(...texts: string[]): ScriptLang | null {
-  const t = texts.join(" ");
+  // buang homoglyph Cyrillic yang mengaku huruf Latin (е а о р с у х і ѕ ј) sebelum hitung
+  const t = texts.join(" ").replace(/[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]/g, "");
   const count = (re: RegExp) => (t.match(re) || []).length;
-  // ponytail: ambang 3 karakter — 1-2 homoglyph nyasar tidak boleh menentukan
   if (count(/[\uAC00-\uD7AF\u1100-\u11FF]/g) >= 3) return "KR";
   if (count(/[\u3040-\u30FF]/g) >= 3) return "JP";
   if (count(/[\u4E00-\u9FFF]/g) >= 3) return "CN";

@@ -107,7 +107,8 @@ function renderChordHtml(song) {
   const canonical = `/chord/${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
-  const cnt = (re) => (langText.match(re) || []).length;
+  const clean = langText.replace(/[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]/g, "");
+  const cnt = (re) => (clean.match(re) || []).length;
   const scriptLang = cnt(/[\uAC00-\uD7AF\u1100-\u11FF]/g) >= 3 ? "ko" : cnt(/[\u3040-\u30FF]/g) >= 3 ? "ja" : cnt(/[\u4E00-\u9FFF]/g) >= 3 ? "zh" : cnt(/[\u0400-\u04FF]/g) >= 3 ? "ru" : null;
   let inLang = scriptLang;
   if (!inLang) {
