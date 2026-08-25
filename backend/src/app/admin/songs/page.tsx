@@ -26,9 +26,9 @@ interface Song {
   judul: string;
   penyanyi: string;
   base_key: string;
-  album: string;
+  difficulty: string;
+  rating: string | null;
   language: string;
-  songtype: string;
   youtube_url: string;
   lastmod: string;
 }
@@ -40,7 +40,22 @@ interface Pagination {
   totalPages: number;
 }
 
-const SONGTYPES = ["Lagu", "Nasiid", "Kidung", "Praise", "Worship"];
+const DIFFICULTIES = [
+  { value: "novice", label: "Pemula" },
+  { value: "intermediate", label: "Menengah" },
+  { value: "advanced", label: "Mahir" },
+];
+
+const DIFF_LABEL: Record<string, string> = {
+  novice: "Pemula",
+  intermediate: "Menengah",
+  advanced: "Mahir",
+};
+const DIFF_STYLE: Record<string, string> = {
+  novice: "bg-emerald-100 text-emerald-700",
+  intermediate: "bg-amber-100 text-amber-700",
+  advanced: "bg-rose-100 text-rose-700",
+};
 
 export default function SongsPage() {
   const router = useRouter();
@@ -54,7 +69,7 @@ export default function SongsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [language, setLanguage] = useState("");
-  const [songtype, setSongtype] = useState("");
+  const [difficulty, setDifficulty] = useState("");
   const [page, setPage] = useState(1);
   const [deleteConfirm, setDeleteConfirm] = useState<Song | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -72,7 +87,7 @@ export default function SongsPage() {
       limit: "20",
       ...(search && { search }),
       ...(language && { language }),
-      ...(songtype && { songtype }),
+      ...(difficulty && { difficulty }),
       ...(baseKeyFilter && { base_key: baseKeyFilter }),
       ...(ytFilter && { has_youtube: ytFilter }),
       sort_by: sortBy,
@@ -85,7 +100,7 @@ export default function SongsPage() {
       setPagination(data.pagination);
     }
     setLoading(false);
-  }, [page, search, language, songtype, baseKeyFilter, ytFilter, sortBy, sortDir]);
+  }, [page, search, language, difficulty, baseKeyFilter, ytFilter, sortBy, sortDir]);
 
   useEffect(() => {
     fetchSongs();
@@ -94,7 +109,7 @@ export default function SongsPage() {
   // Debounced search
   useEffect(() => {
     setPage(1);
-  }, [search, language, songtype, baseKeyFilter, ytFilter, sortBy, sortDir]);
+  }, [search, language, difficulty, baseKeyFilter, ytFilter, sortBy, sortDir]);
 
   function toggleSort(col: string) {
     if (sortBy === col) {
@@ -172,7 +187,7 @@ export default function SongsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Cari judul, penyanyi, pencipta..."
+              placeholder="Cari judul atau penyanyi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -200,13 +215,13 @@ export default function SongsPage() {
               </select>
             </div>
             <select
-              value={songtype}
-              onChange={(e) => setSongtype(e.target.value)}
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
               className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white"
             >
-              <option value="">Semua Tipe</option>
-              {SONGTYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+              <option value="">Semua Kesulitan</option>
+              {DIFFICULTIES.map((d) => (
+                <option key={d.value} value={d.value}>{d.label}</option>
               ))}
             </select>
             <div className="relative">
@@ -257,7 +272,7 @@ export default function SongsPage() {
                   <SortHeader col="judul">Judul</SortHeader>
                   <SortHeader col="penyanyi">Penyanyi</SortHeader>
                   <SortHeader col="base_key"><span className="hidden md:inline">Key</span></SortHeader>
-                  <SortHeader col="album"><span className="hidden lg:inline">Album</span></SortHeader>
+                  <SortHeader col="difficulty"><span className="hidden lg:inline">Kesulitan</span></SortHeader>
                   <SortHeader col="language"><span className="hidden lg:inline">Bahasa</span></SortHeader>
                   <SortHeader col="youtube_url">YT</SortHeader>
                   <SortHeader col="lastmod">Lastmod</SortHeader>
@@ -278,8 +293,14 @@ export default function SongsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-500 text-xs truncate max-w-[120px]">
-                      {song.album || "-"}
+                    <td className="px-4 py-3">
+                      {song.difficulty ? (
+                        <span className={`px-2 py-0.5 text-xs rounded-full ${DIFF_STYLE[song.difficulty] || "bg-slate-100 text-slate-600"}`}>
+                          {DIFF_LABEL[song.difficulty] || song.difficulty}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 text-xs">-</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {song.language && (
