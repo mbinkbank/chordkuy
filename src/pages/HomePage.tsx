@@ -174,11 +174,6 @@ export default function HomePage() {
             <h2 className="h-section" id="recent">
               Baru Ditambahkan
             </h2>
-            {recentTotal > 0 && (
-              <span className="caption">
-                {recentTotal} lagu · halaman {page} dari {totalPages}
-              </span>
-            )}
           </div>
           {loadingRecent ? (
             <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu baru...</p>

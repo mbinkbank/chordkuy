@@ -1769,6 +1769,7 @@ a.card:focus-visible {
   gap: 4px;
   color: #f59e0b;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .rating-badge {
