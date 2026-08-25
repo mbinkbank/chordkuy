@@ -6,6 +6,7 @@ import { useRoute } from "./lib/router";
 import AboutPage from "./pages/AboutPage";
 import ArtistPage from "./pages/ArtistPage";
 import ArtistsPage from "./pages/ArtistsPage";
+import BookmarkPage from "./pages/BookmarkPage";
 import ChordPage from "./pages/ChordPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
@@ -48,6 +49,8 @@ function View() {
       }
       return song ? <ChordPage key={song.slug} song={song} /> : <NotFoundPage />;
     }
+    case "bookmark":
+      return <BookmarkPage />;
     case "about":
       return <AboutPage />;
     case "contact":

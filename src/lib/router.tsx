@@ -14,6 +14,7 @@ export type RouteName =
   | "artists"
   | "artist"
   | "chord"
+  | "bookmark"
   | "about"
   | "contact"
   | "privacy"
@@ -33,6 +34,7 @@ const ROUTES: { pattern: RegExp; name: RouteName; keys: string[] }[] = [
   { pattern: /^\/artists$/, name: "artists", keys: [] },
   { pattern: /^\/artist\/([^/]+)$/, name: "artist", keys: ["slug"] },
   { pattern: /^\/chord\/([^/]+)$/, name: "chord", keys: ["slug"] },
+  { pattern: /^\/bookmark$/, name: "bookmark", keys: [] },
   { pattern: /^\/about$/, name: "about", keys: [] },
   { pattern: /^\/contact$/, name: "contact", keys: [] },
   { pattern: /^\/privacy$/, name: "privacy", keys: [] },

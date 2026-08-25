@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import ThemeToggle from "./ThemeToggle";
-import { Search, Menu, X } from "lucide-react";
+import { Bookmark, Search, Menu, X } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
@@ -48,6 +48,9 @@ export default function Header() {
               <Search size={20} strokeWidth={2.2} />
             </Link>
             <ThemeToggle />
+            <Link href="/bookmark" className="btn btn-sm btn-icon" aria-label="Bookmark saya" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Bookmark size={20} strokeWidth={2} />
+            </Link>
           </div>
         </div>
 

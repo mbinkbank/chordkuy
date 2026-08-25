@@ -1585,6 +1585,48 @@ a.card:focus-visible {
 }
 
 /* ---------- Misc ---------- */
+.bookmark-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: var(--s2) var(--s3);
+  color: var(--muted);
+}
+.bookmark-link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--foreground);
+}
+.bookmark-link span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.bookmark-remove {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  border-radius: var(--radius-card);
+}
+.bookmark-remove:hover {
+  color: var(--danger, #e5484d);
+}
 .empty {
   border: 1px dashed var(--border);
   border-radius: var(--radius-card);

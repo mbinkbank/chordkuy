@@ -5,6 +5,7 @@ import ChordViewer from "../components/ChordViewer";
 import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
+import { isBookmarked, onBookmarksChange, toggleBookmark } from "../lib/bookmarks";
 import { formatDate, formatViews, getPopularSongs, getRelatedSongs } from "../lib/api";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
 import { songLangLabel } from "../lib/lang";
@@ -12,7 +13,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -20,6 +21,29 @@ function isoDuration(value?: string): string | undefined {
   if (parts.some(Number.isNaN)) return undefined;
   const [m, s] = parts.length === 2 ? parts : [0, parts[0]];
   return `PT${m}M${s}S`;
+}
+
+function BookmarkToggle({ slug, title, artist }: { slug: string; title: string; artist: string }) {
+  const [saved, setSaved] = useState(() => isBookmarked(slug));
+
+  useEffect(() => {
+    setSaved(isBookmarked(slug));
+    return onBookmarksChange(() => setSaved(isBookmarked(slug)));
+  }, [slug]);
+
+  return (
+    <button
+      type="button"
+      className={saved ? "btn btn-sm btn-on" : "btn btn-sm"}
+      aria-pressed={saved}
+      aria-label={saved ? "Hapus dari bookmark" : "Simpan ke bookmark"}
+      title={saved ? "Tersimpan di bookmark" : "Simpan ke bookmark"}
+      onClick={() => setSaved(toggleBookmark({ slug, title, artist }))}
+    >
+      {saved ? <BookmarkCheck size={14} strokeWidth={2.2} /> : <Bookmark size={14} strokeWidth={2.2} />}
+      {saved ? "Tersimpan" : "Bookmark"}
+    </button>
+  );
 }
 
 export default function ChordPage({ song }: { song: Song }) {
@@ -178,6 +202,7 @@ export default function ChordPage({ song }: { song: Song }) {
 
             <div className="row">
               <ShareButton title={`Chord ${song.title} - ${song.artist}`} />
+              <BookmarkToggle slug={song.slug} title={song.title} artist={song.artist} />
               <button
                 type="button"
                 className={lyricsOnly ? "btn btn-sm btn-on" : "btn btn-sm"}
