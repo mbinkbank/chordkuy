@@ -34,8 +34,8 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
-            <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <Search size={14} strokeWidth={2.5} /> Cari
+            <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Search size={17} strokeWidth={2.5} />
             </Link>
             <ThemeToggle />
             <button
