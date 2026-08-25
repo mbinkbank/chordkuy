@@ -339,7 +339,7 @@ a:focus-visible {
 .row {
   display: flex;
   align-items: center;
-  gap: var(--s2);
+  gap: var(--s1);
   flex-wrap: wrap;
 }
 .between {
