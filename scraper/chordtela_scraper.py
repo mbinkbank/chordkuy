@@ -328,16 +328,28 @@ def calculate_difficulty(content: str) -> str:
         return "novice"
 
 
+SECTION_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|verse\s*1?|chorus|reff|hook)\b', re.IGNORECASE)
+JUNK_START = re.compile(r'^(catatan\s*:|capo\b|chord\s+sudah|kunci\s+gitar\b|tuning\b|-.*-$)', re.IGNORECASE)
+
+
 def clean_content(raw_text: str) -> str:
     if not raw_text:
         return ""
     lines = raw_text.split("\n")
+
+    # 1) Blok metadata sampah di atas label section pertama (Catatan/Capo/judul ber-strip/dll)
+    first_nonblank = next((l for l in lines if l.strip()), "")
+    if JUNK_START.search(first_nonblank.strip()):
+        for idx, line in enumerate(lines):
+            if SECTION_PATTERN.search(line.strip()):
+                lines = lines[idx:]
+                break
+
+    # 2) Fallback: label section sangat awal (indeks <= 5) -> potong apa pun di atasnya
     start_idx = -1
-    section_pattern = re.compile(r'^\s*(?:#+|\[)?\s*(intro|verse\s*1?|chorus|reff|hook)\b', re.IGNORECASE)
-    
     for idx, line in enumerate(lines):
         trimmed = line.strip()
-        if section_pattern.search(trimmed):
+        if SECTION_PATTERN.search(trimmed):
             start_idx = idx
             break
         if re.match(r'^-{5,}$', trimmed):
@@ -348,7 +360,7 @@ def clean_content(raw_text: str) -> str:
     # Jika konten dimulai langsung dengan chord tanpa label (tanpa Intro), JANGAN dipotong.
     if start_idx != -1 and 0 < start_idx < len(lines) and start_idx <= 5:
         lines = lines[start_idx:]
-    
+
     return "\n".join(lines).strip()
 
 
