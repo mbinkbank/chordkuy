@@ -494,7 +494,7 @@ a:focus-visible {
   --btn-bd: transparent;
   min-height: auto;
   min-width: auto;
-  padding: 4px;
+  padding: 0;
 }
 .nav-toggle {
   display: inline-flex;
