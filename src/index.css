@@ -1517,7 +1517,7 @@ a.card:focus-visible {
 .site-footer {
   border-top: 1px solid var(--border);
   margin-top: var(--s6);
-  padding-block: var(--s5) var(--s5);
+  padding-block: var(--s4);
   background: var(--background-deep);
 }
 .footer-grid {
@@ -1547,7 +1547,7 @@ a.card:focus-visible {
   padding: 0;
 }
 .footer-bottom {
-  margin-top: var(--s5);
+  margin-top: 0;
   padding-top: var(--s3);
   border-top: 1px solid var(--border);
   display: flex;
