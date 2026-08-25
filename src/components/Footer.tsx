@@ -12,7 +12,7 @@ export default function Footer() {
         </div>
         <div className="footer-bottom" style={{ borderTop: "none", padding: "var(--s2) 0" }}>
           <span>
-            © {year} {SITE.name}. Chord untuk keperluan belajar dan latihan.
+            © {year} <Link href="/">Chordkuy.id</Link> Chord Gitar Mudah &amp; Lirik Lagu.
           </span>
           <span className="row" style={{ gap: "var(--s3)" }}>
             <Link href="/privacy">Kebijakan Privasi</Link>
