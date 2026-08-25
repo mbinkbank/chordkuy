@@ -402,6 +402,7 @@ a:focus-visible {
   border-bottom: 1px solid var(--border);
 }
 .header-inner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -498,6 +499,17 @@ a:focus-visible {
 }
 .nav-toggle {
   display: inline-flex;
+}
+@media (max-width: 860px) {
+  .header-actions .nav-toggle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .header-inner .brand {
+    margin-left: calc(20px + var(--s2));
+  }
 }
 @media (min-width: 861px) {
   .nav-toggle {
