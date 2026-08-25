@@ -405,7 +405,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s3);
+  gap: var(--s2);
   min-height: 52px;
 }
 .brand {
@@ -468,21 +468,18 @@ a:focus-visible {
 .nav-link {
   font-size: 12px;
   color: var(--foreground);
-  padding: var(--s2) var(--s3);
-  border: 1px solid transparent;
-  min-height: 34px;
+  padding: 0;
+  border: none;
+  min-height: auto;
   display: inline-flex;
   align-items: center;
-  transition: color var(--t), border-color var(--t), background-color var(--t);
+  transition: color var(--t), background-color var(--t);
 }
 .nav-link:hover {
   color: var(--accent);
-  border-color: var(--border);
 }
 .nav-link[aria-current="page"] {
   color: var(--accent);
-  border-color: var(--accent-border);
-  background: var(--accent-soft);
 }
 .header-actions {
   display: flex;
@@ -492,6 +489,7 @@ a:focus-visible {
 }
 .header-actions .btn {
   --btn-bd: transparent;
+  border: none;
   min-height: auto;
   min-width: auto;
   padding: 0;
