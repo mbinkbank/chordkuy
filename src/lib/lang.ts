@@ -45,7 +45,9 @@ export function langLabel(code: ScriptLang | "EN" | "VN" | "PH" | "TR" | null): 
   return (code && map[code]) || "Indonesia";
 }
 
-// ponytail: EN/VN/PH/TR vs ID (sama-sama Latin) dideteksi dari frekuensi kata khas
+// ponytail: EN/VN/PH/TR vs ID (sama-sama Latin) dideteksi dari frekuensi kata khas.
+// Nama chord (Am, G, Dm) dibuang dulu agar tidak dihitung sebagai kata.
+const CHORD_TOKEN = /\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)*(?:\/[A-G][#b]?)?\b/g;
 const WORD_TESTS: Array<[ScriptLang | "EN" | "VN" | "PH" | "TR", RegExp]> = [
   ["EN", /\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b/gi],
   ["VN", /\b(của|và|là|không|anh|em|tôi|bạn|những|được|đã|sẽ|vậy|này|kia|gì|đi|về|yêu|đời|tình|trong|một|cuộc|hạnh|phúc)\b/g],
@@ -55,12 +57,21 @@ const WORD_TESTS: Array<[ScriptLang | "EN" | "VN" | "PH" | "TR", RegExp]> = [
 const ID_WORDS = /\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b/gi;
 
 function detectWordLang(text: string): ScriptLang | "EN" | "VN" | "PH" | "TR" | null {
-  const idCount = (text.match(ID_WORDS) || []).length;
+  // buang nama chord, hitung kata hanya dari lirik
+  const t = text.replace(CHORD_TOKEN, " ");
+  const idCount = (t.match(ID_WORDS) || []).length;
+  let best: ScriptLang | "EN" | "VN" | "PH" | "TR" | null = null;
+  let bestN = 0;
   for (const [code, rx] of WORD_TESTS) {
-    const n = (text.match(rx) || []).length;
-    if (n >= 3 && n > idCount * 2) return code;
+    const n = (t.match(rx) || []).length;
+    if (n > bestN) {
+      best = code;
+      bestN = n;
+    }
   }
-  return null;
+  if (best && bestN >= 3 && bestN > idCount * 2) return best;
+  if (idCount >= 3) return null; // Indonesia (default tampilan)
+  return null; // ragu → tampil default, DB ditandai "-" untuk review manual
 }
 
 export function songLang(song: { title?: string; content?: string; lyrics?: string; language?: string }): ScriptLang | "EN" | "VN" | "PH" | "TR" | null {

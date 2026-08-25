@@ -296,6 +296,7 @@ LANG_WORDS = [
     ("Turki", re.compile(r"\b(bir|ve|bu|i\u00e7in|ben|sen|biz|siz|ama|\u00e7ok|daha|gibi|kadar|de\u011fil|var|yok|seni|beni|sevdim|kalbim|hayat|a\u015fk|g\u00f6n\u00fcl)\b")),
 ]
 LANG_ID = re.compile(r"\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b", re.IGNORECASE)
+CHORD_TOKEN = re.compile(r"\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)*(?:/[A-G][#b]?)?\b")
 
 
 def detect_language(title: str, content: str) -> str:
@@ -306,13 +307,20 @@ def detect_language(title: str, content: str) -> str:
     for label, rx in LANG_SCRIPTS:
         if len(rx.findall(clean)) >= 3:
             return label
-    idn = len(LANG_ID.findall(text))
+    # hitung kata HANYA dari lirik — nama chord (Am, G, Dm) dibuang agar tidak dihitung
+    lyric_text = CHORD_TOKEN.sub(" ", text)
+    idn = len(LANG_ID.findall(lyric_text))
+    best_label, best_n = None, 0
     for label, rx in LANG_WORDS:
-        n = len(rx.findall(text))
-        if n >= 3 and n > idn * 2:
-            return label
-    # chordtela = situs Indonesia; yang bukan bahasa asing ya Indonesia
-    return "Indonesia"
+        n = len(rx.findall(lyric_text))
+        if n > best_n:
+            best_label, best_n = label, n
+    if best_label and best_n >= 3 and best_n > idn * 2:
+        return best_label
+    if idn >= 3:
+        return "Indonesia"
+    # bahasa daerah / romanized tak dikenal — biarkan ditag manual
+    return "-"
 
 
 ROOTS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]

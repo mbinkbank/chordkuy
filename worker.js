@@ -133,17 +133,20 @@ function renderChordHtml(song) {
     if ((clean.match(rx) || []).length >= 3) { inLang = code; break; }
   }
   if (!inLang) {
-    const idCount = (langText.match(/\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b/gi) || []).length;
+    const lyricText = langText.replace(/\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)*(?:\/[A-G][#b]?)?\b/g, " ");
+    const idCount = (lyricText.match(/\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b/gi) || []).length;
     const WORD_TESTS = [
       ["en", /\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b/gi],
       ["vi", /\b(của|và|là|không|anh|em|tôi|bạn|những|được|đã|sẽ|vậy|này|kia|gì|đi|về|yêu|đời|tình|trong|một|cuộc)\b/g],
       ["fil", /\b(ang|ng|sa|ako|ikaw|hindi|ko|mo|kami|tayo|siya|namin|atin|mahal|puso|sana|lang|na|pa)\b/gi],
       ["tr", /\b(bir|ve|bu|için|ben|sen|biz|siz|ama|çok|daha|gibi|kadar|değil|var|yok|seni|beni|sevdim|kalbim|hayat|aşk|gönül)\b/gi],
     ];
+    let best = null, bestN = 0;
     for (const [code, rx] of WORD_TESTS) {
-      const n = (langText.match(rx) || []).length;
-      if (n >= 3 && n > idCount * 2) { inLang = code; break; }
+      const n = (lyricText.match(rx) || []).length;
+      if (n > bestN) { best = code; bestN = n; }
     }
+    if (best && bestN >= 3 && bestN > idCount * 2) inLang = best;
   }
 
   const jsonLd = JSON.stringify({
