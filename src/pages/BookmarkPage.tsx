@@ -23,11 +23,7 @@ export default function BookmarkPage() {
 
   return (
     <main className="container" id="main" style={{ padding: "var(--s5) 0" }}>
-      <p className="eyebrow">Penyimpanan lokal</p>
-      <h1 style={{ fontSize: 24, margin: "0 0 var(--s2)" }}>Bookmark Saya</h1>
-      <p style={{ color: "var(--muted)", fontSize: 13, margin: "0 0 var(--s4)" }}>
-        Tersimpan di perangkat kamu (localStorage) — tidak dikirim ke server.
-      </p>
+      <h1 style={{ fontSize: 24, margin: "0 0 var(--s4)" }}>Bookmark Saya</h1>
 
       {items.length === 0 ? (
         <div className="empty">
