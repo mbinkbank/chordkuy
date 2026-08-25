@@ -300,6 +300,8 @@ LANG_ID = re.compile(r"\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|ti
 
 def detect_language(title: str, content: str) -> str:
     text = f"{title} {(content or '')[:3000]}"
+    if not (content or "").strip() or len((content or "").strip()) < 20:
+        return "-"  # tidak ada bahan analisis
     clean = LANG_HOMOGLYPH.sub("", text)
     for label, rx in LANG_SCRIPTS:
         if len(rx.findall(clean)) >= 3:
@@ -307,9 +309,10 @@ def detect_language(title: str, content: str) -> str:
     idn = len(LANG_ID.findall(text))
     for label, rx in LANG_WORDS:
         n = len(rx.findall(text))
-    if n >= 3 and n > idn * 2:
-        return label
-    return "-"  # tidak terdeteksi — ditag manual di admin
+        if n >= 3 and n > idn * 2:
+            return label
+    # chordtela = situs Indonesia; yang bukan bahasa asing ya Indonesia
+    return "Indonesia"
 
 
 ROOTS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
