@@ -597,9 +597,6 @@ a:focus-visible {
   padding-inline: var(--s2);
 }
 @media (max-width: 640px) {
-  .btn {
-    min-height: 40px;
-  }
   .btn-lg {
     min-height: 46px;
   }
