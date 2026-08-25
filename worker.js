@@ -104,6 +104,8 @@ function renderChordHtml(song) {
   const desc = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.key_name}${song.capo ? `, capo fret ${song.capo}` : ""}. Lengkap dengan lirik dan diagram chord.`;
   const canonical = `/chord/${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
+  const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
+  const scriptLang = /[\uAC00-\uD7AF\u1100-\u11FF]/.test(langText) ? "ko" : /[\u3040-\u30FF]/.test(langText) ? "ja" : /[\u4E00-\u9FFF]/.test(langText) ? "zh" : null;
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
@@ -111,7 +113,7 @@ function renderChordHtml(song) {
     name: song.title,
     byArtist: { "@type": "MusicGroup", name: song.artist },
     url: `${SITE_URL}${canonical}`,
-    inLanguage: song.language === "EN" ? "en" : "id",
+    inLanguage: scriptLang || (song.language === "EN" ? "en" : "id"),
   });
 
   return `<!DOCTYPE html>

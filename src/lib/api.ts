@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import type { Artist, Genre, Song } from "../data/types";
+import { detectScriptLang, langLabel } from "./lang";
 
 const slugify = (text: string) =>
   (text || "")
@@ -179,25 +180,29 @@ export async function getRelatedSongs(song: Song, limit = 5): Promise<Song[]> {
 
 export async function getAllArtists(): Promise<Artist[]> {
   try {
-    const { data, error } = await supabase.from("chords").select("artist").order("id", { ascending: false });
+    const { data, error } = await supabase.from("chords").select("artist,title").order("id", { ascending: false });
     if (error || !data) return [];
-    const map = new Map<string, Artist>();
+    const map = new Map<string, { name: string; titles: string[] }>();
     for (const row of data as any[]) {
       const name = row.artist || "";
+      if (!name) continue;
       const artistSlug = slugify(name);
-      if (!name || map.has(artistSlug)) continue;
-      map.set(artistSlug, {
+      const entry = map.get(artistSlug) || { name, titles: [] };
+      if (row.title) entry.titles.push(row.title);
+      map.set(artistSlug, entry);
+    }
+    return Array.from(map.entries())
+      .map(([artistSlug, e]) => ({
         id: artistSlug,
-        name,
+        name: e.name,
         slug: artistSlug,
-        bio: `Kumpulan chord gitar dari ${name}.`,
-        country: "Indonesia",
+        bio: `Kumpulan chord gitar dari ${e.name}.`,
+        country: langLabel(detectScriptLang(...e.titles)),
         genres: ["Pop"],
         thumbnail: null,
         createdAt: new Date().toISOString(),
-      });
-    }
-    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   } catch {
     return [];
   }
@@ -205,16 +210,17 @@ export async function getAllArtists(): Promise<Artist[]> {
 
 export async function getArtistBySlug(slug: string): Promise<Artist | null> {
   try {
-    const { data, error } = await supabase.from("chords").select("artist").ilike("artist", slug.replace(/-/g, "%"));
+    const { data, error } = await supabase.from("chords").select("artist,title").ilike("artist", slug.replace(/-/g, "%"));
     if (error || !data) return null;
-    const match = (data as any[]).find((r) => slugify(r.artist) === slug);
+    const rows = (data as any[]).filter((r) => slugify(r.artist) === slug);
+    const match = rows[0];
     if (!match) return null;
     return {
       id: slug,
       name: match.artist,
       slug,
       bio: `Kumpulan chord gitar dari ${match.artist}.`,
-      country: "Indonesia",
+      country: langLabel(detectScriptLang(...rows.map((r) => r.title || ""))),
       genres: ["Pop"],
       thumbnail: null,
       createdAt: new Date().toISOString(),
