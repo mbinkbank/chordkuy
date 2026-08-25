@@ -6,6 +6,9 @@ on:
     - cron: "30 0 * * *"  # 07:30 WIB
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   backfill:
     runs-on: ubuntu-latest
