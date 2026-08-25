@@ -494,13 +494,14 @@ a:focus-visible {
   min-width: auto;
   padding: 0;
 }
-.nav-toggle {
+.header-inner .nav-toggle {
   display: inline-flex;
   --btn-bd: transparent;
-  border: none;
+  border: none !important;
   min-height: auto;
   min-width: auto;
   padding: 0;
+  background: transparent;
 }
 @media (min-width: 861px) {
   .nav-toggle {
