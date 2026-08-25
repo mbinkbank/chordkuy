@@ -1,22 +1,8 @@
-import { useEffect } from "react";
 import { Link } from "../lib/router";
 import { SITE } from "../lib/site";
 
 export default function Footer() {
   const year = new Date().getFullYear();
-
-  useEffect(() => {
-    const w = window as any;
-    w._Hasync = w._Hasync || [];
-    w._Hasync.push(["Histats.start", "1,5046881,4,0,0,0,00010000"]);
-    w._Hasync.push(["Histats.fasi", "1"]);
-    w._Hasync.push(["Histats.track_hits", ""]);
-    const hs = document.createElement("script");
-    hs.type = "text/javascript";
-    hs.async = true;
-    hs.src = "//s10.histats.com/js15_as.js";
-    document.head.appendChild(hs);
-  }, []);
 
   return (
     <footer className="site-footer">

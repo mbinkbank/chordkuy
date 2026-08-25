@@ -38,6 +38,25 @@ function upsertLink(rel: string, href: string) {
   el.setAttribute("href", href);
 }
 
+let lastHitPath = "";
+
+// ponytail: hit SPA = re-inject js15_as.js per path; histats tidak punya API virtual pageview
+export function histatsHit(): void {
+  const path = location.pathname + location.search;
+  if (path === lastHitPath) return;
+  lastHitPath = path;
+  const w = window as any;
+  w._Hasync = w._Hasync || [];
+  w._Hasync.push(["Histats.start", "1,5046881,4,0,0,0,00010000"]);
+  w._Hasync.push(["Histats.fasi", "1"]);
+  w._Hasync.push(["Histats.track_hits", ""]);
+  const hs = document.createElement("script");
+  hs.type = "text/javascript";
+  hs.async = true;
+  hs.src = "//s10.histats.com/js15_as.js";
+  document.head.appendChild(hs);
+}
+
 export function applySeo({
   title,
   description,
@@ -52,6 +71,7 @@ export function applySeo({
 
   document.title = title;
   document.documentElement.lang = SITE.lang;
+  histatsHit();
 
   upsertMeta('meta[name="description"]', { name: "description", content: description });
   upsertMeta('meta[name="robots"]', {
