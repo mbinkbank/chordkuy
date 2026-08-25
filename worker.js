@@ -107,7 +107,8 @@ function renderChordHtml(song) {
   const canonical = `/chord/${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
-  const scriptLang = /[\uAC00-\uD7AF\u1100-\u11FF]/.test(langText) ? "ko" : /[\u3040-\u30FF]/.test(langText) ? "ja" : /[\u4E00-\u9FFF]/.test(langText) ? "zh" : /[\u0400-\u04FF]/.test(langText) ? "ru" : null;
+  const cnt = (re) => (langText.match(re) || []).length;
+  const scriptLang = cnt(/[\uAC00-\uD7AF\u1100-\u11FF]/g) >= 3 ? "ko" : cnt(/[\u3040-\u30FF]/g) >= 3 ? "ja" : cnt(/[\u4E00-\u9FFF]/g) >= 3 ? "zh" : cnt(/[\u0400-\u04FF]/g) >= 3 ? "ru" : null;
   let inLang = scriptLang;
   if (!inLang) {
     const en = (langText.match(/\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b/gi) || []).length;

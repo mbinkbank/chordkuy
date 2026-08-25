@@ -3,10 +3,12 @@ export type ScriptLang = "KR" | "JP" | "CN" | "RU";
 
 export function detectScriptLang(...texts: string[]): ScriptLang | null {
   const t = texts.join(" ");
-  if (/[\uAC00-\uD7AF\u1100-\u11FF]/.test(t)) return "KR";
-  if (/[\u3040-\u30FF]/.test(t)) return "JP";
-  if (/[\u4E00-\u9FFF]/.test(t)) return "CN";
-  if (/[\u0400-\u04FF]/.test(t)) return "RU";
+  const count = (re: RegExp) => (t.match(re) || []).length;
+  // ponytail: ambang 3 karakter — 1-2 homoglyph nyasar tidak boleh menentukan
+  if (count(/[\uAC00-\uD7AF\u1100-\u11FF]/g) >= 3) return "KR";
+  if (count(/[\u3040-\u30FF]/g) >= 3) return "JP";
+  if (count(/[\u4E00-\u9FFF]/g) >= 3) return "CN";
+  if (count(/[\u0400-\u04FF]/g) >= 3) return "RU";
   return null;
 }
 
