@@ -249,38 +249,10 @@ def format_content(raw_text: str) -> str:
 supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
 
 
-PROXY_BASE = os.getenv("SCRAPE_PROXY_URL", "").rstrip("/")
-SCRAPER_TOKEN = os.getenv("SCRAPE_PROXY_TOKEN", "")
-
-
 def fetch(url: str) -> bytes:
     print(f"[GET] {url}", flush=True)
-    if PROXY_BASE:
-        import json as _json
-        import urllib.error
-        import urllib.parse
-        import urllib.request
-
-        endpoint = f"{PROXY_BASE}/api/scrape-fetch?url={urllib.parse.quote(url, safe='')}"
-        req = urllib.request.Request(
-            endpoint,
-            headers={
-                "x-scraper-token": SCRAPER_TOKEN,
-                "User-Agent": USER_AGENT,
-                "Accept": "application/json",
-            },
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=90) as r:
-                data = _json.loads(r.read())
-        except urllib.error.HTTPError as e:
-            raise RuntimeError(f"proxy HTTP {e.code} pada {e.url[:80]}") from None
-        if data.get("status") != 200:
-            raise RuntimeError(f"upstream HTTP {data.get('status')} via proxy untuk {url}")
-        time.sleep(random.uniform(DELAY_MIN, DELAY_MAX))
-        return data["body"].encode()
     res = subprocess.run(
-        ["curl", "-s", "-L", "-A", USER_AGENT, url],
+        ["curl.exe", "-s", "-L", "-A", USER_AGENT, url],
         capture_output=True,
         timeout=60,
     )
@@ -301,9 +273,28 @@ LANG_SCRIPTS = [
     ("Jepang", re.compile(r"[\u3040-\u30FF]")),
     ("Tiongkok (China)", re.compile(r"[\u4E00-\u9FFF]")),
     ("Rusia", re.compile(r"[\u0400-\u04FF]")),
+    ("Thailand", re.compile(r"[\u0E00-\u0E7F]")),
+    ("Laos", re.compile(r"[\u0E80-\u0EFF]")),
+    ("Kamboja", re.compile(r"[\u1780-\u17FF]")),
+    ("Myanmar", re.compile(r"[\u1000-\u109F]")),
+    ("India", re.compile(r"[\u0900-\u097F]")),
+    ("Bangladesh", re.compile(r"[\u0980-\u09FF]")),
+    ("Sri Lanka", re.compile(r"[\u0D80-\u0DFF]")),
+    ("Maladewa", re.compile(r"[\u0780-\u07BF]")),
+    ("Israel", re.compile(r"[\u0590-\u05FF]")),
+    ("Armenia", re.compile(r"[\u0530-\u058F]")),
+    ("Georgia", re.compile(r"[\u10A0-\u10FF]")),
+    ("Siprus", re.compile(r"[\u0370-\u03FF]")),
+    ("Mongolia", re.compile(r"[\u1800-\u18AF]")),
+    ("Arab Saudi", re.compile(r"[\u0600-\u06FF]")),
 ]
 LANG_HOMOGLYPH = re.compile(r"[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]")
-LANG_EN = re.compile(r"\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b", re.IGNORECASE)
+LANG_WORDS = [
+    ("English", re.compile(r"\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b", re.IGNORECASE)),
+    ("Vietnam", re.compile(r"\b(c\u1ee7a|v\u00e0|l\u00e0|kh\u00f4ng|anh|em|t\u00f4i|b\u1ea1n|nh\u1eefng|\u0111\u01b0\u1ee3c|\u0111\u00e3|s\u1ebd|v\u1eady|n\u00e0y|kia|g\u00ec|\u0111i|v\u1ec1|y\u00eau|\u0111\u1eddi|t\u00ecnh|trong|m\u1ed9t|cu\u1ed9c)\b")),
+    ("Filipina", re.compile(r"\b(ang|ng|sa|ako|ikaw|hindi|ko|mo|kami|tayo|siya|namin|atin|mahal|puso|sana|lang|na|pa)\b", re.IGNORECASE)),
+    ("Turki", re.compile(r"\b(bir|ve|bu|i\u00e7in|ben|sen|biz|siz|ama|\u00e7ok|daha|gibi|kadar|de\u011fil|var|yok|seni|beni|sevdim|kalbim|hayat|a\u015fk|g\u00f6n\u00fcl)\b")),
+]
 LANG_ID = re.compile(r"\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b", re.IGNORECASE)
 
 
@@ -313,10 +304,11 @@ def detect_language(title: str, content: str) -> str:
     for label, rx in LANG_SCRIPTS:
         if len(rx.findall(clean)) >= 3:
             return label
-    en = len(LANG_EN.findall(text))
     idn = len(LANG_ID.findall(text))
-    if en >= 3 and en > idn * 2:
-        return "English"
+    for label, rx in LANG_WORDS:
+        n = len(rx.findall(text))
+        if n >= 3 and n > idn * 2:
+            return label
     return "ID"
 
 
@@ -369,7 +361,7 @@ def clean_content(raw_text: str) -> str:
                 lines = lines[idx:]
                 break
 
-    # 2) Fallback: label section sangat awal (indeks <= 5) -> potong apa pun di atasnya
+    # 2) Fallback lama: label section sangat awal (indeks <= 5) -> potong apa pun di atasnya
     start_idx = -1
     for idx, line in enumerate(lines):
         trimmed = line.strip()
@@ -447,22 +439,13 @@ def parse_detail(html_str: str) -> dict | None:
     }
 
 
-def _pid_alive(pid: str) -> bool:
-    if not pid.isdigit():
-        return False
-    p = int(pid)
-    if os.name == "nt":
-        import subprocess as _sp
-        out = _sp.run(["tasklist", "/FI", f"PID eq {p}"], capture_output=True, text=True).stdout.lower()
-        return "python" in out
-    return os.path.exists(f"/proc/{p}")
-
-
 def main():
     lock = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scrape.lock")
     if os.path.exists(lock):
         old = open(lock).read().strip()
-        if _pid_alive(old):
+        import subprocess as _sp
+        running = _sp.run(["tasklist", "/FI", f"PID eq {old}"], capture_output=True, text=True).stdout.lower().find("python") != -1 if old.isdigit() else False
+        if running:
             print(f"Scraper sudah berjalan (PID {old}). Keluar.", flush=True)
             return
     open(lock, "w").write(str(os.getpid()))
@@ -474,7 +457,6 @@ def main():
 
 
 def _run():
-    print(f"Mode fetch: {'PROXY (' + PROXY_BASE + ')' if PROXY_BASE else 'LANGSUNG (curl)'}", flush=True)
     existing = set()
     try:
         rows = supabase.table("chords").select("title,artist").execute().data

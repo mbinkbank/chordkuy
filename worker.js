@@ -108,13 +108,42 @@ function renderChordHtml(song) {
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
   const clean = langText.replace(/[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]/g, "");
-  const cnt = (re) => (clean.match(re) || []).length;
-  const scriptLang = cnt(/[\uAC00-\uD7AF\u1100-\u11FF]/g) >= 3 ? "ko" : cnt(/[\u3040-\u30FF]/g) >= 3 ? "ja" : cnt(/[\u4E00-\u9FFF]/g) >= 3 ? "zh" : cnt(/[\u0400-\u04FF]/g) >= 3 ? "ru" : null;
-  let inLang = scriptLang;
+  const SCRIPT_TESTS = [
+    ["ko", /[\uAC00-\uD7AF\u1100-\u11FF]/g],
+    ["ja", /[\u3040-\u30FF]/g],
+    ["zh", /[\u4E00-\u9FFF]/g],
+    ["ru", /[\u0400-\u04FF]/g],
+    ["th", /[\u0E00-\u0E7F]/g],
+    ["lo", /[\u0E80-\u0EFF]/g],
+    ["km", /[\u1780-\u17FF]/g],
+    ["my", /[\u1000-\u109F]/g],
+    ["hi", /[\u0900-\u097F]/g],
+    ["bn", /[\u0980-\u09FF]/g],
+    ["si", /[\u0D80-\u0DFF]/g],
+    ["dv", /[\u0780-\u07BF]/g],
+    ["he", /[\u0590-\u05FF]/g],
+    ["hy", /[\u0530-\u058F]/g],
+    ["ka", /[\u10A0-\u10FF]/g],
+    ["el", /[\u0370-\u03FF]/g],
+    ["mn", /[\u1800-\u18AF]/g],
+    ["ar", /[\u0600-\u06FF]/g],
+  ];
+  let inLang = null;
+  for (const [code, rx] of SCRIPT_TESTS) {
+    if ((clean.match(rx) || []).length >= 3) { inLang = code; break; }
+  }
   if (!inLang) {
-    const en = (langText.match(/\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b/gi) || []).length;
-    const id = (langText.match(/\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b/gi) || []).length;
-    if (en >= 3 && en > id * 2) inLang = "en";
+    const idCount = (langText.match(/\b(yang|dan|di|ke|dari|aku|saya|kamu|kita|mereka|untuk|tidak|bukan|adalah|dengan|pada|sudah|belum|juga|hanya|akan|bisa|boleh|ini|itu|apa|siapa|kenapa|bagaimana|lagi|saja|kah|pun|lah|nantinya|ingin|harus|pernah|masih|semua|setiap|seorang|hati|kasih|sayang|cinta|rindu|hidup|dunia|waktu|masa)\b/gi) || []).length;
+    const WORD_TESTS = [
+      ["en", /\b(the|you|and|is|are|was|were|i'm|im|i've|don't|dont|can't|cant|it's|its|that|this|with|for|my|me|just|when|what|how|why|not|but|all|of|to|in|on|we|they|she|he|will|would|could|should|there|here|your|from|at|be|been|am|so|if|then|than|about|like|one|never|always|know|get|got|go|going)\b/gi],
+      ["vi", /\b(của|và|là|không|anh|em|tôi|bạn|những|được|đã|sẽ|vậy|này|kia|gì|đi|về|yêu|đời|tình|trong|một|cuộc)\b/g],
+      ["fil", /\b(ang|ng|sa|ako|ikaw|hindi|ko|mo|kami|tayo|siya|namin|atin|mahal|puso|sana|lang|na|pa)\b/gi],
+      ["tr", /\b(bir|ve|bu|için|ben|sen|biz|siz|ama|çok|daha|gibi|kadar|değil|var|yok|seni|beni|sevdim|kalbim|hayat|aşk|gönül)\b/gi],
+    ];
+    for (const [code, rx] of WORD_TESTS) {
+      const n = (langText.match(rx) || []).length;
+      if (n >= 3 && n > idCount * 2) { inLang = code; break; }
+    }
   }
 
   const jsonLd = JSON.stringify({
