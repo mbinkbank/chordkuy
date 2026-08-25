@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { getArtistBySlug, getSongBySlug } from "./lib/api";
 import { useRoute } from "./lib/router";
-import AboutPage from "./pages/AboutPage";
-import ArtistPage from "./pages/ArtistPage";
-import ArtistsPage from "./pages/ArtistsPage";
-import BookmarkPage from "./pages/BookmarkPage";
-import ChordPage from "./pages/ChordPage";
-import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
-import { PrivacyPage, TermsPage } from "./pages/LegalPages";
 import NotFoundPage from "./pages/NotFoundPage";
-import SearchPage from "./pages/SearchPage";
 import type { Artist, Song } from "./data/types";
+
+const ChordPage = lazy(() => import("./pages/ChordPage"));
+const SearchPage = lazy(() => import("./pages/SearchPage"));
+const ArtistPage = lazy(() => import("./pages/ArtistPage"));
+const ArtistsPage = lazy(() => import("./pages/ArtistsPage"));
+const BookmarkPage = lazy(() => import("./pages/BookmarkPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const PrivacyPage = lazy(() => import("./pages/LegalPages").then((m) => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import("./pages/LegalPages").then((m) => ({ default: m.TermsPage })));
+
+function Loading() {
+  return <div className="container" style={{ padding: "40px 0", color: "var(--muted)" }}>Memuat...</div>;
+}
 
 function View() {
   const route = useRoute();
@@ -30,38 +36,51 @@ function View() {
     }
   }, [route.name, route.params.slug]);
 
+  let page: React.ReactNode;
   switch (route.name) {
     case "home":
-      return <HomePage />;
+      page = <HomePage />;
+      break;
     case "search":
-      return <SearchPage />;
+      page = <SearchPage />;
+      break;
     case "artists":
-      return <ArtistsPage />;
-    case "artist": {
+      page = <ArtistsPage />;
+      break;
+    case "artist":
       if (artist === undefined) {
-        return <div className="container" style={{ padding: "40px 0" }}>Memuat artis...</div>;
+        page = <div className="container" style={{ padding: "40px 0" }}>Memuat artis...</div>;
+      } else {
+        page = artist ? <ArtistPage key={artist.slug} artist={artist} /> : <NotFoundPage />;
       }
-      return artist ? <ArtistPage key={artist.slug} artist={artist} /> : <NotFoundPage />;
-    }
-    case "chord": {
+      break;
+    case "chord":
       if (song === undefined) {
-        return <div className="container" style={{ padding: "40px 0" }}>Memuat chord...</div>;
+        page = <div className="container" style={{ padding: "40px 0" }}>Memuat chord...</div>;
+      } else {
+        page = song ? <ChordPage key={song.slug} song={song} /> : <NotFoundPage />;
       }
-      return song ? <ChordPage key={song.slug} song={song} /> : <NotFoundPage />;
-    }
+      break;
     case "bookmark":
-      return <BookmarkPage />;
+      page = <BookmarkPage />;
+      break;
     case "about":
-      return <AboutPage />;
+      page = <AboutPage />;
+      break;
     case "contact":
-      return <ContactPage />;
+      page = <ContactPage />;
+      break;
     case "privacy":
-      return <PrivacyPage />;
+      page = <PrivacyPage />;
+      break;
     case "terms":
-      return <TermsPage />;
+      page = <TermsPage />;
+      break;
     default:
-      return <NotFoundPage />;
+      page = <NotFoundPage />;
   }
+
+  return <Suspense fallback={<Loading />}>{page}</Suspense>;
 }
 
 export default function App() {
