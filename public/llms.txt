@@ -1,0 +1,19 @@
+# Chordkuy.id
+
+> Kumpulan kunci gitar dan chord lagu Indonesia terlengkap. Chord gitar mudah dengan lirik, transpose real-time, auto scroll, dan diagram chord.
+
+Chordkuy menyediakan chord gitar lagu Indonesia dan mancanegara dengan format bersih dan mudah dibaca, diperbarui setiap hari dari kurasi manual.
+
+## Halaman Utama
+
+- [Beranda](https://chordkuy.id/): Chord gitar terpopuler, artis, dan lagu terbaru
+- [Daftar Artis](https://chordkuy.id/artists): Semua artis dengan chord yang tersedia
+- [Cari Chord](https://chordkuy.id/search): Cari chord berdasarkan judul lagu atau nama artis
+- [Tentang](https://chordkuy.id/about): Tentang Chordkuy
+- [Kontak](https://chordkuy.id/contact): Kontak, permintaan chord, dan laporan bug
+
+## Format Chord
+
+Setiap halaman chord menampilkan kunci dasar, capo, tingkat kesulitan, rating, bahasa, lirik, dan diagram chord. Chord dapat di-transpose dan di-auto scroll.
+
+Contoh halaman chord: [Wonderwall — Oasis](https://chordkuy.id/chord/oasis-wonderwall)
