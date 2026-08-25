@@ -29,6 +29,21 @@ async function rest(path: string, withCount = false): Promise<{ rows: any[]; tot
   }
 }
 
+// Supabase free tier membatasi max_rows=1000 per permintaan — ambil semua via paging
+async function restAll(path: string): Promise<any[]> {
+  const all: any[] = [];
+  let offset = 0;
+  for (;;) {
+    const sep = path.includes("?") ? "&" : "?";
+    const { rows } = await rest(`${path}${sep}limit=1000&offset=${offset}`);
+    if (!rows.length) break;
+    all.push(...rows);
+    offset += rows.length;
+    if (rows.length < 1000) break;
+  }
+  return all;
+}
+
 const slugify = (text: string) =>
   (text || "")
     .toLowerCase()
@@ -85,7 +100,7 @@ export function mapDbRowToSong(row: any): Song {
 }
 
 export async function getAllSongs(): Promise<Song[]> {
-  const { rows } = await rest(`chords?select=*&order=id.desc`);
+  const rows = await restAll(`chords?select=*&order=id.desc`);
   return rows.map(mapDbRowToSong);
 }
 
@@ -95,7 +110,7 @@ const LIGHT_TTL = 5 * 60 * 1000;
 
 async function getLightRows(): Promise<any[]> {
   if (lightCache && Date.now() - lightCacheTime < LIGHT_TTL) return lightCache;
-  const { rows } = await rest(`chords?select=id,title,artist&order=id.desc`);
+  const rows = await restAll(`chords?select=id,title,artist&order=id.asc`);
   if (!rows.length) return lightCache || [];
   lightCache = rows;
   lightCacheTime = Date.now();
@@ -162,7 +177,7 @@ export async function getRelatedSongs(song: Song, limit = 5): Promise<Song[]> {
 
 export async function getAllArtists(): Promise<Artist[]> {
   try {
-    const { rows } = await rest(`chords?select=artist,title&order=id.desc`);
+    const rows = await restAll(`chords?select=artist,title&order=id.desc`);
     const map = new Map<string, { name: string; titles: string[] }>();
     for (const row of rows) {
       const name = row.artist || "";
@@ -222,11 +237,11 @@ export async function getPopularArtists(limit = 6): Promise<Artist[]> {
 
 export async function getStats() {
   try {
-    const [songRes, artistRes] = await Promise.all([
+    const [songRes, artistRows] = await Promise.all([
       rest(`chords?select=id&limit=1`, true),
-      rest(`chords?select=artist`),
+      restAll(`chords?select=artist`),
     ]);
-    const artistCount = new Set(artistRes.rows.map((r) => r.artist)).size;
+    const artistCount = new Set(artistRows.map((r) => r.artist)).size;
     return { songCount: songRes.total ?? 0, artistCount, genreCount: 2 };
   } catch {
     return { songCount: 0, artistCount: 0, genreCount: 2 };
