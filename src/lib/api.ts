@@ -1,6 +1,31 @@
-import { supabase } from "./supabase";
 import type { Artist, Genre, Song } from "../data/types";
 import { detectScriptLang, langLabel } from "./lang";
+
+// PostgREST via fetch — tanpa SDK supabase-js (hemat ~40KB bundle)
+const SB_URL = import.meta.env.VITE_SUPABASE_URL || "https://tbpdopmbvuhxjktuwsej.supabase.co";
+const SB_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRicGRvcG1idnVoeGprdHV3c2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzA1OTUsImV4cCI6MjEwMjU0NjU5NX0.bFxR8c-n67bRTRT6E4InnIjUXAVTs4erVHVZSi-0q60";
+
+async function rest(path: string, withCount = false): Promise<{ rows: any[]; total: number | null }> {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+      headers: {
+        apikey: SB_KEY,
+        Authorization: `Bearer ${SB_KEY}`,
+        ...(withCount ? { Prefer: "count=exact" } : {}),
+      },
+    });
+    if (!res.ok) return { rows: [], total: null };
+    const rows = await res.json();
+    let total: number | null = null;
+    if (withCount) {
+      const cr = res.headers.get("content-range");
+      total = cr && cr.includes("/") ? parseInt(cr.split("/")[1], 10) || rows.length : rows.length;
+    }
+    return { rows, total };
+  } catch {
+    return { rows: [], total: null };
+  }
+}
 
 const slugify = (text: string) =>
   (text || "")
@@ -9,6 +34,8 @@ const slugify = (text: string) =>
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
+
+const LIGHT_COLS = "id,title,artist,key_name,capo,tuning,difficulty,rating";
 
 function extractChords(content: string): string[] {
   if (!content) return [];
@@ -56,16 +83,8 @@ export function mapDbRowToSong(row: any): Song {
 }
 
 export async function getAllSongs(): Promise<Song[]> {
-  try {
-    const { data, error } = await supabase
-      .from("chords")
-      .select("*")
-      .order("id", { ascending: false });
-    if (error || !data) return [];
-    return data.map(mapDbRowToSong);
-  } catch {
-    return [];
-  }
+  const { rows } = await rest(`chords?select=*&order=id.desc`);
+  return rows.map(mapDbRowToSong);
 }
 
 let lightCache: any[] | null = null;
@@ -74,9 +93,9 @@ const LIGHT_TTL = 5 * 60 * 1000;
 
 async function getLightRows(): Promise<any[]> {
   if (lightCache && Date.now() - lightCacheTime < LIGHT_TTL) return lightCache;
-  const { data, error } = await supabase.from("chords").select("id,title,artist").order("id", { ascending: false });
-  if (error || !data) return lightCache || [];
-  lightCache = data as any[];
+  const { rows } = await rest(`chords?select=id,title,artist&order=id.desc`);
+  if (!rows.length) return lightCache || [];
+  lightCache = rows;
   lightCacheTime = Date.now();
   return lightCache;
 }
@@ -88,9 +107,8 @@ export async function getSongBySlug(slug: string): Promise<Song | null> {
       (r) => `${slugify(r.artist)}-${slugify(r.title)}` === slug || `${slugify(r.artist)}-${slugify(r.title)}` === slug.replace(/-\d+$/, ""),
     );
     if (!match) return null;
-    const { data, error } = await supabase.from("chords").select("*").eq("id", match.id).single();
-    if (error || !data) return null;
-    return mapDbRowToSong(data);
+    const { rows } = await rest(`chords?select=*&id=eq.${match.id}`);
+    return rows[0] ? mapDbRowToSong(rows[0]) : null;
   } catch {
     return null;
   }
@@ -101,40 +119,20 @@ export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
     const light = await getLightRows();
     const ids = light.filter((r) => slugify(r.artist) === artistSlug).map((r) => r.id);
     if (ids.length === 0) return [];
-    const { data, error } = await supabase.from("chords").select("*").in("id", ids).order("id", { ascending: false });
-    if (error || !data) return [];
-    return data.map(mapDbRowToSong);
+    const { rows } = await rest(`chords?select=*&id=in.(${ids.join(",")})&order=id.desc`);
+    return rows.map(mapDbRowToSong);
   } catch {
     return [];
   }
 }
 
 export async function getPopularSongs(limit = 8): Promise<Song[]> {
-  try {
-    const { data, error } = await supabase
-      .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty,rating")
-      .order("id", { ascending: false })
-      .limit(limit);
-    if (error || !data) return [];
-    return data.map(mapDbRowToSong);
-  } catch {
-    return [];
-  }
+  const { rows } = await rest(`chords?select=${LIGHT_COLS}&order=id.desc&limit=${limit}`);
+  return rows.map(mapDbRowToSong);
 }
 
 export async function getRecentSongs(limit = 6): Promise<Song[]> {
-  try {
-    const { data, error } = await supabase
-      .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty,rating")
-      .order("id", { ascending: false })
-      .limit(limit);
-    if (error || !data) return [];
-    return data.map(mapDbRowToSong);
-  } catch {
-    return [];
-  }
+  return getPopularSongs(limit);
 }
 
 export const RECENT_PER_PAGE = 6;
@@ -143,20 +141,12 @@ export async function getRecentSongsPage(
   page: number,
   perPage = RECENT_PER_PAGE,
 ): Promise<{ songs: Song[]; total: number }> {
-  try {
-    const from = (page - 1) * perPage;
-    const { data, error, count } = await supabase
-      .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty,rating", {
-        count: "exact",
-      })
-      .order("id", { ascending: false })
-      .range(from, from + perPage - 1);
-    if (error || !data) return { songs: [], total: 0 };
-    return { songs: data.map(mapDbRowToSong), total: count ?? data.length };
-  } catch {
-    return { songs: [], total: 0 };
-  }
+  const from = (page - 1) * perPage;
+  const { rows, total } = await rest(
+    `chords?select=${LIGHT_COLS}&order=id.desc&limit=${perPage}&offset=${from}`,
+    true,
+  );
+  return { songs: rows.map(mapDbRowToSong), total: total ?? rows.length };
 }
 
 export async function getSongsByGenre(genreSlug: string): Promise<Song[]> {
@@ -164,26 +154,15 @@ export async function getSongsByGenre(genreSlug: string): Promise<Song[]> {
 }
 
 export async function getRelatedSongs(song: Song, limit = 5): Promise<Song[]> {
-  try {
-    const { data, error } = await supabase
-      .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty,rating")
-      .neq("id", Number(song.id))
-      .order("id", { ascending: false })
-      .limit(limit);
-    if (error || !data) return [];
-    return data.map(mapDbRowToSong);
-  } catch {
-    return [];
-  }
+  const { rows } = await rest(`chords?select=${LIGHT_COLS}&id=neq.${Number(song.id)}&order=id.desc&limit=${limit}`);
+  return rows.map(mapDbRowToSong);
 }
 
 export async function getAllArtists(): Promise<Artist[]> {
   try {
-    const { data, error } = await supabase.from("chords").select("artist,title").order("id", { ascending: false });
-    if (error || !data) return [];
+    const { rows } = await rest(`chords?select=artist,title&order=id.desc`);
     const map = new Map<string, { name: string; titles: string[] }>();
-    for (const row of data as any[]) {
+    for (const row of rows) {
       const name = row.artist || "";
       if (!name) continue;
       const artistSlug = slugify(name);
@@ -210,17 +189,17 @@ export async function getAllArtists(): Promise<Artist[]> {
 
 export async function getArtistBySlug(slug: string): Promise<Artist | null> {
   try {
-    const { data, error } = await supabase.from("chords").select("artist,title").ilike("artist", slug.replace(/-/g, "%"));
-    if (error || !data) return null;
-    const rows = (data as any[]).filter((r) => slugify(r.artist) === slug);
-    const match = rows[0];
+    const pattern = encodeURIComponent(slug.replace(/-/g, "%"));
+    const { rows } = await rest(`chords?select=artist,title&artist=ilike.${pattern}`);
+    const filtered = rows.filter((r) => slugify(r.artist) === slug);
+    const match = filtered[0];
     if (!match) return null;
     return {
       id: slug,
       name: match.artist,
       slug,
       bio: `Kumpulan chord gitar dari ${match.artist}.`,
-      country: langLabel(detectScriptLang(...rows.map((r) => r.title || ""))),
+      country: langLabel(detectScriptLang(...filtered.map((r) => r.title || ""))),
       genres: ["Pop"],
       thumbnail: null,
       createdAt: new Date().toISOString(),
@@ -241,12 +220,12 @@ export async function getPopularArtists(limit = 6): Promise<Artist[]> {
 
 export async function getStats() {
   try {
-    const [{ count: songCount }, { data: artistRows }] = await Promise.all([
-      supabase.from("chords").select("id", { count: "exact", head: true }),
-      supabase.from("chords").select("artist"),
+    const [songRes, artistRes] = await Promise.all([
+      rest(`chords?select=id&limit=1`, true),
+      rest(`chords?select=artist`),
     ]);
-    const artistCount = new Set(((artistRows as any[]) || []).map((r) => r.artist)).size;
-    return { songCount: songCount ?? 0, artistCount, genreCount: 2 };
+    const artistCount = new Set(artistRes.rows.map((r) => r.artist)).size;
+    return { songCount: songRes.total ?? 0, artistCount, genreCount: 2 };
   } catch {
     return { songCount: 0, artistCount: 0, genreCount: 2 };
   }
@@ -293,14 +272,13 @@ export async function searchCatalogue(query: string, limit = 40): Promise<Search
 
   try {
     const q = query.toLowerCase().trim();
-    const { data } = await supabase
-      .from("chords")
-      .select("id,title,artist,key_name,capo,tuning,difficulty,rating")
-      .or(`title.ilike.%${q}%,artist.ilike.%${q}%`)
-      .limit(limit);
+    const enc = encodeURIComponent(q);
+    const { rows } = await rest(
+      `chords?select=${LIGHT_COLS}&or=(title.ilike.*${enc}*,artist.ilike.*${enc}*)&limit=${limit}`,
+    );
 
-    if (!data) return { songs: [], artists: [] };
-    const songs = data.map(mapDbRowToSong);
+    if (!rows.length) return { songs: [], artists: [] };
+    const songs = rows.map(mapDbRowToSong);
     const artists = await getAllArtists();
     const filteredArtists = artists.filter((a) => a.name.toLowerCase().includes(q));
 
