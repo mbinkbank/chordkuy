@@ -70,9 +70,9 @@ export function songLang(song: { title?: string; content?: string; lyrics?: stri
   return detectWordLang(`${song.title || ""} ${text}`);
 }
 
-// Tag manual admin menang; deteksi script jadi fallback.
+// Tag manual admin menang; "-" = belum ditag; sisanya deteksi otomatis.
 export function songLangLabel(song: { title?: string; content?: string; lyrics?: string; language?: string }): string {
   const l = (song.language || "").trim();
-  if (l && l !== "ID" && l !== "EN") return l;
+  if (l && l !== "ID" && l !== "EN" && l !== "-") return l;
   return langLabel(songLang(song));
 }

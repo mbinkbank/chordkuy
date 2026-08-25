@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import { COUNTRIES, REGIONAL } from "@/lib/countries";
 import toast from "react-hot-toast";
 import {
   Plus,
@@ -69,6 +68,7 @@ export default function SongsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [language, setLanguage] = useState("");
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState("");
   const [page, setPage] = useState(1);
   const [deleteConfirm, setDeleteConfirm] = useState<Song | null>(null);
@@ -79,6 +79,15 @@ export default function SongsPage() {
   const [ytFilter, setYtFilter] = useState("");
 
   const KEYS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "Am", "Bm", "Cm", "Dm", "Em", "Fm", "Gm"];
+
+  useEffect(() => {
+    fetch("/api/dashboard/language-stats", { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setLanguageOptions((d.data as { language: string }[]).map((x) => x.language));
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchSongs = useCallback(async () => {
     setLoading(true);
@@ -202,16 +211,9 @@ export default function SongsPage() {
                 className="pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white"
               >
                 <option value="">Semua Bahasa</option>
-                <optgroup label="Negara">
-                  {COUNTRIES.map(([v, flag]) => (
-                    <option key={v} value={v}>{flag} {v}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="Bahasa Daerah">
-                  {REGIONAL.map((v) => (
-                    <option key={v} value={v}>{v}</option>
-                  ))}
-                </optgroup>
+                {languageOptions.map((v) => (
+                  <option key={v} value={v}>{v === "-" ? "- (Belum ditag)" : v}</option>
+                ))}
               </select>
             </div>
             <select

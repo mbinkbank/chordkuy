@@ -307,9 +307,9 @@ def detect_language(title: str, content: str) -> str:
     idn = len(LANG_ID.findall(text))
     for label, rx in LANG_WORDS:
         n = len(rx.findall(text))
-        if n >= 3 and n > idn * 2:
-            return label
-    return "ID"
+    if n >= 3 and n > idn * 2:
+        return label
+    return "-"  # tidak terdeteksi — ditag manual di admin
 
 
 ROOTS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]

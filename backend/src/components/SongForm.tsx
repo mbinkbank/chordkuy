@@ -210,6 +210,7 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                       className="input"
                     >
                       <option value="">Pilih Bahasa</option>
+                      <option value="-">- (Belum ditag)</option>
                       <optgroup label="Negara">
                         {COUNTRIES.map(([v, flag]) => <option key={v} value={v}>{flag} {v}</option>)}
                       </optgroup>
