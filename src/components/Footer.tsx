@@ -8,7 +8,7 @@ export default function Footer() {
   useEffect(() => {
     const w = window as any;
     w._Hasync = w._Hasync || [];
-    w._Hasync.push(["Histats.start", "1,5046881,4,600,110,30,00011111"]);
+    w._Hasync.push(["Histats.start", "1,5046881,4,0,0,0,00010000"]);
     w._Hasync.push(["Histats.fasi", "1"]);
     w._Hasync.push(["Histats.track_hits", ""]);
     const hs = document.createElement("script");
