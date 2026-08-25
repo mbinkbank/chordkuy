@@ -16,6 +16,8 @@ async function rest(path: string, withCount = false): Promise<{ rows: any[]; tot
     });
     if (!res.ok) return { rows: [], total: null };
     const rows = await res.json();
+    // gateway kadang balas 200 dengan objek error — jangan biarkan jadi array palsu
+    if (!Array.isArray(rows)) return { rows: [], total: null };
     let total: number | null = null;
     if (withCount) {
       const cr = res.headers.get("content-range");
