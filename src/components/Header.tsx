@@ -15,17 +15,6 @@ export default function Header() {
     <header className="site-header">
       <div className="container">
         <div className="header-inner">
-          <button
-            type="button"
-            className="nav-toggle"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="sr-only">Buka menu navigasi</span>
-            {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
-          </button>
-
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
             <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo logo-light" />
             <img src="/chordkuy-logodark.svg" alt="Chordkuy" className="brand-logo logo-dark" />
@@ -45,6 +34,16 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
+            <button
+              type="button"
+              className="btn btn-sm btn-icon nav-toggle"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="sr-only">Buka menu navigasi</span>
+              {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
+            </button>
             <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <Search size={20} strokeWidth={2.2} />
             </Link>
