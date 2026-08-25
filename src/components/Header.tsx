@@ -44,7 +44,7 @@ export default function Header() {
               <span className="sr-only">Buka menu navigasi</span>
               {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
             </button>
-            <Link href="/search" className="btn btn-sm btn-accent" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Link href="/search" className="btn btn-sm btn-icon" aria-label="Cari chord lagu" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <Search size={20} strokeWidth={2.2} />
             </Link>
             <ThemeToggle />
