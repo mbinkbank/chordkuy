@@ -487,21 +487,17 @@ a:focus-visible {
   gap: var(--s2);
   flex-shrink: 0;
 }
-.header-actions .btn {
+.header-actions .btn,
+.header-inner .nav-toggle {
   --btn-bd: transparent;
   border: none;
   min-height: auto;
   min-width: auto;
   padding: 0;
-}
-.header-inner .nav-toggle {
-  display: inline-flex;
-  --btn-bd: transparent;
-  border: none !important;
-  min-height: auto;
-  min-width: auto;
-  padding: 0;
   background: transparent;
+}
+.nav-toggle {
+  display: inline-flex;
 }
 @media (min-width: 861px) {
   .nav-toggle {
