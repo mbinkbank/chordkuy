@@ -1590,8 +1590,8 @@ a.card:focus-visible {
 }
 .bookmark-badge {
   position: absolute;
-  top: -5px;
-  right: -7px;
+  top: -3px;
+  right: -3px;
   min-width: 14px;
   height: 14px;
   padding: 0 3px;
