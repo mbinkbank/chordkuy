@@ -105,7 +105,7 @@ function renderChordHtml(song) {
   const canonical = `/chord/${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
-  const scriptLang = /[\uAC00-\uD7AF\u1100-\u11FF]/.test(langText) ? "ko" : /[\u3040-\u30FF]/.test(langText) ? "ja" : /[\u4E00-\u9FFF]/.test(langText) ? "zh" : null;
+  const scriptLang = /[\uAC00-\uD7AF\u1100-\u11FF]/.test(langText) ? "ko" : /[\u3040-\u30FF]/.test(langText) ? "ja" : /[\u4E00-\u9FFF]/.test(langText) ? "zh" : /[\u0400-\u04FF]/.test(langText) ? "ru" : null;
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
