@@ -199,7 +199,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <span className="badge badge-muted">{songLangLabel(song)}</span>
             </div>
 
-            <div className="row">
+            <div className="row toolbar">
               <ShareButton title={`Chord ${song.title} - ${song.artist}`} />
               <BookmarkToggle slug={song.slug} title={song.title} artist={song.artist} />
               <button

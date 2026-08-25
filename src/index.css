@@ -1588,6 +1588,20 @@ a.card:focus-visible {
 }
 
 /* ---------- Misc ---------- */
+.toolbar {
+  flex-wrap: nowrap;
+}
+.toolbar .btn {
+  flex-shrink: 1;
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  .toolbar .btn {
+    padding-inline: 6px;
+    gap: 4px;
+    font-size: 9px;
+  }
+}
 .bookmark-btn {
   position: relative;
 }
