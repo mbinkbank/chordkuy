@@ -490,6 +490,9 @@ a:focus-visible {
   gap: var(--s2);
   flex-shrink: 0;
 }
+.header-actions .btn {
+  --btn-bd: transparent;
+}
 .nav-toggle {
   display: inline-flex;
 }
