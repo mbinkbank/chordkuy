@@ -55,7 +55,7 @@ export default function SearchPage() {
     title,
     description,
     path: hasQuery ? `/search?q=${encodeURIComponent(query.trim())}` : "/search",
-    noindex: hasQuery,
+    noindex: true,
     jsonLd: [
       webPageSchema("Pencarian chord", description, "/search"),
       breadcrumbSchema([
