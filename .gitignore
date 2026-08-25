@@ -34,3 +34,5 @@ backend/server.log
 histats-last-snapshot.json
 
 .prerender-cache/
+
+bundle.js
