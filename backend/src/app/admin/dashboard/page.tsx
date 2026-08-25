@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import {
   Music,
-  Disc3,
+  Users,
   TrendingUp,
   Clock,
   Plus,
   UploadCloud,
   Video,
+  Star,
+  Gauge,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -25,8 +27,11 @@ import {
 
 interface Stats {
   total_songs: number;
-  total_albums: number;
+  total_artists: number;
   new_this_month: number;
+  with_youtube: number;
+  avg_rating: number;
+  difficulty: { novice: number; intermediate: number; advanced: number };
   last_updated: { judul: string; penyanyi: string; lastmod: string } | null;
 }
 
@@ -78,9 +83,9 @@ export default function DashboardPage() {
       bg: "bg-purple-50",
     },
     {
-      label: "Total Album",
-      value: stats?.total_albums ?? 0,
-      icon: <Disc3 className="w-6 h-6" />,
+      label: "Total Artis",
+      value: stats?.total_artists ?? 0,
+      icon: <Users className="w-6 h-6" />,
       color: "bg-indigo-500",
       bg: "bg-indigo-50",
     },
@@ -94,11 +99,26 @@ export default function DashboardPage() {
     {
       label: "Terakhir Diupdate",
       value: stats?.last_updated?.lastmod?.slice(0, 10) ?? "-",
+      sub: stats?.last_updated ? `${stats.last_updated.judul} — ${stats.last_updated.penyanyi}` : undefined,
       icon: <Clock className="w-6 h-6" />,
       color: "bg-amber-500",
       bg: "bg-amber-50",
     },
   ];
+
+  const diffRows = [
+    { key: "novice", label: "Pemula", value: stats?.difficulty?.novice ?? 0 },
+    { key: "intermediate", label: "Menengah", value: stats?.difficulty?.intermediate ?? 0 },
+    { key: "advanced", label: "Mahir", value: stats?.difficulty?.advanced ?? 0 },
+  ];
+  const diffTotal = diffRows.reduce((a, b) => a + b.value, 0) || 1;
+  const diffColors: Record<string, string> = {
+    novice: "bg-emerald-400",
+    intermediate: "bg-amber-400",
+    advanced: "bg-rose-400",
+  };
+
+  const sortedLang = [...langStats].sort((a, b) => b.count - a.count).slice(0, 8);
 
   return (
     <div className="space-y-6">
@@ -146,8 +166,109 @@ export default function DashboardPage() {
               <p className="text-2xl font-bold text-slate-800">
                 {typeof card.value === "number" ? card.value.toLocaleString("id") : card.value}
               </p>
+              {"sub" in card && card.sub && (
+                <p className="text-xs text-slate-400 truncate mt-1">{card.sub}</p>
+              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Detail Row: YouTube, Rating, Kesulitan */}
+      {loading ? (
+        <div className="grid lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white rounded-xl p-5 animate-pulse h-32" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-3 gap-4">
+          {/* YouTube */}
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-red-50 p-2 rounded-lg">
+                <Video className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                  Lagu dengan YouTube
+                </p>
+                <p className="text-xl font-bold text-slate-800">
+                  {(stats?.with_youtube ?? 0).toLocaleString("id")}
+                  <span className="text-sm font-normal text-slate-400">
+                    {" "}
+                    / {(stats?.total_songs ?? 0).toLocaleString("id")}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-red-400 rounded-full"
+                style={{
+                  width: `${stats?.total_songs ? Math.round(((stats.with_youtube ?? 0) / stats.total_songs) * 100) : 0}%`,
+                }}
+              />
+            </div>
+            <p className="text-xs text-slate-400 mt-2">
+              {stats?.total_songs
+                ? `${Math.round(((stats.with_youtube ?? 0) / stats.total_songs) * 100)}% lagu punya video`
+                : "-"}
+            </p>
+          </div>
+
+          {/* Rating */}
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-amber-50 p-2 rounded-lg">
+                <Star className="w-5 h-5 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                  Rating Rata-rata
+                </p>
+                <p className="text-xl font-bold text-slate-800">
+                  {(stats?.avg_rating ?? 0).toFixed(2)}
+                  <span className="text-sm font-normal text-slate-400"> / 5.0</span>
+                </p>
+              </div>
+            </div>
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-amber-400 rounded-full"
+                style={{ width: `${((stats?.avg_rating ?? 0) / 5) * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-slate-400 mt-2">Dari lagu yang sudah diberi rating</p>
+          </div>
+
+          {/* Kesulitan */}
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-sky-50 p-2 rounded-lg">
+                <Gauge className="w-5 h-5 text-sky-500" />
+              </div>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                Tingkat Kesulitan
+              </p>
+            </div>
+            <div className="space-y-2">
+              {diffRows.map((d) => (
+                <div key={d.key} className="flex items-center gap-2">
+                  <span className="text-xs text-slate-500 w-16">{d.label}</span>
+                  <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${diffColors[d.key]}`}
+                      style={{ width: `${(d.value / diffTotal) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-600 w-12 text-right">
+                    {d.value.toLocaleString("id")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -166,7 +287,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={langStats} margin={{ top: 0, right: 10, left: -10, bottom: 0 }}>
+              <BarChart data={sortedLang} margin={{ top: 0, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="language" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
@@ -175,7 +296,7 @@ export default function DashboardPage() {
                   formatter={(v) => [v, "Lagu"]}
                 />
                 <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                  {langStats.map((_, index) => (
+                  {sortedLang.map((_, index) => (
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>
