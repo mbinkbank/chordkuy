@@ -487,11 +487,14 @@ a:focus-visible {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: var(--s2);
+  gap: var(--s1);
   flex-shrink: 0;
 }
 .header-actions .btn {
   --btn-bd: transparent;
+  min-height: auto;
+  min-width: auto;
+  padding: 4px;
 }
 .nav-toggle {
   display: inline-flex;
