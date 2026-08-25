@@ -71,7 +71,9 @@ export default function App() {
         Lompat ke konten utama
       </a>
       <Header />
-      <View />
+      <div className="page-shell">
+        <View />
+      </div>
       <Footer />
     </>
   );

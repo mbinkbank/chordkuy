@@ -1585,6 +1585,14 @@ a.card:focus-visible {
 }
 
 /* ---------- Misc ---------- */
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.page-shell {
+  flex: 1;
+}
 .toolbar {
   flex-wrap: nowrap;
 }
