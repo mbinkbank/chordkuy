@@ -296,6 +296,22 @@ def extract_chords(text: str) -> list[str]:
     return list(dict.fromkeys(matches))
 
 
+ROOTS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+
+
+def detect_key(ordered_chords: list[str]) -> str:
+    """Kunci asli = chord pertama; kalau minor dan relative major-nya ikut muncul, pakai relative major."""
+    if not ordered_chords:
+        return "C"
+    first = ordered_chords[0]
+    m = re.match(r"^([A-G][#b]?)m$", first)
+    if m and m.group(1) in ROOTS:
+        rel = ROOTS[(ROOTS.index(m.group(1)) + 3) % 12]
+        if rel in ordered_chords:
+            return rel
+    return first
+
+
 def calculate_difficulty(content: str) -> str:
     if not content:
         return "novice"
@@ -375,7 +391,7 @@ def parse_detail(html_str: str) -> dict | None:
 
     # Detect Key Name
     chords = extract_chords(content)
-    key_name = chords[0] if chords else "C"
+    key_name = detect_key(chords)
 
     # Calculate Difficulty
     difficulty = calculate_difficulty(content)
