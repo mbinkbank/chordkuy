@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
+import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
 import ThemeToggle from "./ThemeToggle";
 import { Bookmark, Search, Menu, X } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
   const [open, setOpen] = useState(false);
+  const [bmCount, setBmCount] = useState(0);
+
+  useEffect(() => {
+    setBmCount(getBookmarks().length);
+    return onBookmarksChange(() => setBmCount(getBookmarks().length));
+  }, []);
 
   const isCurrent = (href: string) =>
     href === "/" ? route.pathname === "/" : route.pathname.startsWith(href);
@@ -48,8 +55,9 @@ export default function Header() {
               <Search size={20} strokeWidth={2.2} />
             </Link>
             <ThemeToggle />
-            <Link href="/bookmark" className="btn btn-sm btn-icon" aria-label="Bookmark saya" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Link href="/bookmark" className="btn btn-sm btn-icon bookmark-btn" aria-label={`Bookmark saya (${bmCount})`} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <Bookmark size={20} strokeWidth={2} />
+              {bmCount > 0 && <span className="bookmark-badge">{bmCount > 99 ? "99+" : bmCount}</span>}
             </Link>
           </div>
         </div>

@@ -1585,6 +1585,26 @@ a.card:focus-visible {
 }
 
 /* ---------- Misc ---------- */
+.bookmark-btn {
+  position: relative;
+}
+.bookmark-badge {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--background);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .bookmark-list {
   list-style: none;
   padding: 0;
