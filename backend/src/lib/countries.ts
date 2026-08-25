@@ -50,3 +50,26 @@ export const COUNTRIES: Array<[string, string]> = [
   ["Georgia", "🇬🇪"],
   ["Rusia", "🇷🇺"],
 ];
+
+export const REGIONAL: string[] = [
+  "Jawa",
+  "Sunda",
+  "Batak",
+  "Minang",
+  "Betawi",
+  "Melayu",
+  "Aceh",
+  "Bali",
+  "Bugis",
+  "Makassar",
+  "Banjar",
+  "Dayak",
+  "Nias",
+  "Lampung",
+  "Sasak",
+  "Toraja",
+  "Gorontalo",
+  "Manado",
+  "Ambon",
+  "Papua",
+];

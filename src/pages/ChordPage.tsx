@@ -7,7 +7,7 @@ import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
 import { formatDate, formatViews, getPopularSongs, getRelatedSongs } from "../lib/api";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
-import { langLabel, songLang } from "../lib/lang";
+import { songLangLabel } from "../lib/lang";
 import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
@@ -173,7 +173,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <span className="badge badge-muted rating-badge">
                 <Star size={12} strokeWidth={2.2} aria-hidden="true" /> {(song.rating ?? 4.8).toFixed(1)}
               </span>
-              <span className="badge badge-muted">{langLabel(songLang(song))}</span>
+              <span className="badge badge-muted">{songLangLabel(song)}</span>
             </div>
 
             <div className="row">

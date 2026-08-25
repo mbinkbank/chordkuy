@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import { COUNTRIES } from "@/lib/countries";
+import { COUNTRIES, REGIONAL } from "@/lib/countries";
 import toast from "react-hot-toast";
 import { Save, ArrowLeft, Eye, Music } from "lucide-react";
 import Link from "next/link";
@@ -210,7 +210,12 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                       className="input"
                     >
                       <option value="">Pilih Bahasa</option>
-                      {COUNTRIES.map(([v, flag]) => <option key={v} value={v}>{flag} {v}</option>)}
+                      <optgroup label="Negara">
+                        {COUNTRIES.map(([v, flag]) => <option key={v} value={v}>{flag} {v}</option>)}
+                      </optgroup>
+                      <optgroup label="Bahasa Daerah">
+                        {REGIONAL.map((v) => <option key={v} value={v}>{v}</option>)}
+                      </optgroup>
                     </select>
                   </Field>
                   <Field label="Capo">

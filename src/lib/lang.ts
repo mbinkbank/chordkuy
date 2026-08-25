@@ -22,3 +22,10 @@ export function langLabel(code: ScriptLang | "EN" | null): string {
 export function songLang(song: { title?: string; content?: string; language?: string }): ScriptLang | "EN" | null {
   return detectScriptLang(song.title || "", (song.content || "").slice(0, 3000)) || (song.language === "EN" ? "EN" : null);
 }
+
+// Tag manual admin menang; deteksi script jadi fallback.
+export function songLangLabel(song: { title?: string; content?: string; language?: string }): string {
+  const l = (song.language || "").trim();
+  if (l && l !== "ID" && l !== "EN") return l;
+  return langLabel(songLang(song));
+}

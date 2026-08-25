@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
-import { COUNTRIES } from "@/lib/countries";
+import { COUNTRIES, REGIONAL } from "@/lib/countries";
 import toast from "react-hot-toast";
 import {
   Plus,
@@ -187,9 +187,16 @@ export default function SongsPage() {
                 className="pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white"
               >
                 <option value="">Semua Bahasa</option>
-                {COUNTRIES.map(([v, flag]) => (
-                  <option key={v} value={v}>{flag} {v}</option>
-                ))}
+                <optgroup label="Negara">
+                  {COUNTRIES.map(([v, flag]) => (
+                    <option key={v} value={v}>{flag} {v}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Bahasa Daerah">
+                  {REGIONAL.map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </optgroup>
               </select>
             </div>
             <select
