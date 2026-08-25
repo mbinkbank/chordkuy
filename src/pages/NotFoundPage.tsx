@@ -1,11 +1,19 @@
+import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
 import { getPopularSongs } from "../lib/api";
+import type { Song } from "../data/types";
 import { Link } from "../lib/router";
 import { useSeo } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 export default function NotFoundPage() {
+  const [popular, setPopular] = useState<Song[]>([]);
+
+  useEffect(() => {
+    getPopularSongs(4).then(setPopular);
+  }, []);
+
   useSeo({
     title: `Halaman tidak ditemukan (404) | ${SITE.name}`,
     description: "Halaman yang kamu cari tidak tersedia. Cari chord lagu lain atau kembali ke beranda.",
@@ -38,7 +46,7 @@ export default function NotFoundPage() {
           </h2>
         </div>
         <div className="grid grid-auto">
-          {getPopularSongs(4).map((song) => (
+          {popular.map((song) => (
             <SongCard key={song.id} song={song} />
           ))}
         </div>
