@@ -40,8 +40,7 @@ function BookmarkToggle({ slug, title, artist }: { slug: string; title: string; 
       title={saved ? "Tersimpan di bookmark" : "Simpan ke bookmark"}
       onClick={() => setSaved(toggleBookmark({ slug, title, artist }))}
     >
-      {saved ? <BookmarkCheck size={14} strokeWidth={2.2} /> : <Bookmark size={14} strokeWidth={2.2} />}
-      {saved ? "Tersimpan" : "Bookmark"}
+      {saved ? <BookmarkCheck size={16} strokeWidth={2.2} /> : <Bookmark size={16} strokeWidth={2.2} />}
     </button>
   );
 }
