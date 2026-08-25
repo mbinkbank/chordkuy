@@ -27,7 +27,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: "/admin/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
   { href: "/admin/songs", label: "Manajemen Lagu", icon: <ListMusic className="w-5 h-5" /> },
-  { href: "/admin/analytics", label: "Statistik", icon: <Bell className="w-5 h-5" /> },
   { href: "/admin/youtube", label: "YouTube Manager", icon: <Video className="w-5 h-5" /> },
   { href: "/admin/import-export", label: "Import / Export", icon: <UploadCloud className="w-5 h-5" /> },
   { href: "/admin/settings", label: "Settings", icon: <Settings className="w-5 h-5" /> },
