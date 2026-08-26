@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
 import { COUNTRIES, REGIONAL } from "@/lib/countries";
 import toast from "react-hot-toast";
-import { Save, ArrowLeft, Eye, Music } from "lucide-react";
+import { Save, ArrowLeft, ArrowLeftRight, Eye, Music } from "lucide-react";
 import Link from "next/link";
 
 const KEYS = [
@@ -181,6 +181,17 @@ export default function SongForm({ initialData, isEdit, originalJudul, originalP
                     required
                   />
                 </Field>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition"
+                  onClick={() => {
+                    const judul = form.judul;
+                    handleChange("judul", form.penyanyi);
+                    handleChange("penyanyi", judul);
+                  }}
+                >
+                  <ArrowLeftRight className="w-4 h-4" /> Balikkan
+                </button>
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Base Key">
                     <select
