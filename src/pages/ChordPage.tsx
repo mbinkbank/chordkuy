@@ -220,6 +220,8 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
+                aria-label="Turunkan nada transpose"
+                title="Turunkan 1 semitone"
                 onClick={() => setTranspose((v) => v <= -11 ? 11 : v - 1)}
               >
                 <ChevronDown size={14} />
@@ -230,6 +232,8 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
+                aria-label="Naikkan nada transpose"
+                title="Naikkan 1 semitone"
                 onClick={() => setTranspose((v) => v >= 11 ? -11 : v + 1)}
               >
                 <ChevronUp size={14} />
