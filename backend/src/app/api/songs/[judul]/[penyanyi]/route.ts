@@ -152,6 +152,13 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         )
       );
 
+    // Trigger rebuild sitemap otomatis tanpa menghambat response
+    fetch("https://chordkuy.id/api/rebuild-sitemap", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "DELETE" }),
+    }).catch(() => {});
+
     return successResponse(null, "Lagu berhasil dihapus");
   } catch (error) {
     console.error("DELETE /api/songs/[judul]/[penyanyi] error:", error);
