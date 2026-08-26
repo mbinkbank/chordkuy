@@ -33,11 +33,3 @@ jobs:
           BACKFILL_LIMIT: "800"
         run: python backfill.py
 
-      - name: Commit cursor
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add scraper/backfill_cursor.json
-          git add scraper/backfill_failed.jsonl 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "backfill: update kursor [skip ci]"
-          git push
