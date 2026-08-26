@@ -10,6 +10,15 @@ import {
 } from "@/lib/api-response";
 import { format } from "date-fns";
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9_ -]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const SORT_COLUMNS: Record<string, any> = {
   judul: tbChord.judul,
   penyanyi: tbChord.penyanyi,
@@ -121,6 +130,8 @@ export async function POST(request: NextRequest) {
       .values({
         judul,
         penyanyi,
+        slug: `${slugify(penyanyi)}-${slugify(judul)}`,
+        artist_slug: slugify(penyanyi),
         base_key,
         tuning,
         capo,

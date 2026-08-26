@@ -38,7 +38,7 @@ async function getSongMap() {
   const songs = [];
   for (let from = 0; ; from += 1000) {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,key_name,capo,difficulty,rating,language&order=id.asc&limit=1000&offset=${from}`,
+      `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,slug,artist_slug,key_name,capo,difficulty,rating,language&order=id.asc&limit=1000&offset=${from}`,
       { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
     );
     if (!res.ok) break;
@@ -48,7 +48,7 @@ async function getSongMap() {
   }
   const map = {};
   for (const s of songs) {
-    map[`${slugifyJs(s.artist)}-${slugifyJs(s.title)}`] = s;
+    map[s.slug || `${slugifyJs(s.artist)}-${slugifyJs(s.title)}`] = s;
   }
   _songMap = map;
   _songMapTime = Date.now();

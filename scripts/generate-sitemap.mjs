@@ -24,20 +24,24 @@ const STATIC_PAGES = `
 async function main() {
   console.log("Generating sitemap from Supabase...");
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/chords?select=id,title,artist`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-    },
-  });
-
-  let songs = [];
-  if (res.ok) {
-    songs = await res.json();
-    console.log(`Found ${songs.length} songs`);
-  } else {
-    console.error(`Supabase error: ${res.status}, using static pages only`);
+  const songs = [];
+  for (let offset = 0; ; offset += 1000) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,slug,artist_slug&order=id.asc&limit=1000&offset=${offset}`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+      },
+    });
+    if (!res.ok) {
+      console.error(`Supabase error: ${res.status}, using pages collected so far`);
+      break;
+    }
+    const batch = await res.json();
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    songs.push(...batch);
+    if (batch.length < 1000) break;
   }
+  console.log(`Found ${songs.length} songs`);
 
   const today = new Date().toISOString().split("T")[0];
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
@@ -45,7 +49,7 @@ async function main() {
 
   const seenArtists = new Set();
   for (const s of songs) {
-    const aSlug = slugify(s.artist);
+    const aSlug = s.artist_slug || slugify(s.artist);
     if (aSlug && !seenArtists.has(aSlug)) {
       seenArtists.add(aSlug);
       xml += `\n  <url><loc>${DOMAIN}/artist/${aSlug}</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>`;
@@ -53,7 +57,7 @@ async function main() {
   }
 
   for (const s of songs) {
-    const songSlug = `${slugify(s.artist)}-${slugify(s.title)}`;
+    const songSlug = s.slug || `${slugify(s.artist)}-${slugify(s.title)}`;
     xml += `\n  <url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`;
   }
 

@@ -12,6 +12,8 @@ export const tbChord = pgTable("chords", {
   rating: numeric("rating"),
   language: text("language").default("ID").notNull(),
   review_status: text("review_status").default("needs_review").notNull(),
+  slug: text("slug").default("").notNull(),
+  artist_slug: text("artist_slug").default("").notNull(),
   lastmod: text("lastmod").default("").notNull(),
   youtube_url: text("youtube_url").default("").notNull(),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
