@@ -1,13 +1,16 @@
 import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { tbChord } from "@/db/schema";
-import { sql, and, eq } from "drizzle-orm";
+import { and, eq, or, ilike, asc } from "drizzle-orm";
 import { successResponse, errorResponse } from "@/lib/api-response";
+
+// Verifikasi baris metadata dilakukan di sisi JS agar presisi
+const META_LINE =
+  /(change\s+re-?chords?|^\s*capo\b|^\s*catatan\s*:|kunci\s+gitar\b|^\s*tuning\b)/i;
 
 /**
  * GET /api/dashboard/quality-review
- * Daftar lagu ber-status needs_review yang kontennya mengandung baris
- * metadata nyasar (Change re-chords / Catatan: / Capo di tengah isi / dll).
+ * Daftar lagu needs_review dengan baris metadata nyasar di konten.
  */
 export async function GET(_request: NextRequest) {
   try {
@@ -16,26 +19,40 @@ export async function GET(_request: NextRequest) {
         id: tbChord.id,
         judul: tbChord.judul,
         penyanyi: tbChord.penyanyi,
-        snippet: sql<string>`(
-          SELECT string_agg(line, ' | ') FROM (
-            SELECT btrim(x.line) AS line
-            FROM unnest(string_to_array(${tbChord.isi_chord}, E'\n')) AS x(line)
-            WHERE x.line ~* '(change\s+re-?chords?|^\s*capo\b|^\s*catatan\s*:|kunci\s+gitar\b|^tuning\b)'
-            LIMIT 3
-          ) t
-        )`,
+        content: tbChord.isi_chord,
       })
       .from(tbChord)
       .where(
         and(
           eq(tbChord.review_status, "needs_review"),
-          sql`${tbChord.isi_chord} ~* '(change\s+re-?chords?|^\s*capo\b|^\s*catatan\s*:|kunci\s+gitar\b|^tuning\b)'`
+          or(
+            ilike(tbChord.isi_chord, "%change re%"),
+            ilike(tbChord.isi_chord, "%catatan:%"),
+            ilike(tbChord.isi_chord, "%kunci gitar%"),
+            ilike(tbChord.isi_chord, "%tuning%")
+          )
         )
       )
-      .orderBy(sql`${tbChord.id} ASC`)
-      .limit(200);
+      .orderBy(asc(tbChord.id))
+      .limit(300);
 
-    return successResponse({ items: rows, total: rows.length }, "Berhasil");
+    const items = rows
+      .map((r) => {
+        const badLines = (r.content || "")
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => META_LINE.test(l))
+          .slice(0, 3);
+        return {
+          id: r.id,
+          judul: r.judul,
+          penyanyi: r.penyanyi,
+          snippet: badLines.length ? badLines.join(" | ") : null,
+        };
+      })
+      .filter((x) => x.snippet !== null);
+
+    return successResponse({ items, total: items.length }, "Berhasil");
   } catch (error) {
     console.error("GET /api/dashboard/quality-review error:", error);
     return errorResponse("Terjadi kesalahan server", 500);
