@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { tbChord } from "@/db/schema";
-import { and, eq, or, ilike, asc } from "drizzle-orm";
+import { and, eq, or, ilike, asc, sql } from "drizzle-orm";
 import { successResponse, errorResponse } from "@/lib/api-response";
 
 // Verifikasi baris metadata dilakukan di sisi JS agar presisi
@@ -20,6 +20,8 @@ export async function GET(_request: NextRequest) {
         judul: tbChord.judul,
         penyanyi: tbChord.penyanyi,
         content: tbChord.isi_chord,
+        language: tbChord.language,
+        capo: tbChord.capo,
       })
       .from(tbChord)
       .where(
@@ -29,7 +31,11 @@ export async function GET(_request: NextRequest) {
             ilike(tbChord.isi_chord, "%change re%"),
             ilike(tbChord.isi_chord, "%catatan:%"),
             ilike(tbChord.isi_chord, "%kunci gitar%"),
-            ilike(tbChord.isi_chord, "%tuning%")
+            ilike(tbChord.isi_chord, "%tuning%"),
+            eq(tbChord.language, "-"),
+            sql`char_length(${tbChord.isi_chord}) < 60`,
+            ilike(tbChord.isi_chord, "reff%"),
+            ilike(tbChord.isi_chord, "chorus%")
           )
         )
       )
@@ -38,19 +44,34 @@ export async function GET(_request: NextRequest) {
 
     const items = rows
       .map((r) => {
-        const badLines = (r.content || "")
+        const c = (r.content || "").trim();
+        const badLines = c
           .split("\n")
           .map((l) => l.trim())
           .filter((l) => META_LINE.test(l))
           .slice(0, 3);
+
+        let reason: string | null = null;
+        if (c.length < 60) {
+          reason = "Konten sangat pendek / berpotensi kosong";
+        } else if (r.language === "-") {
+          reason = "Bahasa belum terdeteksi (ditandai -)";
+        } else if (/^(reff|chorus)\b/i.test(c)) {
+          reason = "Langsung dimulai dari Reff / Chorus";
+        } else if (badLines.length > 0) {
+          reason = badLines.join(" | ");
+        }
+
+        if (!reason) return null;
+
         return {
           id: r.id,
           judul: r.judul,
           penyanyi: r.penyanyi,
-          snippet: badLines.length ? badLines.join(" | ") : null,
+          snippet: reason,
         };
       })
-      .filter((x) => x.snippet !== null);
+      .filter((x): x is { id: number; judul: string; penyanyi: string; snippet: string } => x !== null);
 
     return successResponse({ items, total: items.length }, "Berhasil");
   } catch (error) {

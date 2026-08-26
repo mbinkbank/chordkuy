@@ -176,7 +176,7 @@ export default function DashboardPage() {
             </h3>
           </div>
           <p className="text-xs text-slate-400 mb-4">
-            Lagu dengan baris metadata mencurigakan di konten (Change re-chords, Catatan, Capo nyasar).
+            Terdeteksi dari metadata nyasar, bahasa belum ditag (-), konten sangat pendek, atau langsung mulai Reff/Chorus.
             Buka lagu, perbaiki bila perlu, lalu tekan Konfirmasi.
           </p>
           <div className="space-y-2 max-h-96 overflow-y-auto">
