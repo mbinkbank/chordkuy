@@ -360,21 +360,24 @@ INTRO_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|musik|music|int\.?)\b', re.
 JUNK_START = re.compile(r'^(catatan\s*:|capo\b|chord\s+sudah|kunci\s+gitar\b|tuning\b|-.*-$)', re.IGNORECASE)
 
 
-def clean_content(raw_text: str) -> str:
+def clean_content(raw_text: str, drop_titles: list[str] | None = None) -> str:
     if not raw_text:
         return ""
-    lines = raw_text.split("\n")
+    # Hapus baris metadata sampah spesifik (Capo/Catatan/judul ber-strip/dll)
+    # TANPA memotong ke label section mana pun — bait awal lagu tanpa Intro dijamin selamat.
+    drop_set = {(d or "").strip().lower() for d in (drop_titles or []) if (d or "").strip()}
+    kept: list[str] = []
+    for line in raw_text.split("\n"):
+        s = line.strip()
+        if not s:
+            kept.append(line)
+            continue
+        if s.lower() in drop_set or JUNK_START.search(s):
+            continue
+        kept.append(line)
+    lines = kept
 
-    # 1) Blok metadata sampah di atas label section pertama (Catatan/Capo/judul ber-strip/dll)
-    first_nonblank = next((l for l in lines if l.strip()), "")
-    if JUNK_START.search(first_nonblank.strip()):
-        for idx, line in enumerate(lines):
-            if SECTION_PATTERN.search(line.strip()):
-                lines = lines[idx:]
-                break
-
-    # 2) Fallback: hanya potong jika label INTRO yang muncul sangat awal (bukan REFF/CHORUS!)
-    # REFF di awal = bait pertama sebelumnya, bukan sampah.
+    # Fallback: hanya potong jika label INTRO (bukan REFF/VERSE) muncul di baris 1-5
     start_idx = -1
     for idx, line in enumerate(lines):
         trimmed = line.strip()
@@ -385,8 +388,6 @@ def clean_content(raw_text: str) -> str:
             start_idx = idx + 1
             break
 
-    # Hanya buang baris sampah di atas jika label section muncul sangat awal.
-    # Jika konten dimulai langsung dengan chord tanpa label (tanpa Intro), JANGAN dipotong.
     if start_idx != -1 and 0 < start_idx < len(lines) and start_idx <= 5:
         lines = lines[start_idx:]
 
@@ -425,7 +426,7 @@ def parse_detail(html_str: str) -> dict | None:
     tuning = tuning_match.group(1).strip() if tuning_match else "E A D G B E"
 
     # Trim content agar mulai dari intro, lalu format bersih (aturan tampilan web)
-    content = clean_content(normalize(raw_text))
+    content = clean_content(normalize(raw_text), [full_title])
     if not content:
         content = raw_text
     content = format_content(content)
