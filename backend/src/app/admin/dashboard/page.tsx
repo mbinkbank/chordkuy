@@ -12,6 +12,8 @@ import {
   Video,
   Star,
   Gauge,
+  AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -50,29 +52,49 @@ interface LangStat {
   count: number;
 }
 
+interface ReviewItem {
+  id: number;
+  judul: string;
+  penyanyi: string;
+  snippet: string | null;
+}
+
 const COLORS = ["#8b5cf6", "#6366f1", "#3b82f6", "#06b6d4", "#10b981", "#f59e0b", "#ef4444"];
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [recent, setRecent] = useState<RecentSong[]>([]);
   const [langStats, setLangStats] = useState<LangStat[]>([]);
+  const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [s, r, l] = await Promise.all([
+      const [s, r, l, q] = await Promise.all([
         api.get<Stats>("/api/dashboard/stats"),
         api.get<RecentSong[]>("/api/dashboard/recent"),
         api.get<LangStat[]>("/api/dashboard/language-stats"),
+        api.get<{ items: ReviewItem[] }>("/api/dashboard/quality-review"),
       ]);
       if (s.success) setStats(s.data);
       if (r.success) setRecent(r.data);
       if (l.success) setLangStats(l.data);
+      if (q.success) setReviewItems(q.data.items || []);
       setLoading(false);
     }
     load();
   }, []);
+
+  async function confirmReview(id: number) {
+    setConfirmingId(id);
+    const res = await api.patch("/api/dashboard/quality-review", { id, status: "confirmed" });
+    if (res.success) {
+      setReviewItems((items) => items.filter((x) => x.id !== id));
+    }
+    setConfirmingId(null);
+  }
 
   const statCards = [
     {
@@ -143,6 +165,53 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Quality Review Panel */}
+      {!loading && reviewItems.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-amber-200 p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <AlertTriangle className="w-5 h-5 text-amber-500" />
+            <h3 className="font-semibold text-slate-800">
+              Perlu Diperiksa ({reviewItems.length})
+            </h3>
+          </div>
+          <p className="text-xs text-slate-400 mb-4">
+            Lagu dengan baris metadata mencurigakan di konten (Change re-chords, Catatan, Capo nyasar).
+            Buka lagu, perbaiki bila perlu, lalu tekan Konfirmasi.
+          </p>
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {reviewItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg"
+              >
+                <div className="min-w-0 flex-1">
+                  <Link
+                    href={`/admin/songs/${encodeURIComponent(item.judul)}/${encodeURIComponent(item.penyanyi)}/edit`}
+                    className="text-sm font-medium text-slate-800 hover:text-purple-600 transition truncate block"
+                  >
+                    {item.judul}
+                  </Link>
+                  <p className="text-xs text-slate-400">{item.penyanyi}</p>
+                  {item.snippet && (
+                    <p className="text-xs text-amber-600 mt-1 font-mono truncate">
+                      {item.snippet}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => confirmReview(item.id)}
+                  disabled={confirmingId === item.id}
+                  className="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-50 flex-shrink-0"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {confirmingId === item.id ? "..." : "Konfirmasi Oke"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Stat Cards */}
       {loading ? (
