@@ -385,7 +385,7 @@ def calculate_difficulty(content: str) -> str:
 
 SECTION_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|verse\s*1?|chorus|reff|hook)\b', re.IGNORECASE)
 INTRO_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|musik|music|int\.?)\b', re.IGNORECASE)
-JUNK_START = re.compile(r'^(catatan\s*:|capo\b|chord\s+sudah|kunci\s+gitar\b|tuning\b|-.*-$)', re.IGNORECASE)
+JUNK_START = re.compile(r'^(catatan\s*:|capo\b|chord\s+sudah|kunci\s+gitar\b|tuning\b|change\s+re-?chords?\b|-.*-$)', re.IGNORECASE)
 
 
 def clean_content(raw_text: str, drop_titles: list[str] | None = None) -> str:
