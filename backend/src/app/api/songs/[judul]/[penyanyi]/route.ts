@@ -82,11 +82,19 @@ export async function PUT(request: NextRequest, { params }: Params) {
     const lastmod = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
     if (isRenamed) {
+      const currentSlug = old[0].slug || "";
+      const legacyReversedSlug = `${slugify(old[0].judul)}-${slugify(old[0].penyanyi)}`;
+      // permalink valid tetap permanen; hanya perbaiki slug lama yang terbukti terbalik.
+      const permanentSlug = !currentSlug || currentSlug === legacyReversedSlug
+        ? `${slugify(newPenyanyi)}-${slugify(newJudul)}`
+        : currentSlug;
       const [updated] = await db
         .update(tbChord)
         .set({
           judul: newJudul,
           penyanyi: newPenyanyi,
+          slug: permanentSlug,
+          artist_slug: slugify(newPenyanyi),
           base_key: body.base_key ?? old[0].base_key,
           tuning: body.tuning ?? (old[0] as any).tuning,
           capo: body.capo ?? (old[0] as any).capo,
