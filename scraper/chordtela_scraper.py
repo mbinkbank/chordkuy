@@ -356,6 +356,7 @@ def calculate_difficulty(content: str) -> str:
 
 
 SECTION_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|verse\s*1?|chorus|reff|hook)\b', re.IGNORECASE)
+INTRO_PATTERN = re.compile(r'^\s*(?:#+|\[)?\s*(intro|musik|music|int\.?)\b', re.IGNORECASE)
 JUNK_START = re.compile(r'^(catatan\s*:|capo\b|chord\s+sudah|kunci\s+gitar\b|tuning\b|-.*-$)', re.IGNORECASE)
 
 
@@ -372,11 +373,12 @@ def clean_content(raw_text: str) -> str:
                 lines = lines[idx:]
                 break
 
-    # 2) Fallback lama: label section sangat awal (indeks <= 5) -> potong apa pun di atasnya
+    # 2) Fallback: hanya potong jika label INTRO yang muncul sangat awal (bukan REFF/CHORUS!)
+    # REFF di awal = bait pertama sebelumnya, bukan sampah.
     start_idx = -1
     for idx, line in enumerate(lines):
         trimmed = line.strip()
-        if SECTION_PATTERN.search(trimmed):
+        if INTRO_PATTERN.search(trimmed):
             start_idx = idx
             break
         if re.match(r'^-{5,}$', trimmed):
