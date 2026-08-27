@@ -1,24 +1,26 @@
 import { useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
+import { useI18n } from "../lib/i18n";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 type Status = "idle" | "sent" | "error";
 
 export default function ContactPage() {
+  const { t } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
   const [topic, setTopic] = useState("koreksi");
   const description = `Hubungi tim ${SITE.name} untuk koreksi chord, permintaan lagu, kerja sama, atau laporan masalah aksesibilitas.`;
 
   useSeo({
-    title: `Kontak | ${SITE.name}`,
+    title: `${t("contactTitle")} | ${SITE.name}`,
     description,
     path: "/contact",
     jsonLd: [
-      webPageSchema("Kontak", description, "/contact"),
+      webPageSchema(t("contactTitle"), description, "/contact"),
       breadcrumbSchema([
         { name: "Beranda", href: "/" },
-        { name: "Kontak", href: "/contact" },
+        { name: t("navContact"), href: "/contact" },
       ]),
     ],
   });
@@ -32,8 +34,6 @@ export default function ContactPage() {
       setStatus("error");
       return;
     }
-    /* Tanpa backend & tanpa API key di klien: buka email client pengguna.
-       Pada tahap Supabase, ganti dengan insert ke tabel `messages`. */
     const subject = encodeURIComponent(`[${topic}] Pesan untuk ${SITE.name}`);
     const body = encodeURIComponent(`${message}\n\n— ${name}`);
     window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
@@ -45,26 +45,23 @@ export default function ContactPage() {
       <Breadcrumb
         items={[
           { name: "Beranda", href: "/" },
-          { name: "Kontak", href: "/contact" },
+          { name: t("navContact"), href: "/contact" },
         ]}
       />
 
       <div className="chord-layout">
         <div>
-          <p className="eyebrow">Kontak</p>
+          <p className="eyebrow">{t("navContact")}</p>
           <h1 className="h-page" style={{ marginBottom: "var(--s3)" }}>
-            Kirim pesan
+            {t("contactSend")}
           </h1>
           <p className="small muted" style={{ maxWidth: "58ch", marginBottom: "var(--s4)" }}>
-            Koreksi chord, permintaan lagu baru, laporan bug, atau kerja sama. Kami membaca semuanya dan
-            biasanya membalas dalam 2–3 hari kerja.
+            {t("contactDesc")}
           </p>
 
           <form className="panel stack stack-4" onSubmit={submit} noValidate>
             <div className="field">
-              <label className="label" htmlFor="topic">
-                Topik
-              </label>
+              <label className="label" htmlFor="topic">{t("contactTopic")}</label>
               <select
                 id="topic"
                 name="topic"
@@ -72,41 +69,35 @@ export default function ContactPage() {
                 value={topic}
                 onChange={(event) => setTopic(event.target.value)}
               >
-                <option value="koreksi">Koreksi chord</option>
-                <option value="permintaan">Permintaan lagu</option>
-                <option value="bug">Laporan bug / aksesibilitas</option>
-                <option value="kerja-sama">Kerja sama</option>
+                <option value="koreksi">{t("contactTopicFix")}</option>
+                <option value="permintaan">{t("contactTopicRequest")}</option>
+                <option value="bug">{t("contactTopicBug")}</option>
+                <option value="kerja-sama">{t("contactTopicCollab")}</option>
               </select>
             </div>
 
             <div className="field">
-              <label className="label" htmlFor="name">
-                Nama
-              </label>
+              <label className="label" htmlFor="name">{t("contactName")}</label>
               <input id="name" name="name" className="input" type="text" autoComplete="name" required />
             </div>
 
             <div className="field">
-              <label className="label" htmlFor="email">
-                Email (opsional)
-              </label>
+              <label className="label" htmlFor="email">{t("contactEmail")}</label>
               <input id="email" name="email" className="input" type="email" autoComplete="email" />
             </div>
 
             <div className="field">
-              <label className="label" htmlFor="message">
-                Pesan
-              </label>
+              <label className="label" htmlFor="message">{t("contactMessage")}</label>
               <textarea id="message" name="message" className="textarea" required />
             </div>
 
             <div className="row">
               <button className="btn btn-accent btn-lg" type="submit">
-                Kirim pesan
+                {t("contactSubmit")}
               </button>
               <span className="caption" role="status" aria-live="polite">
-                {status === "sent" && "Aplikasi email kamu akan terbuka."}
-                {status === "error" && "Nama dan pesan wajib diisi."}
+                {status === "sent" && t("contactSent")}
+                {status === "error" && t("contactError")}
               </span>
             </div>
           </form>
@@ -115,7 +106,7 @@ export default function ContactPage() {
         <aside className="sidebar" aria-label="Informasi kontak">
           <div className="card">
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Email langsung
+              {t("contactDirectEmail")}
             </h2>
             <p className="small" style={{ margin: 0 }}>
               <a href={`mailto:${SITE.email}`} style={{ color: "var(--accent)" }}>
@@ -125,17 +116,17 @@ export default function ContactPage() {
           </div>
           <div className="card">
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Sebelum mengirim
+              {t("contactBeforeSending")}
             </h2>
             <ul className="stack stack-1 small" style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              <li>› Sertakan tautan halaman chord terkait.</li>
-              <li>› Untuk koreksi, tulis bar/baris yang keliru.</li>
-              <li>› Untuk permintaan, sebutkan judul dan artis.</li>
+              <li>› {t("contactTip1")}</li>
+              <li>› {t("contactTip2")}</li>
+              <li>› {t("contactTip3")}</li>
             </ul>
           </div>
           <div className="card card-accent">
             <p className="caption" style={{ margin: 0 }}>
-              Formulir ini tidak menyimpan data di peramban dan tidak memuat skrip pihak ketiga.
+              {t("contactDisclaimer")}
             </p>
           </div>
         </aside>

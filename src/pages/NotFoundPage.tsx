@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import SongCard from "../components/SongCard";
 import { getPopularSongs } from "../lib/api";
+import { useI18n } from "../lib/i18n";
 import type { Song } from "../data/types";
 import { Link } from "../lib/router";
 import { useSeo } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 export default function NotFoundPage() {
+  const { t } = useI18n();
   const [popular, setPopular] = useState<Song[]>([]);
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export default function NotFoundPage() {
   }, []);
 
   useSeo({
-    title: `Halaman tidak ditemukan (404) | ${SITE.name}`,
+    title: `${t("error404")} | ${SITE.name}`,
     description: "Halaman yang kamu cari tidak tersedia. Cari chord lagu lain atau kembali ke beranda.",
     path: "/404",
     noindex: true,
@@ -25,10 +27,10 @@ export default function NotFoundPage() {
     <main id="main" className="container section">
       <p className="eyebrow">Error 404</p>
       <h1 className="h-page" style={{ marginBottom: "var(--s3)" }}>
-        Halaman tidak ditemukan
+        {t("error404")}
       </h1>
       <p className="small muted" style={{ maxWidth: "56ch", marginBottom: "var(--s4)" }}>
-        Chord atau halaman yang kamu tuju mungkin sudah dipindahkan. Coba cari lagi, atau kembali ke{" "}
+        {t("error404Desc")}{" "}
         <Link href="/" style={{ color: "var(--accent)" }}>
           beranda
         </Link>
@@ -42,7 +44,7 @@ export default function NotFoundPage() {
       <section className="section" aria-labelledby="nf-popular">
         <div className="section-head">
           <h2 className="h-section" id="nf-popular">
-            Chord populer
+            {t("popularChords")}
           </h2>
         </div>
         <div className="grid grid-auto">
