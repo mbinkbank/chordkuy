@@ -193,7 +193,11 @@ export default function ChordPage({ song }: { song: Song }) {
               <span className="badge badge-muted">
                 {song.capo ? `Capo fret ${song.capo}` : t("noCapo")}
               </span>
-              {song.difficulty && <span className="badge badge-muted">{song.difficulty}</span>}
+              {song.difficulty && (
+                <span className="badge badge-muted">
+                  {song.difficulty === "novice" ? t("difficultyNovice") : song.difficulty === "advanced" ? t("difficultyAdvanced") : t("difficultyIntermediate")}
+                </span>
+              )}
               {song.tempo && <span className="badge badge-muted">{song.tempo} BPM</span>}
               <span className="badge badge-muted rating-badge">
                 <Star size={12} strokeWidth={2.2} aria-hidden="true" /> {(song.rating ?? 4.8).toFixed(1)}
@@ -297,7 +301,7 @@ export default function ChordPage({ song }: { song: Song }) {
 
           <div className="card">
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              Chord Populer
+              {t("popularChords")}
             </h2>
             <div className="popular-trending-list">
               {popular.filter((s) => s.id !== song.id).map((s) => (
