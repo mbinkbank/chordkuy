@@ -1,3 +1,4 @@
+import { lazy, Suspense, useEffect, useState } from "react";
 import { I18nProvider } from "./lib/i18n";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
