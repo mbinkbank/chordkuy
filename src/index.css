@@ -465,25 +465,16 @@ a:focus-visible {
   }
 }
 .nav {
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--s3);
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
 }
 @media (min-width: 861px) {
   .nav {
+    display: flex;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    overflow: visible;
-    padding: 0;
-  }
-  [data-home="true"] .nav {
-    position: static;
-    transform: none;
-    margin-right: auto;
   }
 }
 .nav-link {
@@ -510,13 +501,32 @@ a:focus-visible {
   align-items: center;
   gap: var(--s2);
   flex-shrink: 0;
-  margin-left: auto;
 }
 .header-actions .btn {
   --btn-bd: transparent;
   min-height: auto;
   min-width: auto;
   padding: 0;
+}
+.nav-toggle {
+  display: inline-flex;
+}
+@media (min-width: 861px) {
+  .nav-toggle {
+    display: none !important;
+  }
+}
+.mobile-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s1);
+  padding-block: var(--s2) var(--s3);
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 861px) {
+  .mobile-nav {
+    display: none;
+  }
 }
 /* ---------- Buttons ---------- */
 .btn {
