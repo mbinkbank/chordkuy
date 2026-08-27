@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { SITE } from "./site";
 
 export type Lang = "id" | "en";
 const STORAGE_KEY = "chordlab:lang";
