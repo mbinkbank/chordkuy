@@ -25,10 +25,10 @@ export default function HomePage() {
   return (
     <main id="main" className="search-home">
       <section className="search-home-main" aria-label="Pencarian chord gitar">
-        <div className="search-home-logo">
+        <Link href="/" className="search-home-logo" aria-label="Beranda Chordkuy.id">
           <img src="/chordkuy-logo.svg" alt="Chordkuy.id" className="logo-light" width={768} height={225} />
           <img src="/chordkuy-logodark.svg" alt="Chordkuy.id" className="logo-dark" width={768} height={225} />
-        </div>
+        </Link>
         <div className="search-home-box">
           <SearchBar size="lg" placeholder="Cari chord, artis, atau lirik lagu…" />
         </div>

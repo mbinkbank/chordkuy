@@ -1786,6 +1786,9 @@ a.card:focus-visible {
 }
 
 .search-home-logo {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   width: 272px;
   max-width: 100%;
 }
