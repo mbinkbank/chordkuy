@@ -7,6 +7,7 @@ import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
 import { isBookmarked, onBookmarksChange, toggleBookmark } from "../lib/bookmarks";
 import { formatDate, formatViews, getPopularSongs, getRelatedSongs } from "../lib/api";
+import { useI18n } from "../lib/i18n";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
 import { songLangLabel } from "../lib/lang";
 import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
@@ -46,6 +47,7 @@ function BookmarkToggle({ slug, title, artist }: { slug: string; title: string; 
 }
 
 export default function ChordPage({ song }: { song: Song }) {
+  const { t } = useI18n();
   const [transpose, setTranspose] = useState(0);
   const [fontSize, setFontSize] = useStoredState<number>("chordlab:font-size", 14);
   const [speed, setSpeed] = useStoredState<number>("chordlab:scroll-speed", 3);
@@ -208,14 +210,14 @@ export default function ChordPage({ song }: { song: Song }) {
                 aria-pressed={lyricsOnly}
                 onClick={() => setLyricsOnly((v) => !v)}
               >
-                {lyricsOnly ? "Mode Chord" : "Mode Lirik"}
+                {lyricsOnly ? t("modeChord") : t("modeLyric")}
               </button>
               <button
                 type="button"
                 className={playing ? "btn btn-sm btn-on" : "btn btn-sm"}
                 onClick={() => setSettingsOpen(true)}
               >
-                {playing ? "Pause" : "Auto Scroll"}
+                {playing ? t("pauseScroll") : t("autoScroll")}
               </button>
               <button
                 type="button"
