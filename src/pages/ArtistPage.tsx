@@ -48,7 +48,7 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
         },
       },
       breadcrumbSchema([
-        { name: "Beranda", href: "/" },
+        { name: "Home", href: "/" },
         { name: "Artis", href: "/artists" },
         { name: artist.name, href: path },
       ]),
@@ -63,7 +63,7 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Beranda", href: "/" },
+          { name: "Home", href: "/" },
           { name: "Artis", href: "/artists" },
           { name: artist.name, href: path },
         ]}

@@ -40,7 +40,7 @@ export default function ArtistsPage() {
     jsonLd: [
       webPageSchema("Daftar Artis", description, "/artists"),
       breadcrumbSchema([
-        { name: "Beranda", href: "/" },
+        { name: "Home", href: "/" },
         { name: "Artis", href: "/artists" },
       ]),
       itemListSchema(
@@ -54,7 +54,7 @@ export default function ArtistsPage() {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Beranda", href: "/" },
+          { name: "Home", href: "/" },
           { name: "Artis", href: "/artists" },
         ]}
       />

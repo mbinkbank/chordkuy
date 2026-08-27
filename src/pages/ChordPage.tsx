@@ -170,7 +170,7 @@ export default function ChordPage({ song }: { song: Song }) {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Beranda", href: "/" },
+          { name: t("home"), href: "/" },
           { name: t("navArtists"), href: "/artists" },
           { name: song.artist, href: `/artist/${song.artistSlug}` },
           { name: song.title, href: path },
@@ -191,7 +191,7 @@ export default function ChordPage({ song }: { song: Song }) {
             <div className="row">
               <span className="badge">Key {currentKey}</span>
               <span className="badge badge-muted">
-                {song.capo ? `Capo fret ${song.capo}` : "Tanpa capo"}
+                {song.capo ? `Capo fret ${song.capo}` : t("noCapo")}
               </span>
               {song.difficulty && <span className="badge badge-muted">{song.difficulty}</span>}
               {song.tempo && <span className="badge badge-muted">{song.tempo} BPM</span>}
@@ -279,7 +279,7 @@ export default function ChordPage({ song }: { song: Song }) {
               </Link>
             </div>
             {related.length === 0 ? (
-              <div className="empty">Belum ada lagu terkait.</div>
+              <div className="empty">{t("noRelated")}</div>
             ) : (
               <div className="grid grid-auto">
                 {related.map((song) => (

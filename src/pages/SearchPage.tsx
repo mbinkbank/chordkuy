@@ -59,7 +59,7 @@ export default function SearchPage() {
     jsonLd: [
       webPageSchema("Pencarian chord", description, "/search"),
       breadcrumbSchema([
-        { name: "Beranda", href: "/" },
+        { name: "Home", href: "/" },
         { name: "Cari", href: "/search" },
       ]),
     ],
@@ -69,7 +69,7 @@ export default function SearchPage() {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Beranda", href: "/" },
+          { name: "Home", href: "/" },
           { name: "Cari", href: "/search" },
         ]}
       />
