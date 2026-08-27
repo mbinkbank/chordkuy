@@ -1795,10 +1795,17 @@ a.card:focus-visible {
 .search-home-main {
   width: 100%;
   max-width: 580px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--s3);
+}
+
+@media (min-width: 861px) {
+  .search-home-main {
+    transform: translateY(-6vh);
+  }
 }
 
 .search-home-logo {
