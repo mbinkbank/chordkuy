@@ -84,6 +84,12 @@ function View() {
 }
 
 export default function App() {
+  const route = useRoute();
+
+  useEffect(() => {
+    document.body.dataset.home = route.name === "home" ? "true" : "";
+  }, [route.name]);
+
   return (
     <>
       <a className="skip-link" href="#main">

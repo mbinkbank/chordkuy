@@ -420,6 +420,10 @@ a:focus-visible {
   min-width: 0;
   overflow: hidden;
 }
+
+[data-home="true"] .site-header .brand {
+  display: none;
+}
 .brand:hover {
   color: var(--foreground-strong);
 }
