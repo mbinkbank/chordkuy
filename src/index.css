@@ -1796,17 +1796,17 @@ a.card:focus-visible {
 
 .search-home-main {
   width: 100%;
-  max-width: 580px;
+  max-width: 584px;
   margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s3);
+  gap: 12px;
 }
 
 .search-home-logo {
-  width: 180px;
-  max-width: 40%;
+  width: 272px;
+  max-width: 100%;
 }
 
 .search-home-logo .logo-light,
@@ -1817,6 +1817,41 @@ a.card:focus-visible {
 
 .search-home-box {
   width: 100%;
+}
+
+@media (max-width: 640px) {
+  .search-home-logo {
+    width: 160px;
+  }
+  .search-home-box .searchbar input {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+}
+
+.search-home-box .searchbar {
+  border-radius: 24px;
+  border: 1px solid var(--border);
+}
+
+.search-home-box .searchbar .prefix {
+  padding-inline: 16px 12px;
+  border-right: none;
+  color: var(--muted);
+}
+
+.search-home-box .searchbar input {
+  font-size: 16px;
+  padding: 12px 16px;
+}
+
+.search-home-box .searchbar .btn {
+  border: none;
+  border-left: 1px solid var(--border);
+  padding-inline: 24px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
 }
 
 .mobile-trending {
