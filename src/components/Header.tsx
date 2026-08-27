@@ -19,6 +19,7 @@ export default function Header() {
       ? route.pathname === "/"
       : route.pathname.startsWith(item.href)
   );
+  const visibleItems = route.pathname === "/" ? NAV_ITEMS : activeItem ? [activeItem] : [];
 
   return (
     <header className="site-header">
@@ -29,15 +30,18 @@ export default function Header() {
             <img src="/chordkuy-logodark.svg" alt="Chordkuy" className="brand-logo logo-dark" width={768} height={225} />
           </Link>
 
-          {activeItem && (
-            <nav className="nav" aria-label="Halaman saat ini">
-              <Link
-                href={activeItem.href}
-                className="nav-link"
-                aria-current="page"
-              >
-                {activeItem.label}
-              </Link>
+          {visibleItems.length > 0 && (
+            <nav className="nav" aria-label="Navigasi utama">
+              {visibleItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="nav-link"
+                  aria-current={route.pathname.startsWith(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           )}
 
