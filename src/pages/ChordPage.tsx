@@ -13,7 +13,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star, TrendingUp } from "lucide-react";
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -300,7 +300,6 @@ export default function ChordPage({ song }: { song: Song }) {
             <div className="popular-trending-list">
               {popular.filter((s) => s.id !== song.id).map((s) => (
                 <Link key={s.id} href={`/chord/${s.slug}`} className="popular-trending-item">
-                  <TrendingUp size={15} strokeWidth={2} aria-hidden="true" />
                   <span>
                     <strong>{s.title}</strong>
                     <small>{s.artist}</small>
