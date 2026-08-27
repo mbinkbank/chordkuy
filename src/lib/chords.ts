@@ -143,14 +143,14 @@ export function parseSheet(raw: string): SheetLine[] {
   const rows = raw.replace(/\r\n/g, "\n").split("\n");
   const out: SheetLine[] = [];
 
-  let inSection = false;
+  let inIntroSection = false;
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     const trimmed = row.trim();
 
     if (!trimmed) {
-      inSection = false;
+      inIntroSection = false;
       out.push({ type: "blank" });
       continue;
     }
@@ -162,19 +162,19 @@ export function parseSheet(raw: string): SheetLine[] {
     const originalChord = trimmed.replace(/[\[\]()=_-]+/g, " ").replace(/\s+/g, " ").trim();
     if (/^original\s+chord$/i.test(originalChord)) {
       out.push({ type: "section", label: "ORIGINAL CHORD" });
-      inSection = true;
+      inIntroSection = false;
       continue;
     }
 
     // Format khusus Intro / Musik / Outro / Int. sebaris: (misal "Intro : G Am C G (3x)")
-    const prefixMatch = /^(intro\s*:?|musik\s*:?|music\s*:?|outro\s*:?|int\.\s*|interlude\s*:?|solo\s*:?)/i.exec(trimmed);
+    const prefixMatch = INTRO_LIKE_RE.exec(trimmed);
     if (prefixMatch && trimmed.length > prefixMatch[0].length) {
       const labelText = prefixMatch[0];
       const restText = row.slice(row.indexOf(labelText) + labelText.length).trimStart();
 
       // Baris 1: Judul Bagian
       out.push({ type: "section", label: labelText });
-      inSection = true;
+      inIntroSection = true;
 
       // Baris 2: Chord langsung di awal baris (tanpa indentasi)
       out.push({ type: "line", segments: parseLineInplace(restText) });
@@ -186,14 +186,15 @@ export function parseSheet(raw: string): SheetLine[] {
       (trimmed.startsWith("[") && trimmed.endsWith("]") && !isChordToken(trimmed.slice(1, -1))) ||
       /^(intro\s*:?|musik\s*:?|music\s*:?|verse\s*\d*:?|chorus\s*:?|bridge\s*:?|outro\s*:?|interlude\s*:?|int\s*[.:]?|solo\s*:?|reff\s*:?|hook\s*:?|coda\s*:?)$/i.test(trimmed)
     ) {
-      out.push({ type: "section", label: trimmed.replace(/^\[|\]$/g, "") });
-      inSection = true;
+      const label = trimmed.replace(/^\[|\]$/g, "");
+      out.push({ type: "section", label });
+      inIntroSection = INTRO_LIKE_RE.test(label.trim());
       continue;
     }
 
     // Jika sedang di dalam section pembuka (seperti Intro/Musik/Int.), ratakan awal baris chord ke kiri
     let lineToParse = row;
-    if (inSection && isChordLine(trimmed)) {
+    if (inIntroSection && isChordLine(trimmed)) {
       lineToParse = row.trimStart();
     }
 
