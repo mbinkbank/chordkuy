@@ -476,6 +476,11 @@ a:focus-visible {
     left: 50%;
     transform: translateX(-50%);
   }
+  [data-home="true"] .nav {
+    position: static;
+    transform: none;
+    margin-right: auto;
+  }
 }
 .nav-link {
   font-size: 12px;
