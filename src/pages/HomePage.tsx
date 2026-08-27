@@ -1,4 +1,4 @@
-import { TrendingUp, Users, Shuffle } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
 import buildData from "../data/build-data.json";
@@ -34,7 +34,6 @@ export default function HomePage() {
         </div>
         <div className="search-home-actions">
           <Link href="/artists" className="search-home-action">
-            <Users size={16} />
             Daftar Artis
           </Link>
           <button
@@ -45,7 +44,6 @@ export default function HomePage() {
               navigate(`/chord/${song.slug}`);
             }}
           >
-            <Shuffle size={16} />
             Lagu Random
           </button>
         </div>
