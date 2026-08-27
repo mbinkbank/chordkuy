@@ -1830,7 +1830,7 @@ a.card:focus-visible {
 }
 
 .search-home-box .searchbar {
-  border-radius: 24px;
+  border-radius: var(--radius-card);
   border: 1px solid var(--border);
 }
 
