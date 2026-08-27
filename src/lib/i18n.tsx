@@ -8,7 +8,7 @@ const DICT = {
   id: {
     navArtists: "Artis", navAbout: "Tentang", navContact: "Kontak",
     searchPlaceholder: "Cari chord, artis, atau lirik lagu…", searchBtn: "CARI",
-    changeLang: "English", randomSong: "Lagu Random", trendingTitle: "Chord Gitar Trending",
+    changeLang: "EN", randomSong: "Random", trendingTitle: "Chord Gitar Trending",
     popularChords: "Chord Populer", searchLabel: "Cari lagu, artis, atau genre",
     footerCopy: "Chord Gitar Mudah & Lirik Lagu.", footerPrivacy: "Kebijakan Privasi", footerTerms: "Syarat & Ketentuan",
     modeChord: "Mode Chord", modeLyric: "Mode Lirik", autoScroll: "Auto Scroll", pauseScroll: "Pause",
@@ -41,7 +41,7 @@ const DICT = {
   en: {
     navArtists: "Artists", navAbout: "About", navContact: "Contact",
     searchPlaceholder: "Search chords, artists, or lyrics…", searchBtn: "SEARCH",
-    changeLang: "Bahasa Indonesia", randomSong: "Random Song", trendingTitle: "Trending Guitar Chords",
+    changeLang: "ID", randomSong: "Random", trendingTitle: "Trending Guitar Chords",
     popularChords: "Popular Chords", searchLabel: "Search songs, artists, or genres",
     footerCopy: "Easy Guitar Chords & Song Lyrics.", footerPrivacy: "Privacy Policy", footerTerms: "Terms & Conditions",
     modeChord: "Chord Mode", modeLyric: "Lyrics Mode", autoScroll: "Auto Scroll", pauseScroll: "Pause",
