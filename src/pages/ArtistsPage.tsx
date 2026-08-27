@@ -3,10 +3,12 @@ import ArtistCard from "../components/ArtistCard";
 import Breadcrumb from "../components/Breadcrumb";
 import type { Artist } from "../data/types";
 import { getAllArtists, getAllSongs } from "../lib/api";
+import { useI18n } from "../lib/i18n";
 import { breadcrumbSchema, itemListSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 export default function ArtistsPage() {
+  const { t } = useI18n();
   const [artists, setArtists] = useState<Artist[]>([]);
   const [songCount, setSongCount] = useState<number>(0);
   const [letter, setLetter] = useState<string>("ALL");
@@ -31,20 +33,20 @@ export default function ArtistsPage() {
   );
 
   const visible = letter === "ALL" ? artists : artists.filter((a) => a.name && a.name[0].toUpperCase() === letter);
-  const description = `Daftar ${artists.length} artis dengan ${songCount} chord gitar lengkap di ${SITE.name}. Telusuri berdasarkan abjad.`;
+  const description = t("artistListDesc")(artists.length, songCount);
 
   useSeo({
-    title: `Daftar Artis Chord Gitar (${artists.length}) | ${SITE.name}`,
+    title: `${t("artistList")} (${artists.length}) | ${SITE.name}`,
     description,
     path: "/artists",
     jsonLd: [
-      webPageSchema("Daftar Artis", description, "/artists"),
+      webPageSchema(t("artistList"), description, "/artists"),
       breadcrumbSchema([
-        { name: "Home", href: "/" },
-        { name: "Artis", href: "/artists" },
+        { name: t("home"), href: "/" },
+        { name: t("navArtists"), href: "/artists" },
       ]),
       itemListSchema(
-        "Daftar artis",
+        t("artistList"),
         artists.map((a) => `/artist/${a.slug}`),
       ),
     ],
@@ -54,19 +56,19 @@ export default function ArtistsPage() {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Home", href: "/" },
-          { name: "Artis", href: "/artists" },
+          { name: t("home"), href: "/" },
+          { name: t("navArtists"), href: "/artists" },
         ]}
       />
 
       <header className="stack stack-2" style={{ paddingBottom: "var(--s4)" }}>
-        <h1 className="h-page">Daftar artis</h1>
+        <h1 className="h-page">{t("artistList")}</h1>
         <p className="small muted" style={{ maxWidth: "60ch" }}>
-          {artists.length} artis · {songCount} lagu. Pilih artis untuk melihat seluruh chord yang tersedia.
+          {t("artistListDesc")(artists.length, songCount)}
         </p>
       </header>
 
-      <div className="keylist" role="group" aria-label="Filter abjad">
+      <div className="keylist" role="group" aria-label={t("artistListFilter")}>
         {letters.map((item) => (
           <button
             key={item}
@@ -80,11 +82,11 @@ export default function ArtistsPage() {
         ))}
       </div>
 
-      <section className="section" aria-label="Hasil daftar artis">
+      <section className="section" aria-label={t("artistListResults")}>
         {loading ? (
-          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat daftar artis...</p>
+          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>{t("artistListLoading")}</p>
         ) : visible.length === 0 ? (
-          <div className="empty">Tidak ada artis pada huruf ini.</div>
+          <div className="empty">{t("artistListEmpty")}</div>
         ) : (
           <div className="grid grid-auto">
             {visible.map((artist) => (

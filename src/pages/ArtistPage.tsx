@@ -3,6 +3,7 @@ import Breadcrumb from "../components/Breadcrumb";
 import SongCard from "../components/SongCard";
 import ShareButton from "../components/ShareButton";
 import type { Artist, Song } from "../data/types";
+import { useI18n } from "../lib/i18n";
 import { getSongsByArtist } from "../lib/api";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, itemListSchema, useSeo } from "../lib/seo";
@@ -10,6 +11,7 @@ import { SITE, absoluteUrl } from "../lib/site";
 import { UserStar } from "lucide-react";
 
 export default function ArtistPage({ artist }: { artist: Artist }) {
+  const { t } = useI18n();
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,13 +25,13 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
   }, [artist.slug]);
 
   const path = `/artist/${artist.slug}`;
-  const description = `${songs.length} chord gitar ${artist.name}: kunci lengkap, transpose real-time, dan auto scroll. ${artist.bio}`.slice(
+  const description = `${t("songCount")(songs.length)} ${artist.name}: kunci lengkap, transpose real-time, dan auto scroll. ${artist.bio}`.slice(
     0,
     300,
   );
 
   useSeo({
-    title: `Chord ${artist.name} — ${songs.length} Lagu Lengkap | ${SITE.name}`,
+    title: `${t("chordGitar")} ${artist.name} — ${t("songCount")(songs.length)} | ${SITE.name}`,
     description,
     path,
     type: "profile",
@@ -48,12 +50,12 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
         },
       },
       breadcrumbSchema([
-        { name: "Home", href: "/" },
-        { name: "Artis", href: "/artists" },
+        { name: t("home"), href: "/" },
+        { name: t("navArtists"), href: "/artists" },
         { name: artist.name, href: path },
       ]),
       itemListSchema(
-        `Chord ${artist.name}`,
+        `${t("chordGitar")} ${artist.name}`,
         songs.map((s) => `/chord/${s.slug}`),
       ),
     ],
@@ -63,8 +65,8 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
     <main id="main" className="container">
       <Breadcrumb
         items={[
-          { name: "Home", href: "/" },
-          { name: "Artis", href: "/artists" },
+          { name: t("home"), href: "/" },
+          { name: t("navArtists"), href: "/artists" },
           { name: artist.name, href: path },
         ]}
       />
@@ -75,8 +77,8 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
             <UserStar size={24} />
           </span>
           <div className="stack stack-2" style={{ flex: "1 1 260px", minWidth: 0 }}>
-            <p className="eyebrow">Artis · {artist.country}</p>
-            <h1 className="h-page">Chord {artist.name}</h1>
+            <p className="eyebrow">{t("sidebarArtist")} · {artist.country}</p>
+            <h1 className="h-page">{t("chordGitar")} {artist.name}</h1>
             <p className="small muted" style={{ maxWidth: "62ch" }}>
               {artist.bio}
             </p>
@@ -86,8 +88,8 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
                   {genre}
                 </Link>
               ))}
-              <span className="badge badge-muted">{songs.length} lagu</span>
-              <ShareButton title={`Chord ${artist.name}`} />
+              <span className="badge badge-muted">{songs.length} {t("songs")}</span>
+              <ShareButton title={`${t("chordGitar")} ${artist.name}`} />
             </div>
           </div>
         </div>
@@ -96,15 +98,15 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
       <section aria-labelledby="artist-songs">
         <div className="section-head">
           <h2 className="h-section" id="artist-songs">
-            Semua lagu {artist.name}
+            {t("allSongs")(artist.name)}
           </h2>
-          <span className="caption">Diurutkan berdasarkan popularitas</span>
+          <span className="caption">{t("sortedByPop")}</span>
         </div>
 
         {loading ? (
-          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>Memuat lagu artis...</p>
+          <p style={{ color: "var(--color-muted)", padding: "20px 0" }}>{t("artistLoading")}</p>
         ) : songs.length === 0 ? (
-          <div className="empty">Belum ada chord untuk artis ini.</div>
+          <div className="empty">{t("artistNoChords")}</div>
         ) : (
           <div className="grid grid-auto">
             {songs.map((song, index) => (
@@ -117,11 +119,11 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
       <section className="section">
         <div className="card card-accent">
           <p className="small" style={{ margin: 0 }}>
-            Tidak menemukan lagu {artist.name} yang kamu cari?{" "}
+            {t("artistRequestFind")(artist.name)}{" "}
             <Link href="/contact" style={{ color: "var(--accent)" }}>
-              Kirim permintaan chord
+              {t("artistRequestLink")}
             </Link>{" "}
-            dan kami tambahkan ke antrean.
+            {t("artistRequestEnd")}
           </p>
         </div>
       </section>

@@ -46,6 +46,15 @@ const DICT = {
     songInfo: "Informasi lagu", displaySettings: "Pengaturan tampilan",
     openMenu: "Buka menu navigasi", searchChord: "Cari chord lagu", bookmarkMine: "Bookmark saya",
     closeDiagram: "Tutup diagram",
+    artistList: "Daftar artis", artistCount: (n: number) => `${n} artis`, songCount: (n: number) => `${n} lagu`,
+    artistListDesc: (a: number, s: number) => `${a} artis · ${s} lagu. Pilih artis untuk melihat seluruh chord yang tersedia.`,
+    artistListFilter: "Filter abjad", artistListResults: "Hasil daftar artis",
+    artistListLoading: "Memuat daftar artis...", artistListEmpty: "Tidak ada artis pada huruf ini.",
+    songs: "lagu",
+    allSongs: (name: string) => `Semua lagu ${name}`, sortedByPop: "Diurutkan berdasarkan popularitas",
+    artistLoading: "Memuat lagu artis...", artistNoChords: "Belum ada chord untuk artis ini.",
+    artistRequestFind: (name: string) => `Tidak menemukan lagu ${name} yang kamu cari?`,
+    artistRequestLink: "Kirim permintaan chord", artistRequestEnd: "dan kami tambahkan ke antrean.",
   },
   en: {
     navArtists: "Artists", navAbout: "About", navContact: "Contact",
@@ -88,11 +97,22 @@ const DICT = {
     songInfo: "Song information", displaySettings: "Display settings",
     openMenu: "Open navigation menu", searchChord: "Search song chords", bookmarkMine: "My bookmarks",
     closeDiagram: "Close diagram",
+    artistList: "Artist List", artistCount: (n: number) => `${n} artists`, songCount: (n: number) => `${n} songs`,
+    artistListDesc: (a: number, s: number) => `${a} artists · ${s} songs. Pick an artist to see all available chords.`,
+    artistListFilter: "Filter by letter", artistListResults: "Artist list results",
+    artistListLoading: "Loading artist list...", artistListEmpty: "No artists for this letter.",
+    songs: "songs",
+    allSongs: (name: string) => `All songs by ${name}`, sortedByPop: "Sorted by popularity",
+    artistLoading: "Loading artist songs...", artistNoChords: "No chords yet for this artist.",
+    artistRequestFind: (name: string) => `Can't find ${name} songs you're looking for?`,
+    artistRequestLink: "Send a chord request", artistRequestEnd: "and we'll add it to the queue.",
   },
 } as const;
 
 export type DictKey = keyof typeof DICT.id;
-interface I18nContextType { lang: Lang; setLang: (lang: Lang) => void; toggleLang: () => void; t: (key: DictKey) => string; }
+type DictVal = typeof DICT.id[DictKey];
+type TFn = DictVal extends (...args: infer A) => string ? (...args: A) => string : () => string;
+interface I18nContextType { lang: Lang; setLang: (lang: Lang) => void; toggleLang: () => void; t: (key: DictKey, ...args: any[]) => string; }
 const I18nContext = createContext<I18nContextType | null>(null);
 
 function readStoredLang(): Lang {
@@ -107,7 +127,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [lang]);
   const setLang = (next: Lang) => setLangState(next);
   const toggleLang = () => setLangState((prev) => (prev === "id" ? "en" : "id"));
-  const t = (key: DictKey) => DICT[lang][key] || DICT.id[key] || key;
+  const t = (key: DictKey, ...args: any[]) => {
+    const val = DICT[lang][key] ?? DICT.id[key] ?? key;
+    return typeof val === "function" ? val(...args) : val;
+  };
   return <I18nContext.Provider value={{ lang, setLang, toggleLang, t }}>{children}</I18nContext.Provider>;
 }
 
