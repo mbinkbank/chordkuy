@@ -424,6 +424,10 @@ a:focus-visible {
 [data-home="true"] .site-header .brand {
   display: none;
 }
+
+[data-home="true"] .site-header .header-search {
+  display: none;
+}
 .brand:hover {
   color: var(--foreground-strong);
 }
