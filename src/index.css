@@ -465,16 +465,24 @@ a:focus-visible {
   }
 }
 .nav {
-  display: none;
+  display: flex;
   align-items: center;
   gap: var(--s1);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  padding: var(--s1) 0;
+}
+.nav::-webkit-scrollbar {
+  display: none;
 }
 @media (min-width: 861px) {
   .nav {
-    display: flex;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    overflow: visible;
+    padding: 0;
   }
   [data-home="true"] .nav {
     position: static;
@@ -514,42 +522,6 @@ a:focus-visible {
   min-width: auto;
   padding: 0;
 }
-.nav-toggle {
-  display: inline-flex;
-}
-@media (max-width: 860px) {
-  .header-actions .nav-toggle {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .header-inner .brand {
-    margin-left: calc(20px + var(--s2));
-  }
-}
-@media (min-width: 861px) {
-  .nav-toggle {
-    display: none !important;
-  }
-}
-.mobile-nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s1);
-  padding-block: var(--s2) var(--s3);
-  border-top: 1px solid var(--border);
-}
-@media (min-width: 861px) {
-  .mobile-nav {
-    display: none;
-  }
-}
-.mobile-nav .nav-link {
-  min-height: 40px;
-  border-color: var(--border);
-}
-
 /* ---------- Buttons ---------- */
 .btn {
   --btn-fg: var(--foreground);

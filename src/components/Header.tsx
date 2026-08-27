@@ -3,11 +3,10 @@ import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
 import ThemeToggle from "./ThemeToggle";
-import { Bookmark, Search, Menu, X } from "lucide-react";
+import { Bookmark, Search } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
-  const [open, setOpen] = useState(false);
   const [bmCount, setBmCount] = useState(0);
 
   useEffect(() => {
@@ -41,16 +40,6 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
-            <button
-              type="button"
-              className="btn btn-sm btn-icon nav-toggle"
-              aria-expanded={open}
-              aria-controls="mobile-nav"
-              onClick={() => setOpen((v) => !v)}
-            >
-              <span className="sr-only">Buka menu navigasi</span>
-              {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
-            </button>
             <Link href="/search" className="btn btn-sm btn-icon header-search" aria-label="Cari chord lagu">
               <Search size={20} strokeWidth={2.2} />
             </Link>
@@ -61,22 +50,6 @@ export default function Header() {
             </Link>
           </div>
         </div>
-
-        {open && (
-          <nav id="mobile-nav" className="mobile-nav" aria-label="Navigasi seluler">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="nav-link"
-                aria-current={isCurrent(item.href) ? "page" : undefined}
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        )}
       </div>
     </header>
   );
