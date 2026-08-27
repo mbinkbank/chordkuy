@@ -238,7 +238,12 @@ export function parseSheet(raw: string): SheetLine[] {
       for (let j = i + 1; j < out.length; j++) {
         if (out[j].type !== "blank") { next = out[j]; break; }
       }
+      const previousSection = [...cleaned].reverse().find((x) => x.type === "section");
+      const isAfterReff =
+        previousSection?.type === "section" &&
+        /^(reff|chorus|hook)\b/i.test(previousSection.label.trim());
       const remove =
+        !isAfterReff &&
         !isMarkerLine(next) &&
         ((isChordOnlyLine(prev) && isLyricsLine(next)) ||
           (isLyricsLine(prev) && isChordOnlyLine(next)) ||
