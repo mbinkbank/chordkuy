@@ -22,16 +22,18 @@ export default function Header() {
     <header className="site-header">
       <div className="container">
         <div className="header-inner">
-          <button
-            type="button"
-            className="btn btn-sm btn-icon nav-toggle"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="sr-only">Buka menu navigasi</span>
-            {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
-          </button>
+          <div className="header-actions nav-toggle-wrap">
+            <button
+              type="button"
+              className="btn btn-sm btn-icon nav-toggle"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="sr-only">Buka menu navigasi</span>
+              {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
+            </button>
+          </div>
 
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
             <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo logo-light" width={768} height={225} />

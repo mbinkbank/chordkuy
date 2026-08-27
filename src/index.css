@@ -503,6 +503,9 @@ a:focus-visible {
   flex-shrink: 0;
   margin-left: auto;
 }
+.nav-toggle-wrap {
+  margin-left: 0;
+}
 .header-actions .btn {
   --btn-bd: transparent;
   min-height: auto;
