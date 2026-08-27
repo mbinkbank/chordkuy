@@ -1,4 +1,5 @@
 import { TrendingUp } from "lucide-react";
+import { useI18n } from "../lib/i18n";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
 import buildData from "../data/build-data.json";
@@ -11,6 +12,8 @@ const TRENDING: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong).sl
 const ALL_SONGS: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong);
 
 export default function HomePage() {
+  const { t, toggleLang } = useI18n();
+
   useSeo({
     title: `${SITE.name} — Chord Gitar Lengkap, Transpose & Auto Scroll`,
     description: SITE.description,
@@ -30,12 +33,12 @@ export default function HomePage() {
           <img src="/chordkuy-logodark.svg" alt="Chordkuy.id" className="logo-dark" width={768} height={225} />
         </Link>
         <div className="search-home-box">
-          <SearchBar size="lg" placeholder="Cari chord, artis, atau lirik lagu…" />
+          <SearchBar size="lg" placeholder={t("searchPlaceholder")} />
         </div>
         <div className="search-home-actions">
-          <Link href="/artists" className="search-home-action">
-            Daftar Artis
-          </Link>
+          <button type="button" className="search-home-action" onClick={toggleLang}>
+            {t("changeLang")}
+          </button>
           <button
             type="button"
             className="search-home-action"
@@ -44,14 +47,14 @@ export default function HomePage() {
               navigate(`/chord/${song.slug}`);
             }}
           >
-            Lagu Random
+            {t("randomSong")}
           </button>
         </div>
       </section>
 
       <section className="mobile-trending" aria-labelledby="trending-title">
         <div className="mobile-trending-head">
-          <h2 id="trending-title">Chord Gitar Trending</h2>
+          <h2 id="trending-title">{t("trendingTitle")}</h2>
         </div>
         <div className="mobile-trending-list">
           {TRENDING.map((song) => (

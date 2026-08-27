@@ -3,6 +3,7 @@ import type { Song } from "../data/types";
 import { searchCatalogue } from "../lib/api";
 import { Link, navigate } from "../lib/router";
 import { Search } from "lucide-react";
+import { useI18n } from "../lib/i18n";
 
 interface Props {
   initialValue?: string;
@@ -22,6 +23,7 @@ export default function SearchBar({
   label = "Cari lagu, artis, atau genre",
   placeholder = "Cari judul lagu atau artis…",
 }: Props) {
+  const { t } = useI18n();
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -98,7 +100,7 @@ export default function SearchBar({
           autoComplete="off"
           enterKeyHint="search"
           placeholder={placeholder}
-          aria-label={label}
+          aria-label={label || t("searchLabel")}
           role="combobox"
           aria-autocomplete="list"
           aria-controls={suggestions.length ? listId : undefined}
@@ -113,7 +115,7 @@ export default function SearchBar({
           onKeyDown={onKeyDown}
         />
         <button className="btn" type="submit">
-          Cari
+          {t("searchBtn")}
         </button>
       </form>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useI18n } from "../lib/i18n";
 import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
@@ -7,6 +8,7 @@ import { Bookmark, Search, TextAlignStart, X } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [bmCount, setBmCount] = useState(0);
 
@@ -17,6 +19,8 @@ export default function Header() {
 
   const isCurrent = (href: string) =>
     href === "/" ? route.pathname === "/" : route.pathname.startsWith(href);
+  const navLabel = (label: string) =>
+    label === "Artis" ? t("navArtists") : label === "Tentang" ? t("navAbout") : label === "Kontak" ? t("navContact") : label;
 
   return (
     <header className="site-header">
@@ -48,7 +52,7 @@ export default function Header() {
                 className="nav-link"
                 aria-current={isCurrent(item.href) ? "page" : undefined}
               >
-                {item.label}
+                {navLabel(item.label)}
               </Link>
             ))}
           </nav>
@@ -75,7 +79,7 @@ export default function Header() {
                 aria-current={isCurrent(item.href) ? "page" : undefined}
                 onClick={() => setOpen(false)}
               >
-                {item.label}
+                {navLabel(item.label)}
               </Link>
             ))}
           </nav>

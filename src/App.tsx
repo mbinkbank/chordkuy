@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { I18nProvider } from "./lib/i18n";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { getArtistBySlug, getSongBySlug } from "./lib/api";
@@ -91,7 +91,7 @@ export default function App() {
   }, [route.name]);
 
   return (
-    <>
+    <I18nProvider>
       <a className="skip-link" href="#main">
         Lompat ke konten utama
       </a>
@@ -100,6 +100,6 @@ export default function App() {
         <View />
       </div>
       <Footer />
-    </>
+    </I18nProvider>
   );
 }
