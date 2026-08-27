@@ -1,13 +1,14 @@
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Users, Shuffle } from "lucide-react";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
 import buildData from "../data/build-data.json";
 import { mapDbRowToSong } from "../lib/api";
-import { Link } from "../lib/router";
+import { Link, navigate } from "../lib/router";
 import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 const TRENDING: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong).slice(0, 7);
+const ALL_SONGS: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong);
 
 export default function HomePage() {
   useSeo({
@@ -30,6 +31,23 @@ export default function HomePage() {
         </div>
         <div className="search-home-box">
           <SearchBar size="lg" placeholder="Cari chord, artis, atau lirik lagu…" />
+        </div>
+        <div className="search-home-actions">
+          <Link href="/artists" className="search-home-action">
+            <Users size={16} />
+            Daftar Artis
+          </Link>
+          <button
+            type="button"
+            className="search-home-action"
+            onClick={() => {
+              const song = ALL_SONGS[Math.floor(Math.random() * ALL_SONGS.length)];
+              navigate(`/chord/${song.slug}`);
+            }}
+          >
+            <Shuffle size={16} />
+            Lagu Random
+          </button>
         </div>
       </section>
 

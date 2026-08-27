@@ -1857,6 +1857,33 @@ a.card:focus-visible {
   font-weight: 500;
 }
 
+.search-home-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.search-home-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color var(--t), background-color var(--t);
+}
+
+.search-home-action:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
 @media (min-width: 861px) {
   .search-home-main {
     margin-top: -8vh;
