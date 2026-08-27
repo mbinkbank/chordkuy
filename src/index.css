@@ -1875,7 +1875,7 @@ a.card:focus-visible {
   display: none;
   width: 100%;
   max-width: 580px;
-  margin-top: var(--s5);
+  margin-top: var(--s7);
   text-align: left;
 }
 
