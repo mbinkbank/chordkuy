@@ -3,7 +3,7 @@ import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
 import ThemeToggle from "./ThemeToggle";
-import { Bookmark, Menu, Search, X } from "lucide-react";
+import { Bookmark, Search, TextAlignStart, X } from "lucide-react";
 
 export default function Header() {
   const route = useRoute();
@@ -31,7 +31,7 @@ export default function Header() {
               onClick={() => setOpen((v) => !v)}
             >
               <span className="sr-only">Buka menu navigasi</span>
-              {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
+              {open ? <X size={20} strokeWidth={2} /> : <TextAlignStart size={20} strokeWidth={2} />}
             </button>
           </div>
 
