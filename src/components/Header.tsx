@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link } from "../lib/router";
-import { SITE } from "../lib/site";
+import { Link, useRoute } from "../lib/router";
+import { NAV_ITEMS, SITE } from "../lib/site";
 import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
 import ThemeToggle from "./ThemeToggle";
 import { Bookmark, Search } from "lucide-react";
 
 export default function Header() {
+  const route = useRoute();
   const [bmCount, setBmCount] = useState(0);
 
   useEffect(() => {
     setBmCount(getBookmarks().length);
     return onBookmarksChange(() => setBmCount(getBookmarks().length));
   }, []);
+
+  const activeItem = NAV_ITEMS.find((item) =>
+    item.href === "/"
+      ? route.pathname === "/"
+      : route.pathname.startsWith(item.href)
+  );
 
   return (
     <header className="site-header">
@@ -21,6 +28,18 @@ export default function Header() {
             <img src="/chordkuy-logo.svg" alt="Chordkuy" className="brand-logo logo-light" width={768} height={225} />
             <img src="/chordkuy-logodark.svg" alt="Chordkuy" className="brand-logo logo-dark" width={768} height={225} />
           </Link>
+
+          {activeItem && (
+            <nav className="nav" aria-label="Halaman saat ini">
+              <Link
+                href={activeItem.href}
+                className="nav-link"
+                aria-current="page"
+              >
+                {activeItem.label}
+              </Link>
+            </nav>
+          )}
 
           <div className="header-actions">
             <Link href="/search" className="btn btn-sm btn-icon header-search" aria-label="Cari chord lagu">

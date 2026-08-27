@@ -13,5 +13,11 @@ export const SITE = {
   email: "halo@chordkuy.id",
 } as const;
 
+export const NAV_ITEMS = [
+  { href: "/artists", label: "Artis" },
+  { href: "/about", label: "Tentang" },
+  { href: "/contact", label: "Kontak" },
+] as const;
+
 export const absoluteUrl = (path: string): string =>
   path.startsWith("http") ? path : SITE.url + (path.startsWith("/") ? path : "/" + path);
