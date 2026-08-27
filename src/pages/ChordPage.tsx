@@ -13,7 +13,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star, TrendingUp } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -297,18 +297,17 @@ export default function ChordPage({ song }: { song: Song }) {
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
               Chord Populer
             </h2>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column" }}>
+            <div className="popular-trending-list">
               {popular.filter((s) => s.id !== song.id).map((s) => (
-                <li key={s.id} style={{ borderTop: "1px solid var(--border)", padding: "6px 0" }}>
-                  <Link
-                    href={`/chord/${s.slug}`}
-                    style={{ fontSize: 12, color: "var(--foreground)", textDecoration: "none" }}
-                  >
-                    {s.title} — {s.artist}
-                  </Link>
-                </li>
+                <Link key={s.id} href={`/chord/${s.slug}`} className="popular-trending-item">
+                  <TrendingUp size={15} strokeWidth={2} aria-hidden="true" />
+                  <span>
+                    <strong>{s.title}</strong>
+                    <small>{s.artist}</small>
+                  </span>
+                </Link>
               ))}
-            </ul>
+            </div>
           </div>
         </aside>
       </div>
