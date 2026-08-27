@@ -58,7 +58,7 @@
 [data-theme="light"] {
   color-scheme: light;
   --background: #ffffff;
-  --background-deep: #f2f3ef;
+  --background-deep: #ffffff;
   --surface: #ffffff;
   --surface-2: #eceee8;
   --card: #ffffff;
