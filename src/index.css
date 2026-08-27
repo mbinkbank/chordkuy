@@ -1798,27 +1798,18 @@ a.card:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s2);
+  gap: var(--s3);
 }
 
-.search-home-brand {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  color: var(--accent);
-  margin-bottom: -4px;
+.search-home-logo {
+  width: 180px;
+  max-width: 40%;
 }
 
-.search-home-main h1 {
-  font-size: clamp(22px, 4vw, 32px);
-  margin: 0;
-  font-weight: 700;
-}
-
-.search-home-main p {
-  color: var(--muted);
-  font-size: 13px;
-  margin: 0 0 var(--s2);
+.search-home-logo .logo-light,
+.search-home-logo .logo-dark {
+  width: 100%;
+  height: auto;
 }
 
 .search-home-box {
