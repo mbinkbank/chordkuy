@@ -127,22 +127,22 @@ export default function ChordPage({ song }: { song: Song }) {
   const detailCard = (
     <div className="card">
       <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-        Detail lagu
+        {t("sidebarDetail")}
       </h2>
       <dl className="meta-list">
-        <dt>Artis</dt>
+        <dt>{t("sidebarArtist")}</dt>
         <dd>
           <Link href={`/artist/${song.artistSlug}`}>{song.artist}</Link>
         </dd>
-        <dt>Kunci asli</dt>
+        <dt>{t("sidebarOriginalKey")}</dt>
         <dd>{song.originalKey}</dd>
-        <dt>Kunci kini</dt>
+        <dt>{t("sidebarCurrentKey")}</dt>
         <dd className="accent">{currentKey}</dd>
-        <dt>Capo</dt>
+        <dt>{t("sidebarCapo")}</dt>
         <dd>{song.capo ? `Fret ${song.capo}` : "—"}</dd>
         {song.tuning && (
           <>
-            <dt>Tuning</dt>
+            <dt>{t("sidebarTuning")}</dt>
             <dd>{song.tuning}</dd>
           </>
         )}
@@ -158,7 +158,7 @@ export default function ChordPage({ song }: { song: Song }) {
             <dd>{song.duration}</dd>
           </>
         )}
-        <dt>Genre</dt>
+        <dt>{t("sidebarGenre")}</dt>
         <dd>
           <Link href={`/search?q=${encodeURIComponent(song.genre)}`}>{song.genre}</Link>
         </dd>
@@ -171,7 +171,7 @@ export default function ChordPage({ song }: { song: Song }) {
       <Breadcrumb
         items={[
           { name: "Beranda", href: "/" },
-          { name: "Artis", href: "/artists" },
+          { name: t("navArtists"), href: "/artists" },
           { name: song.artist, href: `/artist/${song.artistSlug}` },
           { name: song.title, href: path },
         ]}
@@ -272,10 +272,10 @@ export default function ChordPage({ song }: { song: Song }) {
             <div className="detail-card-mobile">{detailCard}</div>
             <div className="section-head">
               <h2 className="h-section" id="related">
-                Lagu terkait
+                {t("relatedChords")}
               </h2>
               <Link className="small" href={`/artist/${song.artistSlug}`}>
-                Lihat artis →
+                {t("viewArtist")}
               </Link>
             </div>
             {related.length === 0 ? (

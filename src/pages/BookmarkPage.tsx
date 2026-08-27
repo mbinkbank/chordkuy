@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Bookmark, BookmarkX, Music } from "lucide-react";
 import { getBookmarks, onBookmarksChange, removeBookmark, type BookmarkItem } from "../lib/bookmarks";
+import { useI18n } from "../lib/i18n";
 import { Link } from "../lib/router";
 import { useSeo, webPageSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
 export default function BookmarkPage() {
+  const { t } = useI18n();
   const [items, setItems] = useState<BookmarkItem[]>([]);
 
   useEffect(() => {
@@ -14,22 +16,22 @@ export default function BookmarkPage() {
   }, []);
 
   useSeo({
-    title: `Bookmark Saya | ${SITE.name}`,
+    title: `${t("bookmarkTitle")} | ${SITE.name}`,
     description: "Daftar chord yang kamu simpan di perangkat ini.",
     path: "/bookmark",
     noindex: true,
-    jsonLd: [webPageSchema("Bookmark Saya", "Daftar chord tersimpan", "/bookmark")],
+    jsonLd: [webPageSchema(t("bookmarkTitle"), "Daftar chord tersimpan", "/bookmark")],
   });
 
   return (
     <main className="container" id="main" style={{ padding: "var(--s5) 0" }}>
-      <h1 style={{ fontSize: 24, margin: "0 0 var(--s4)" }}>Bookmark Saya</h1>
+      <h1 style={{ fontSize: 24, margin: "0 0 var(--s4)" }}>{t("bookmarkTitle")}</h1>
 
       {items.length === 0 ? (
         <div className="empty">
           <Bookmark size={28} strokeWidth={1.6} style={{ marginBottom: 8 }} />
           <p style={{ margin: 0 }}>
-            Belum ada chord tersimpan. Buka chord apa pun lalu tekan ikon bookmark.
+            {t("bookmarkEmpty")}
           </p>
         </div>
       ) : (
