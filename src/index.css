@@ -1802,6 +1802,7 @@ a.card:focus-visible {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  margin-top: var(--s7);
 }
 
 .search-home-logo {
@@ -1821,7 +1822,7 @@ a.card:focus-visible {
 
 @media (max-width: 640px) {
   .search-home-logo {
-    width: 160px;
+    width: 180px;
   }
   .search-home-box .searchbar input {
     font-size: 14px;
