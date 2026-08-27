@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Languages, Shuffle } from "lucide-react";
 import { useI18n } from "../lib/i18n";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
@@ -37,6 +37,7 @@ export default function HomePage() {
         </div>
         <div className="search-home-actions">
           <button type="button" className="search-home-action" onClick={toggleLang}>
+            <Languages size={16} />
             {t("changeLang")}
           </button>
           <button
@@ -47,6 +48,7 @@ export default function HomePage() {
               navigate(`/chord/${song.slug}`);
             }}
           >
+            <Shuffle size={16} />
             {t("randomSong")}
           </button>
         </div>
