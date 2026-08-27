@@ -33,7 +33,7 @@ export default function ArtistsPage() {
   );
 
   const visible = letter === "ALL" ? artists : artists.filter((a) => a.name && a.name[0].toUpperCase() === letter);
-  const description = t("artistListDesc")(artists.length, songCount);
+  const description = t("artistListDesc", artists.length, songCount);
 
   useSeo({
     title: `${t("artistList")} (${artists.length}) | ${SITE.name}`,
@@ -64,7 +64,7 @@ export default function ArtistsPage() {
       <header className="stack stack-2" style={{ paddingBottom: "var(--s4)" }}>
         <h1 className="h-page">{t("artistList")}</h1>
         <p className="small muted" style={{ maxWidth: "60ch" }}>
-          {t("artistListDesc")(artists.length, songCount)}
+          {t("artistListDesc", artists.length, songCount)}
         </p>
       </header>
 

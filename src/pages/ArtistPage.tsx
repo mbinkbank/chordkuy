@@ -25,13 +25,13 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
   }, [artist.slug]);
 
   const path = `/artist/${artist.slug}`;
-  const description = `${t("songCount")(songs.length)} ${artist.name}: kunci lengkap, transpose real-time, dan auto scroll. ${artist.bio}`.slice(
+  const description = `${t("songCount", songs.length)} ${artist.name}: kunci lengkap, transpose real-time, dan auto scroll. ${artist.bio}`.slice(
     0,
     300,
   );
 
   useSeo({
-    title: `${t("chordGitar")} ${artist.name} — ${t("songCount")(songs.length)} | ${SITE.name}`,
+    title: `${t("chordGitar")} ${artist.name} — ${t("songCount", songs.length)} | ${SITE.name}`,
     description,
     path,
     type: "profile",
@@ -98,7 +98,7 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
       <section aria-labelledby="artist-songs">
         <div className="section-head">
           <h2 className="h-section" id="artist-songs">
-            {t("allSongs")(artist.name)}
+            {t("allSongs", artist.name)}
           </h2>
           <span className="caption">{t("sortedByPop")}</span>
         </div>
@@ -119,7 +119,7 @@ export default function ArtistPage({ artist }: { artist: Artist }) {
       <section className="section">
         <div className="card card-accent">
           <p className="small" style={{ margin: 0 }}>
-            {t("artistRequestFind")(artist.name)}{" "}
+            {t("artistRequestFind", artist.name)}{" "}
             <Link href="/contact" style={{ color: "var(--accent)" }}>
               {t("artistRequestLink")}
             </Link>{" "}
