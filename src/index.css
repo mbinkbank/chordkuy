@@ -525,9 +525,12 @@ a:focus-visible {
   }
 }
 .mobile-nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s1);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
   padding-block: var(--s2) var(--s3);
   border-top: 1px solid var(--border);
 }
