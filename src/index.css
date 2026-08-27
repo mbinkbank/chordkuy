@@ -1860,7 +1860,7 @@ a.card:focus-visible {
 .search-home-actions {
   display: flex;
   gap: 12px;
-  margin-top: 4px;
+  margin-top: 10px;
 }
 
 .search-home-action {
