@@ -40,6 +40,12 @@ const DICT = {
     contactDirectEmail: "Email langsung", contactBeforeSending: "Sebelum mengirim",
     contactTip1: "Sertakan tautan halaman chord terkait.", contactTip2: "Untuk koreksi, tulis bar/baris yang keliru.", contactTip3: "Untuk permintaan, sebutkan judul dan artis.",
     contactDisclaimer: "Formulir ini tidak menyimpan data di peramban dan tidak memuat skrip pihak ketiga.",
+    chordGitar: "Chord Gitar", strumming: "Genjrengan", duration: "Durasi",
+    transposeDown: "Turunkan nada transpose", transposeDownTitle: "Turunkan 1 semitone",
+    transposeUp: "Naikkan nada transpose", transposeUpTitle: "Naikkan 1 semitone",
+    songInfo: "Informasi lagu", displaySettings: "Pengaturan tampilan",
+    openMenu: "Buka menu navigasi", searchChord: "Cari chord lagu", bookmarkMine: "Bookmark saya",
+    closeDiagram: "Tutup diagram",
   },
   en: {
     navArtists: "Artists", navAbout: "About", navContact: "Contact",
@@ -76,6 +82,12 @@ const DICT = {
     contactDirectEmail: "Direct email", contactBeforeSending: "Before sending",
     contactTip1: "Include a link to the related chord page.", contactTip2: "For corrections, write the wrong bar/line.", contactTip3: "For requests, mention the title and artist.",
     contactDisclaimer: "This form does not store data in the browser and does not load third-party scripts.",
+    chordGitar: "Guitar Chord", strumming: "Strumming", duration: "Duration",
+    transposeDown: "Transpose down", transposeDownTitle: "Transpose down 1 semitone",
+    transposeUp: "Transpose up", transposeUpTitle: "Transpose up 1 semitone",
+    songInfo: "Song information", displaySettings: "Display settings",
+    openMenu: "Open navigation menu", searchChord: "Search song chords", bookmarkMine: "My bookmarks",
+    closeDiagram: "Close diagram",
   },
 } as const;
 

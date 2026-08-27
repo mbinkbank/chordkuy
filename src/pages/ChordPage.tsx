@@ -89,8 +89,8 @@ export default function ChordPage({ song }: { song: Song }) {
     l: () => setLyricsOnly((v) => !v),
   });
 
-  const pageTitle = `Chord Gitar ${song.title} - ${song.artist} | ${SITE.name}`;
-  const pageDescription = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.originalKey}${
+  const pageTitle = `${t("chordGitar")} ${song.title} - ${song.artist} | ${SITE.name}`;
+  const pageDescription = `${t("chordGitar").toLowerCase()} ${song.title} — ${song.artist}. Kunci dasar ${song.originalKey}${
     song.capo ? `, capo fret ${song.capo}` : ", tanpa capo"
   }. Lengkap dengan lirik, transpose real-time, diagram chord, dan auto scroll.`;
 
@@ -148,13 +148,13 @@ export default function ChordPage({ song }: { song: Song }) {
         )}
         {song.strumming && (
           <>
-            <dt>Genjrengan</dt>
+            <dt>{t("strumming")}</dt>
             <dd>{song.strumming}</dd>
           </>
         )}
         {song.duration && (
           <>
-            <dt>Durasi</dt>
+            <dt>{t("duration")}</dt>
             <dd>{song.duration}</dd>
           </>
         )}
@@ -181,7 +181,7 @@ export default function ChordPage({ song }: { song: Song }) {
         <article>
           <header className="stack stack-3" style={{ paddingBottom: "var(--s4)" }}>
             <h1 className="h-page">
-              Chord Gitar {song.title}
+              {t("chordGitar")} {song.title}
               <span className="muted" style={{ fontWeight: 400 }}>
                 {" "}
                 — {song.artist}
@@ -226,8 +226,8 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
-                aria-label="Turunkan nada transpose"
-                title="Turunkan 1 semitone"
+                aria-label={t("transposeDown")}
+                title={t("transposeDownTitle")}
                 onClick={() => setTranspose((v) => v <= -11 ? 11 : v - 1)}
               >
                 <ChevronDown size={14} />
@@ -238,8 +238,8 @@ export default function ChordPage({ song }: { song: Song }) {
               <button
                 type="button"
                 className="btn btn-sm"
-                aria-label="Naikkan nada transpose"
-                title="Naikkan 1 semitone"
+                aria-label={t("transposeUp")}
+                title={t("transposeUpTitle")}
                 onClick={() => setTranspose((v) => v >= 11 ? -11 : v + 1)}
               >
                 <ChevronUp size={14} />
@@ -256,7 +256,7 @@ export default function ChordPage({ song }: { song: Song }) {
             ))}
           </div>
 
-          <section aria-label={`Chord dan lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
+          <section aria-label={`${t("chordGitar")} & lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
             <ChordViewer
               lines={lines}
               fontSize={fontSize}
@@ -294,7 +294,7 @@ export default function ChordPage({ song }: { song: Song }) {
           </section>
         </article>
 
-        <aside className="sidebar" aria-label="Informasi lagu">
+        <aside className="sidebar" aria-label={t("songInfo")}>
           <div className="detail-card-sidebar">
             {detailCard}
           </div>
@@ -387,7 +387,7 @@ export default function ChordPage({ song }: { song: Song }) {
           type="button"
           className="btn"
           onClick={() => setSettingsOpen((v) => !v)}
-          aria-label="Pengaturan tampilan"
+          aria-label={t("displaySettings")}
           style={{
             width: 40,
             height: 40,

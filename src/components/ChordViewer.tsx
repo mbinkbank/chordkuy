@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
+import { useI18n } from "../lib/i18n";
 import ChordDiagram from "./ChordDiagram";
 
 interface ChordViewerProps {
@@ -38,6 +39,7 @@ export default function ChordViewer({
   onTransposeChange,
   currentKey,
 }: ChordViewerProps) {
+  const { t } = useI18n();
   const [pop, setPop] = useState<PopoverState | null>(null);
   const hoverTimer = useRef<number | null>(null);
 
@@ -180,7 +182,7 @@ export default function ChordViewer({
           <p className="pop-name">
             <span>{pop.chord}</span>
             {pop.pinned && (
-              <button type="button" className="pop-close" onClick={() => setPop(null)} aria-label="Tutup diagram">
+              <button type="button" className="pop-close" onClick={() => setPop(null)} aria-label={t("closeDiagram")}>
                 ✕
               </button>
             )}

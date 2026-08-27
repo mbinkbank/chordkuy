@@ -34,7 +34,7 @@ export default function Header() {
               aria-controls="mobile-nav"
               onClick={() => setOpen((v) => !v)}
             >
-              <span className="sr-only">Buka menu navigasi</span>
+              <span className="sr-only">{t("openMenu")}</span>
               {open ? <X size={20} strokeWidth={2} /> : <TextAlignStart size={20} strokeWidth={2} />}
             </button>
           </div>
@@ -58,11 +58,11 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
-            <Link href="/search" className="btn btn-sm btn-icon header-search" aria-label="Cari chord lagu">
+            <Link href="/search" className="btn btn-sm btn-icon header-search" aria-label={t("searchChord")}>
               <Search size={20} strokeWidth={2.2} />
             </Link>
             <ThemeToggle />
-            <Link href="/bookmark" className="btn btn-sm btn-icon bookmark-btn" aria-label={`Bookmark saya (${bmCount})`} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Link href="/bookmark" className="btn btn-sm btn-icon bookmark-btn" aria-label={`${t("bookmarkMine")} (${bmCount})`} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <Bookmark size={20} strokeWidth={2} />
               {bmCount > 0 && <span className="bookmark-badge">{bmCount > 99 ? "99+" : bmCount}</span>}
             </Link>
