@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Guitar, UserStar } from "lucide-react";
 import buildData from "../data/build-data.json";
 import { getStats } from "../lib/api";
 import { useI18n } from "../lib/i18n";
@@ -59,7 +60,9 @@ export default function HeaderStats() {
 
   return (
     <div className="header-stats-code" aria-label="Statistik katalog">
-      <span className="code-prompt">$</span>
+      <span className="code-prompt" aria-hidden="true">
+        {index % 2 === 0 ? <UserStar size={13} strokeWidth={2} /> : <Guitar size={13} strokeWidth={2} />}
+      </span>
       <span className="code-text">{text}</span>
       <span className="code-cursor">_</span>
     </div>
