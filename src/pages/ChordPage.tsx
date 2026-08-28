@@ -6,7 +6,7 @@ import ShareButton from "../components/ShareButton";
 import SongCard from "../components/SongCard";
 import type { Song } from "../data/types";
 import { isBookmarked, onBookmarksChange, toggleBookmark } from "../lib/bookmarks";
-import { formatDate, formatViews, getPopularSongs, getRelatedSongs } from "../lib/api";
+import { formatDate, formatViews, getPopularSongs, getRelatedSongs, recordSongView } from "../lib/api";
 import { useI18n } from "../lib/i18n";
 import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
 import { songLangLabel } from "../lib/lang";
@@ -64,6 +64,7 @@ export default function ChordPage({ song }: { song: Song }) {
     }
     loadRelated();
     getPopularSongs(10).then(setPopular);
+    recordSongView(song.slug);
   }, [song]);
 
   const preferFlat = keyPrefersFlat(song.originalKey);

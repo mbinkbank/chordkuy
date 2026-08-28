@@ -9,15 +9,21 @@ const SUPABASE_URL = "https://tbpdopmbvuhxjktuwsej.supabase.co";
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRicGRvcG1idnVoeGprdHV3c2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzA1OTUsImV4cCI6MjEwMjU0NjU5NX0.bFxR8c-n67bRTRT6E4InnIjUXAVTs4erVHVZSi-0q60";
 
-const COLS = "id,title,artist,key_name,capo,tuning,difficulty,rating";
+const COLS = "id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating,views,views_7d";
 const PER_PAGE = 10;
 
 async function main() {
   console.log("Fetching build data...");
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/chords?select=${COLS}&order=id.desc&limit=2000`,
+  let res = await fetch(
+    `${SUPABASE_URL}/rest/v1/chords?select=${COLS}&order=views_7d.desc,views.desc,id.desc&limit=2000`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   );
+  if (!res.ok) {
+    res = await fetch(
+      `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating&order=id.desc&limit=2000`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+    );
+  }
   if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
   const rows = await res.json();
 

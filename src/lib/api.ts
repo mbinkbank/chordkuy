@@ -52,7 +52,7 @@ const slugify = (text: string) =>
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-const LIGHT_COLS = "id,title,artist,key_name,capo,tuning,difficulty,rating";
+const LIGHT_COLS = "id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating,views,views_7d";
 
 function extractChords(content: string): string[] {
   if (!content) return [];
@@ -76,6 +76,9 @@ export function mapDbRowToSong(row: any): Song {
 
   const contentChords = extractChords(row.content || "");
   const originalKey = row.key_name || "C";
+  const actualViews = typeof row.views_7d === "number" && row.views_7d > 0
+    ? row.views_7d
+    : (typeof row.views === "number" ? row.views : 0);
 
   return {
     id: String(row.id),
@@ -93,7 +96,7 @@ export function mapDbRowToSong(row: any): Song {
     updatedAt: new Date().toISOString(),
     difficulty,
     tuning: row.tuning || "E A D G B E",
-    views: 100 + (row.id * 7) % 500,
+    views: actualViews,
     rating: typeof row.rating === "number" ? row.rating : undefined,
     language: row.language || "ID",
   };
@@ -117,12 +120,35 @@ export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
 }
 
 export async function getPopularSongs(limit = 8): Promise<Song[]> {
+  const { rows } = await rest(`chords?select=${LIGHT_COLS}&order=views_7d.desc,views.desc,id.desc&limit=${limit}`);
+  if (rows.length > 0) return rows.map(mapDbRowToSong);
+  const fb = await rest(`chords?select=id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating&order=id.desc&limit=${limit}`);
+  return fb.rows.map(mapDbRowToSong);
+}
+
+export async function getRecentSongs(limit = 6): Promise<Song[]> {
   const { rows } = await rest(`chords?select=${LIGHT_COLS}&order=id.desc&limit=${limit}`);
   return rows.map(mapDbRowToSong);
 }
 
-export async function getRecentSongs(limit = 6): Promise<Song[]> {
-  return getPopularSongs(limit);
+export async function recordSongView(slug: string): Promise<void> {
+  if (!slug || typeof window === "undefined") return;
+  const key = `chordlab:viewed:${slug}`;
+  if (sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key, "1");
+  try {
+    await fetch(`${SB_URL}/rest/v1/rpc/increment_view`, {
+      method: "POST",
+      headers: {
+        apikey: SB_KEY,
+        Authorization: `Bearer ${SB_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ song_slug: slug }),
+    });
+  } catch {
+    // ponytail: silent fail if view increment network request fails
+  }
 }
 
 export const RECENT_PER_PAGE = 6;

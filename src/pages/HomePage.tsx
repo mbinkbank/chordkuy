@@ -1,18 +1,24 @@
+import { useEffect, useState } from "react";
 import { TrendingUp, Languages, Shuffle } from "lucide-react";
 import { useI18n } from "../lib/i18n";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
 import buildData from "../data/build-data.json";
-import { mapDbRowToSong } from "../lib/api";
+import { getPopularSongs, mapDbRowToSong } from "../lib/api";
 import { Link, navigate } from "../lib/router";
 import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
-const TRENDING: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong).slice(0, 7);
+const BUILT_IN_TRENDING: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong).slice(0, 7);
 const ALL_SONGS: Song[] = (buildData.popularRows as any[]).map(mapDbRowToSong);
 
 export default function HomePage() {
   const { t, toggleLang } = useI18n();
+  const [trending, setTrending] = useState(BUILT_IN_TRENDING);
+
+  useEffect(() => {
+    getPopularSongs(7).then(setTrending).catch(() => {});
+  }, []);
 
   useSeo({
     title: `${SITE.name} — Chord Gitar Lengkap, Transpose & Auto Scroll`,
@@ -59,7 +65,7 @@ export default function HomePage() {
           <h2 id="trending-title">{t("trendingTitle")}</h2>
         </div>
         <div className="mobile-trending-list">
-          {TRENDING.map((song) => (
+          {trending.map((song) => (
             <Link key={song.id} href={`/chord/${song.slug}`} className="mobile-trending-item">
               <TrendingUp size={16} aria-hidden="true" />
               <span>
