@@ -29,6 +29,7 @@ const SORT_COLUMNS: Record<string, any> = {
   tuning: tbChord.tuning,
   difficulty: tbChord.difficulty,
   rating: tbChord.rating,
+  views: tbChord.views,
 };
 
 export async function GET(request: NextRequest) {

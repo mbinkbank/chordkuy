@@ -30,6 +30,7 @@ interface Song {
   language: string;
   youtube_url: string;
   lastmod: string;
+  views?: number;
 }
 
 interface Pagination {
@@ -276,6 +277,7 @@ export default function SongsPage() {
                   <SortHeader col="base_key"><span className="hidden md:inline">Key</span></SortHeader>
                   <SortHeader col="difficulty"><span className="hidden lg:inline">Kesulitan</span></SortHeader>
                   <SortHeader col="language"><span className="hidden lg:inline">Bahasa</span></SortHeader>
+                  <SortHeader col="views">Views</SortHeader>
                   <SortHeader col="youtube_url">YT</SortHeader>
                   <SortHeader col="lastmod">Lastmod</SortHeader>
                   <th className="text-center px-4 py-3 font-medium text-slate-500">Aksi</th>
@@ -310,6 +312,9 @@ export default function SongsPage() {
                           {song.language}
                         </span>
                       )}
+                    </td>
+                    <td className="px-4 py-3 text-center text-slate-600 font-mono text-xs">
+                      {(song.views ?? 0).toLocaleString("id-ID")}
                     </td>
                     <td className="px-4 py-3 text-center">
                       {song.youtube_url ? (
