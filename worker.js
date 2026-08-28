@@ -87,8 +87,9 @@ function baseHead(title, description, canonicalPath, ogImage) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="icon" href="/favicon.png" type="image/png" sizes="120x120">
 <link rel="canonical" href="${url}">
 <meta property="og:site_name" content="${SITE_NAME}">
 <meta property="og:type" content="article">
