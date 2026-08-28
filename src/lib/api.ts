@@ -119,8 +119,15 @@ export async function getSongsByArtist(artistSlug: string): Promise<Song[]> {
   return rows.map(mapDbRowToSong);
 }
 
-export async function getPopularSongs(limit = 8): Promise<Song[]> {
+export async function getTrendingSongs(limit = 8): Promise<Song[]> {
   const { rows } = await rest(`chords?select=${LIGHT_COLS}&order=views_7d.desc,views.desc,id.desc&limit=${limit}`);
+  if (rows.length > 0) return rows.map(mapDbRowToSong);
+  const fb = await rest(`chords?select=id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating&order=id.desc&limit=${limit}`);
+  return fb.rows.map(mapDbRowToSong);
+}
+
+export async function getPopularSongs(limit = 8): Promise<Song[]> {
+  const { rows } = await rest(`chords?select=${LIGHT_COLS}&order=views.desc,id.desc&limit=${limit}`);
   if (rows.length > 0) return rows.map(mapDbRowToSong);
   const fb = await rest(`chords?select=id,title,artist,slug,artist_slug,key_name,capo,tuning,difficulty,rating&order=id.desc&limit=${limit}`);
   return fb.rows.map(mapDbRowToSong);

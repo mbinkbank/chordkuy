@@ -4,7 +4,7 @@ import { useI18n } from "../lib/i18n";
 import SearchBar from "../components/SearchBar";
 import type { Song } from "../data/types";
 import buildData from "../data/build-data.json";
-import { getPopularSongs, mapDbRowToSong } from "../lib/api";
+import { getTrendingSongs, mapDbRowToSong } from "../lib/api";
 import { Link, navigate } from "../lib/router";
 import { organizationSchema, useSeo, webPageSchema, websiteSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
@@ -17,7 +17,7 @@ export default function HomePage() {
   const [trending, setTrending] = useState(BUILT_IN_TRENDING);
 
   useEffect(() => {
-    getPopularSongs(7).then(setTrending).catch(() => {});
+    getTrendingSongs(7).then(setTrending).catch(() => {});
   }, []);
 
   useSeo({
