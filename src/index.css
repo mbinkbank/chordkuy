@@ -467,7 +467,7 @@ a:focus-visible {
 .nav {
   display: none;
   align-items: center;
-  gap: var(--s3);
+  gap: var(--s5);
 }
 @media (min-width: 861px) {
   .nav {
