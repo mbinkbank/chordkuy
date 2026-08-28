@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
 import buildData from "../data/build-data.json";
+import { getStats } from "../lib/api";
 
 export default function HeaderStats() {
-  const songCount = buildData.songCount || 3200;
-  const artistCount = buildData.artistCount || 1600;
+  const [stats, setStats] = useState({
+    songCount: buildData.songCount || 0,
+    artistCount: buildData.artistCount || 0,
+  });
+  const { songCount, artistCount } = stats;
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    getStats()
+      .then((s) => {
+        if (s.songCount && s.artistCount) {
+          setStats({ songCount: s.songCount, artistCount: s.artistCount });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const items = [

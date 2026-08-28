@@ -25,3 +25,9 @@ BEGIN
   UPDATE chords SET views_7d = 0;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 5. Statistik katalog real-time tanpa mengirim semua baris ke browser
+CREATE OR REPLACE FUNCTION catalog_stats()
+RETURNS TABLE(song_count bigint, artist_count bigint) AS $$
+  SELECT COUNT(*), COUNT(DISTINCT artist) FROM chords;
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
