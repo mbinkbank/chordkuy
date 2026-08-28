@@ -505,6 +505,34 @@ a:focus-visible {
 }
 .nav-toggle-wrap {
   margin-left: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.header-stats-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+.code-prompt {
+  color: var(--muted);
+}
+.code-cursor {
+  animation: codeBlink 1s infinite;
+  margin-left: -2px;
+}
+@keyframes codeBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 .header-actions .btn {
   --btn-bd: transparent;

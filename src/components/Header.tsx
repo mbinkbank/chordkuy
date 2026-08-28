@@ -4,6 +4,7 @@ import { Link, useRoute } from "../lib/router";
 import { NAV_ITEMS, SITE } from "../lib/site";
 import { getBookmarks, onBookmarksChange } from "../lib/bookmarks";
 import ThemeToggle from "./ThemeToggle";
+import HeaderStats from "./HeaderStats";
 import { Bookmark, Search, TextAlignStart, X } from "lucide-react";
 
 export default function Header() {
@@ -37,6 +38,7 @@ export default function Header() {
               <span className="sr-only">{t("openMenu")}</span>
               {open ? <X size={20} strokeWidth={2} /> : <TextAlignStart size={20} strokeWidth={2} />}
             </button>
+            <HeaderStats />
           </div>
 
           <Link className="brand" href="/" aria-label={`${SITE.name} — beranda`}>
