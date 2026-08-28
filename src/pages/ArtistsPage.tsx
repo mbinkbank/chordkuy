@@ -63,9 +63,6 @@ export default function ArtistsPage() {
 
       <header className="stack stack-2" style={{ paddingBottom: "var(--s4)" }}>
         <h1 className="h-page">{t("artistList")}</h1>
-        <p className="small muted" style={{ maxWidth: "60ch" }}>
-          {t("artistListDesc", artists.length, songCount)}
-        </p>
       </header>
 
       <div className="keylist" role="group" aria-label={t("artistListFilter")}>
