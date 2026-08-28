@@ -515,20 +515,41 @@ a:focus-visible {
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-soft);
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 4px;
-  display: inline-flex;
+  display: none;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   letter-spacing: 0.02em;
   user-select: none;
+  line-height: 1;
+}
+[data-home="true"] .header-stats-code {
+  display: inline-flex;
 }
 .code-prompt {
-  color: var(--muted);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.code-text {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 .code-cursor {
   animation: codeBlink 1s infinite;
   margin-left: -2px;
+  line-height: 1;
+}
+
+@media (max-width: 860px) {
+  [data-home="true"] .header-stats-code {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 @keyframes codeBlink {
   0%, 100% { opacity: 1; }
