@@ -55,6 +55,7 @@ const DICT = {
     artistLoading: "Memuat lagu artis...", artistNoChords: "Belum ada chord untuk artis ini.",
     artistRequestFind: (name: string) => `Tidak menemukan lagu ${name} yang kamu cari?`,
     artistRequestLink: "Kirim permintaan chord", artistRequestEnd: "dan kami tambahkan ke antrean.",
+    statsArtists: (n: number) => `${n} artis`, statsChords: (n: number) => `${n} chord`,
   },
   en: {
     navArtists: "Artists", navAbout: "About", navContact: "Contact",
@@ -106,6 +107,7 @@ const DICT = {
     artistLoading: "Loading artist songs...", artistNoChords: "No chords yet for this artist.",
     artistRequestFind: (name: string) => `Can't find ${name} songs you're looking for?`,
     artistRequestLink: "Send a chord request", artistRequestEnd: "and we'll add it to the queue.",
+    statsArtists: (n: number) => `${n} artists`, statsChords: (n: number) => `${n} chords`,
   },
 } as const;
 

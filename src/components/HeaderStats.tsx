@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import buildData from "../data/build-data.json";
 import { getStats } from "../lib/api";
+import { useI18n } from "../lib/i18n";
 
 export default function HeaderStats() {
+  const { t } = useI18n();
   const [stats, setStats] = useState({
     songCount: buildData.songCount || 0,
     artistCount: buildData.artistCount || 0,
@@ -23,8 +25,8 @@ export default function HeaderStats() {
 
   useEffect(() => {
     const items = [
-      `${artistCount.toLocaleString()} artists`,
-      `${songCount.toLocaleString()} chords`,
+      t("statsArtists", artistCount.toLocaleString()),
+      t("statsChords", songCount.toLocaleString()),
     ];
     const current = items[index % items.length];
     let charIdx = 0;
