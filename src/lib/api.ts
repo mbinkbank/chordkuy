@@ -103,7 +103,7 @@ export function mapDbRowToSong(row: any): Song {
 }
 
 export async function getAllSongs(): Promise<Song[]> {
-  const rows = await restAll(`chords?select=*&order=id.desc`);
+  const rows = await restAll(`chords?select=${LIGHT_COLS}&order=id.desc`);
   return rows.map(mapDbRowToSong);
 }
 
