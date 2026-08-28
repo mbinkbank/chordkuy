@@ -1,23 +1,16 @@
 import { useEffect, useState } from "react";
-import { getStats } from "../lib/api";
+import buildData from "../data/build-data.json";
 
 export default function HeaderStats() {
-  const [stats, setStats] = useState({ songCount: 0, artistCount: 0 });
+  const songCount = buildData.songCount || 3200;
+  const artistCount = buildData.artistCount || 1600;
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    getStats().then((s) => {
-      if (s.songCount && s.artistCount) {
-        setStats({ songCount: s.songCount, artistCount: s.artistCount });
-      }
-    }).catch(() => {});
-  }, []);
-
-  useEffect(() => {
     const items = [
-      `${stats.artistCount.toLocaleString()} artists`,
-      `${stats.songCount.toLocaleString()} chords`,
+      `${artistCount.toLocaleString()} artists`,
+      `${songCount.toLocaleString()} chords`,
     ];
     const current = items[index % items.length];
     let charIdx = 0;
@@ -46,7 +39,7 @@ export default function HeaderStats() {
 
     timer = setTimeout(step, 100);
     return () => clearTimeout(timer);
-  }, [index, stats.artistCount, stats.songCount]);
+  }, [index, artistCount, songCount]);
 
   return (
     <div className="header-stats-code" aria-label="Statistik katalog">
