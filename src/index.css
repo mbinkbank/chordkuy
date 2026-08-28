@@ -481,15 +481,16 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--foreground);
-  border: 1px solid transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
   min-height: 34px;
   display: inline-flex;
   align-items: center;
-  transition: color var(--t), border-color var(--t), background-color var(--t);
+  transition: color var(--t), border-bottom-color var(--t);
 }
 .nav-link:hover {
   color: var(--accent);
-  border-color: var(--border);
+  border-bottom-color: var(--border);
 }
 .nav-link[aria-current="page"] {
   color: var(--accent);
