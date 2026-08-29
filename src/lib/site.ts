@@ -10,7 +10,7 @@ export const SITE = {
     "Kumpulan kunci gitar dan chord lagu Indonesia terlengkap. Temukan kunci gitar mudah untuk berbagai lagu populer, lengkap dengan lirik dan chord gitar.",
   twitter: "@chordkuy",
   publisher: "Chordkuy",
-  email: "halo@chordkuy.id",
+  email: "mariobaladollun@gmail.com",
 } as const;
 
 export const NAV_ITEMS = [
