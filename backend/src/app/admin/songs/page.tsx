@@ -11,6 +11,7 @@ import {
   Filter,
   Edit2,
   Trash2,
+  Copy,
   Eye,
   Video,
   ChevronLeft,
@@ -31,6 +32,8 @@ interface Song {
   youtube_url: string;
   lastmod: string;
   views?: number;
+  slug?: string;
+  artist_slug?: string;
 }
 
 interface Pagination {
@@ -127,6 +130,21 @@ export default function SongsPage() {
     } else {
       setSortBy(col);
       setSortDir("asc");
+    }
+  }
+
+  async function copySongLink(song: Song) {
+    const slug = song.slug || `${song.penyanyi}-${song.judul}`
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9_ -]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    try {
+      await navigator.clipboard.writeText(`https://chordkuy.id/chord/${slug}`);
+      toast.success("Link chord disalin");
+    } catch {
+      toast.error("Gagal menyalin link");
     }
   }
 
@@ -342,6 +360,13 @@ export default function SongsPage() {
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </Link>
+                        <button
+                          onClick={() => copySongLink(song)}
+                          className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition"
+                          title="Salin link chord"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
                         <button
                           onClick={() => setDeleteConfirm(song)}
                           className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
