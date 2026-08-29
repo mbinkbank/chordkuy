@@ -6,11 +6,14 @@ import { SITE } from "../lib/site";
 
 type Status = "idle" | "sent" | "error" | "failed";
 
+const WHATSAPP_NUMBER = "6285156280708";
+
 export default function ContactPage() {
   const { t } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
-  const [topic, setTopic] = useState("koreksi");
-  const description = `Hubungi tim ${SITE.name} untuk koreksi chord, permintaan lagu, kerja sama, atau laporan masalah aksesibilitas.`;
+  const [topic, setTopic] = useState("");
+  const [method, setMethod] = useState("");
+  const description = `Hubungi tim ${SITE.name} untuk koreksi chord, permintaan lagu, atau laporan masalah aksesibilitas.`;
 
   useSeo({
     title: `${t("contactTitle")} | ${SITE.name}`,
@@ -29,12 +32,24 @@ export default function ContactPage() {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const name = String(form.get("name") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim();
     const message = String(form.get("message") ?? "").trim();
-    if (!name || !message) {
+    if (!topic || !name || !method || !message) {
       setStatus("error");
       return;
     }
+
+    const fullMessage = `[${topic}]\n\n${message}\n\n— ${name}`;
+
+    if (method === "whatsapp") {
+      window.open(
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(fullMessage)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+      setStatus("sent");
+      return;
+    }
+
     try {
       const res = await fetch(`https://formsubmit.co/ajax/${SITE.email}`, {
         method: "POST",
@@ -45,14 +60,13 @@ export default function ContactPage() {
         body: JSON.stringify({
           _subject: `[${topic}] Pesan untuk ${SITE.name}`,
           name,
-          email,
-          message,
+          message: fullMessage,
         }),
       });
       if (!res.ok) throw new Error("send failed");
       setStatus("sent");
     } catch {
-      setStatus("error");
+      setStatus("failed");
     }
   };
 
@@ -84,11 +98,12 @@ export default function ContactPage() {
                 className="select"
                 value={topic}
                 onChange={(event) => setTopic(event.target.value)}
+                required
               >
-                <option value="koreksi">{t("contactTopicFix")}</option>
-                <option value="permintaan">{t("contactTopicRequest")}</option>
-                <option value="bug">{t("contactTopicBug")}</option>
-                <option value="kerja-sama">{t("contactTopicCollab")}</option>
+                <option value="" disabled>— {t("contactSelect")} —</option>
+                <option value={t("contactTopicFix")}>{t("contactTopicFix")}</option>
+                <option value={t("contactTopicRequest")}>{t("contactTopicRequest")}</option>
+                <option value={t("contactTopicBug")}>{t("contactTopicBug")}</option>
               </select>
             </div>
 
@@ -98,8 +113,19 @@ export default function ContactPage() {
             </div>
 
             <div className="field">
-              <label className="label" htmlFor="email">{t("contactEmail")}</label>
-              <input id="email" name="email" className="input" type="email" autoComplete="email" />
+              <label className="label" htmlFor="method">{t("contactMethod")}</label>
+              <select
+                id="method"
+                name="method"
+                className="select"
+                value={method}
+                onChange={(event) => setMethod(event.target.value)}
+                required
+              >
+                <option value="" disabled>— {t("contactSelect")} —</option>
+                <option value="email">{t("contactMethodEmail")}</option>
+                <option value="whatsapp">{t("contactMethodWhatsapp")}</option>
+              </select>
             </div>
 
             <div className="field">
