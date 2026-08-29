@@ -62,6 +62,7 @@ export default function ContactPage() {
           _subject: `[${topic}] Pesan untuk ${SITE.name}`,
           _replyto: email,
           name,
+          email,
           message: fullMessage,
         }),
       });
