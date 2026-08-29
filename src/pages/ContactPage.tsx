@@ -32,8 +32,9 @@ export default function ContactPage() {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const name = String(form.get("name") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim();
     const message = String(form.get("message") ?? "").trim();
-    if (!topic || !name || !method || !message) {
+    if (!topic || !name || !method || (method === "email" && !email) || !message) {
       setStatus("error");
       return;
     }
@@ -59,6 +60,7 @@ export default function ContactPage() {
         },
         body: JSON.stringify({
           _subject: `[${topic}] Pesan untuk ${SITE.name}`,
+          _replyto: email,
           name,
           message: fullMessage,
         }),
@@ -127,6 +129,13 @@ export default function ContactPage() {
                 <option value="whatsapp">{t("contactMethodWhatsapp")}</option>
               </select>
             </div>
+
+            {method === "email" && (
+              <div className="field">
+                <label className="label" htmlFor="email">{t("contactEmail")}</label>
+                <input id="email" name="email" className="input" type="email" autoComplete="email" required />
+              </div>
+            )}
 
             <div className="field">
               <label className="label" htmlFor="message">{t("contactMessage")}</label>
