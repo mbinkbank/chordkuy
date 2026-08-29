@@ -64,6 +64,16 @@ async function getSongById(id) {
   return rows[0] || null;
 }
 
+async function getSongBySlug(slug) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+  );
+  if (!res.ok) return null;
+  const rows = await res.json();
+  return rows[0] || null;
+}
+
 // ---------- HTML rendering untuk crawler ----------
 function escapeHtml(s) {
   return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -245,12 +255,14 @@ export default {
       if (url.pathname.startsWith("/chord/")) {
         const slug = decodeURIComponent(url.pathname.replace("/chord/", "").replace(/\/$/, ""));
         try {
-          const map = await getSongMap();
-          const song = map[slug];
-          if (song) {
-            const full = await getSongById(song.id);
-            if (full) html = renderChordHtml(full);
+          // Pertama coba cari langsung via slug DB (100% akurat untuk lagu baru/terbalik)
+          let song = await getSongBySlug(slug);
+          if (!song) {
+            const map = await getSongMap();
+            const mapped = map[slug];
+            if (mapped) song = await getSongById(mapped.id);
           }
+          if (song) html = renderChordHtml(song);
         } catch {}
       } else if (url.pathname.startsWith("/artist/")) {
         const slug = decodeURIComponent(url.pathname.replace("/artist/", "").replace(/\/$/, ""));
