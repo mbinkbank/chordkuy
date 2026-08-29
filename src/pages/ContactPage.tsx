@@ -4,7 +4,7 @@ import { useI18n } from "../lib/i18n";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE } from "../lib/site";
 
-type Status = "idle" | "sent" | "error";
+type Status = "idle" | "sent" | "error" | "failed";
 
 export default function ContactPage() {
   const { t } = useI18n();
@@ -25,19 +25,35 @@ export default function ContactPage() {
     ],
   });
 
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const name = String(form.get("name") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim();
     const message = String(form.get("message") ?? "").trim();
     if (!name || !message) {
       setStatus("error");
       return;
     }
-    const subject = encodeURIComponent(`[${topic}] Pesan untuk ${SITE.name}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name}`);
-    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
-    setStatus("sent");
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${SITE.email}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `[${topic}] Pesan untuk ${SITE.name}`,
+          name,
+          email,
+          message,
+        }),
+      });
+      if (!res.ok) throw new Error("send failed");
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -98,6 +114,7 @@ export default function ContactPage() {
               <span className="caption" role="status" aria-live="polite">
                 {status === "sent" && t("contactSent")}
                 {status === "error" && t("contactError")}
+                {status === "failed" && t("contactFailed")}
               </span>
             </div>
           </form>
