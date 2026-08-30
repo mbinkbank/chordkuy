@@ -255,7 +255,6 @@ export default {
       if (url.pathname.startsWith("/chord/")) {
         const slug = decodeURIComponent(url.pathname.replace("/chord/", "").replace(/\/$/, ""));
         try {
-          // Pertama coba cari langsung via slug DB (100% akurat untuk lagu baru/terbalik)
           let song = await getSongBySlug(slug);
           if (!song) {
             const map = await getSongMap();
@@ -263,12 +262,18 @@ export default {
             if (mapped) song = await getSongById(mapped.id);
           }
           if (song) html = renderChordHtml(song);
-        } catch {}
+          else return new Response("Not Found", { status: 404 });
+        } catch {
+          return new Response("Not Found", { status: 404 });
+        }
       } else if (url.pathname.startsWith("/artist/")) {
         const slug = decodeURIComponent(url.pathname.replace("/artist/", "").replace(/\/$/, ""));
         try {
           html = await renderArtistHtml(slug);
-        } catch {}
+          if (!html) return new Response("Not Found", { status: 404 });
+        } catch {
+          return new Response("Not Found", { status: 404 });
+        }
       }
 
       if (html) {
