@@ -248,7 +248,19 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Perbaiki URL lama yang memiliki prefix /chord/ ganda.
+    if (url.pathname === "/" && url.searchParams.has("page")) {
+      const corrected = new URL(request.url);
+      corrected.pathname = "/";
+      corrected.search = "";
+      return Response.redirect(corrected.toString(), 301);
+    }
+
+    if ((url.pathname.startsWith("/chord/") || url.pathname.startsWith("/artist/")) && url.pathname.endsWith("/")) {
+      const corrected = new URL(request.url);
+      corrected.pathname = url.pathname.replace(/\/$/, "");
+      return Response.redirect(corrected.toString(), 301);
+    }
+
     if (url.pathname.startsWith("/chord/chord/")) {
       const corrected = new URL(request.url);
       corrected.pathname = url.pathname.replace(/^\/chord\/chord\//, "/chord/");
