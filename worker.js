@@ -248,6 +248,13 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Perbaiki URL lama yang memiliki prefix /chord/ ganda.
+    if (url.pathname.startsWith("/chord/chord/")) {
+      const corrected = new URL(request.url);
+      corrected.pathname = url.pathname.replace(/^\/chord\/chord\//, "/chord/");
+      return Response.redirect(corrected.toString(), 301);
+    }
+
     // ---------- Dynamic rendering untuk crawler ----------
     if (isCrawler(request)) {
       let html = null;
