@@ -14,7 +14,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronRight, ChevronUp, Settings, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronRight, ChevronUp, Printer, Settings, Star } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -213,6 +213,15 @@ export default function ChordPage({ song }: { song: Song }) {
 
             <div className="row toolbar">
               <ShareButton title={`Chord ${song.title} - ${song.artist}`} />
+              <button
+                type="button"
+                className="btn btn-sm"
+                title="Cetak chord"
+                aria-label="Cetak chord"
+                onClick={() => window.print()}
+              >
+                <Printer size={15} strokeWidth={2.2} />
+              </button>
               <BookmarkToggle slug={song.slug} title={song.title} artist={song.artist} />
               <button
                 type="button"
