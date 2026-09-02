@@ -1787,7 +1787,11 @@ a.card:focus-visible {
   .breadcrumb,
   .skip-link,
   .chord-pop,
-  .section-head a {
+  .section-head a,
+  .row.toolbar,
+  [aria-labelledby="chord-family"],
+  section[aria-labelledby="related"],
+  .btn.btn-sm.btn-icon {
     display: none !important;
   }
   body {
