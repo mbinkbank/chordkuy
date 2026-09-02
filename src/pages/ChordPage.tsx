@@ -55,7 +55,7 @@ export default function ChordPage({ song }: { song: Song }) {
   const [related, setRelated] = useState<Song[]>([]);
   const [popular, setPopular] = useState<Song[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [familyOpen, setFamilyOpen] = useState(true);
+  const [familyOpen, setFamilyOpen] = useState(false);
   const { playing, toggle, stop } = useAutoScroll(speed);
 
   useEffect(() => {
@@ -259,7 +259,7 @@ export default function ChordPage({ song }: { song: Song }) {
               className="section-toggle"
               onClick={() => setFamilyOpen((v) => !v)}
               aria-expanded={familyOpen}
-              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", textAlign: "left" }}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", textAlign: "left", marginBottom: "var(--s2)" }}
             >
               <span className="eyebrow" id="chord-family" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                 {familyOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -267,29 +267,25 @@ export default function ChordPage({ song }: { song: Song }) {
               </span>
             </button>
             {familyOpen && (
-              <>
-                <div style={{ display: "flex", gap: 10, overflowX: "auto", marginTop: "var(--s2)", paddingBottom: "var(--s1)" }}>
-                  {family.chords.map((chord) => (
-                    <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
-                      <ChordDiagram chord={chord} size={60} />
-                      <span className="caption" style={{ fontSize: 9, fontWeight: 600, display: "block", marginTop: 2 }}>{chord}</span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ borderTop: "1px solid var(--border)", margin: "var(--s3) 0", opacity: .8 }} />
-                <div>
-                  <h3 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>{t("usedChords")}</h3>
-                  <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s1)" }}>
-                    {chordList.map((chord) => (
-                      <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
-                        <ChordDiagram chord={chord} size={60} />
-                        <span className="caption" style={{ fontSize: 9, fontWeight: 600 }}>{chord}</span>
-                      </div>
-                    ))}
+              <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: "var(--s1)" }}>
+                {family.chords.map((chord) => (
+                  <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
+                    <ChordDiagram chord={chord} size={60} />
+                    <span className="caption" style={{ fontSize: 9, fontWeight: 600, display: "block", marginTop: 2 }}>{chord}</span>
                   </div>
-                </div>
-              </>
+                ))}
+              </div>
             )}
+            <div style={{ borderTop: "1px solid var(--border)", margin: "var(--s3) 0 var(--s2)", opacity: .8 }} />
+            <h3 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>{t("usedChords")}</h3>
+            <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s1)" }}>
+              {chordList.map((chord) => (
+                <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
+                  <ChordDiagram chord={chord} size={60} />
+                  <span className="caption" style={{ fontSize: 9, fontWeight: 600 }}>{chord}</span>
+                </div>
+              ))}
+            </div>
           </section>
 
           <section aria-label={`${t("chordGitar")} & lirik ${song.title}`} style={{ paddingTop: "var(--s3)" }}>
