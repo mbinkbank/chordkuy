@@ -1791,7 +1791,8 @@ a.card:focus-visible {
   .row.toolbar,
   [aria-labelledby="chord-family"],
   section[aria-labelledby="related"],
-  .btn.btn-sm.btn-icon {
+  .btn.btn-sm.btn-icon,
+  .chord-settings {
     display: none !important;
   }
   body {

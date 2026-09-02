@@ -360,7 +360,7 @@ export default function ChordPage({ song }: { song: Song }) {
         </aside>
       </div>
 
-      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 50 }}>
+      <div className="chord-settings" style={{ position: "fixed", bottom: 20, right: 20, zIndex: 50 }}>
         {settingsOpen && (
           <div
             className="settings-panel"
