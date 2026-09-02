@@ -270,7 +270,7 @@ export default function ChordPage({ song }: { song: Song }) {
               <div style={{ display: "flex", gap: 10, overflowX: "auto", marginTop: "var(--s2)", paddingBottom: "var(--s1)" }}>
                 {family.chords.map((chord) => (
                   <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
-                    <ChordDiagram chord={chord} size={52} />
+                    <ChordDiagram chord={chord} size={60} />
                     <span className="caption" style={{ fontSize: 9, fontWeight: 600, display: "block", marginTop: 2 }}>{chord}</span>
                   </div>
                 ))}
