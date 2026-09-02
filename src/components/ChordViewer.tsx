@@ -49,23 +49,29 @@ export default function ChordViewer({
   const [copied, setCopied] = useState(false);
 
   const copyChordContent = async () => {
-    const sheet = document.querySelector("[data-chord-sheet]");
-    const sheetText = sheet?.textContent;
-    const text = [
-      `${title} - ${artist}`,
-      `Key: ${currentKey}`,
-      sheetText,
-    ].filter(Boolean).join("\n\n");
+    const sheetText = (lines || []).map((line) => {
+      if (line.type === "blank") return "";
+      if (line.type === "section") return line.label;
+      return line.segments.map((segment) => segment.chord ?? segment.text ?? "").join("");
+    }).join("\n");
     const credit = `Credit: ${window.location.origin}`;
-    const finalText = `${text}\n\n${credit}`;
-    if (sheet) {
-      try {
+    const finalText = [`${title} - ${artist}`, `Key: ${currentKey}`, sheetText, credit].join("\n\n");
+    const escaped = finalText.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    try {
+      const CI = (window as any).ClipboardItem;
+      if (typeof CI !== "undefined") {
+        const item = new CI({
+          "text/html": new Blob([`<pre style="font-family:monospace;white-space:pre;line-height:1.25">${escaped}</pre>`], { type: "text/html" }),
+          "text/plain": new Blob([finalText], { type: "text/plain" }),
+        });
+        await navigator.clipboard.write([item] as any);
+      } else {
         await navigator.clipboard.writeText(finalText);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1600);
-      } catch {
-        setCopied(false);
       }
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
     }
   };
   const hoverTimer = useRef<number | null>(null);
