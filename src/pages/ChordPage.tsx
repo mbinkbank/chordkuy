@@ -8,7 +8,7 @@ import type { Song } from "../data/types";
 import { isBookmarked, onBookmarksChange, toggleBookmark } from "../lib/bookmarks";
 import { formatDate, formatViews, getPopularSongs, getRelatedSongs, recordSongView } from "../lib/api";
 import { useI18n } from "../lib/i18n";
-import { keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
+import { getChordFamily, keyPrefersFlat, parseSheet, transposeKey, transposeLines, uniqueChords } from "../lib/chords";
 import { songLangLabel } from "../lib/lang";
 import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
@@ -75,6 +75,10 @@ export default function ChordPage({ song }: { song: Song }) {
   );
   const currentKey = transposeKey(song.originalKey, transpose, preferFlat);
   const chordList = useMemo(() => uniqueChords(lines), [lines]);
+  const family = useMemo(
+    () => getChordFamily(transposeKey(song.originalKey, transpose, preferFlat)),
+    [song.originalKey, transpose, preferFlat],
+  );
   const path = `/chord/${song.slug}`;
 
   useEffect(() => stop, [stop]);
@@ -298,6 +302,20 @@ export default function ChordPage({ song }: { song: Song }) {
         <aside className="sidebar" aria-label={t("songInfo")}>
           <div className="detail-card-sidebar">
             {detailCard}
+          </div>
+
+          <div className="card">
+            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
+              {t("chordFamily")}
+            </h2>
+            <p className="caption" style={{ marginTop: 0, marginBottom: "var(--s2)" }}>
+              {t("chordFamilyDesc")}
+            </p>
+            <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+              {family.chords.map((chord) => (
+                <span key={chord} className="badge badge-muted">{chord}</span>
+              ))}
+            </div>
           </div>
 
           <div className="card">

@@ -57,6 +57,7 @@ const DICT = {
     artistRequestFind: (name: string) => `Tidak menemukan lagu ${name} yang kamu cari?`,
     artistRequestLink: "Kirim permintaan chord", artistRequestEnd: "dan kami tambahkan ke antrean.",
     statsArtists: (n: number) => `${n} artis`, statsChords: (n: number) => `${n} chord`,
+    chordFamily: "Chord Family", chordFamilyDesc: "Chord yang umum digunakan dalam kunci ini.",
   },
   en: {
     navArtists: "Artists", navAbout: "About", navContact: "Contact",
@@ -110,6 +111,7 @@ const DICT = {
     artistRequestFind: (name: string) => `Can't find ${name} songs you're looking for?`,
     artistRequestLink: "Send a chord request", artistRequestEnd: "and we'll add it to the queue.",
     statsArtists: (n: number) => `${n} artists`, statsChords: (n: number) => `${n} chords`,
+    chordFamily: "Chord Family", chordFamilyDesc: "Common chords used in this key.",
   },
 } as const;
 

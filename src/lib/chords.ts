@@ -382,3 +382,23 @@ export function uniqueChords(lines: SheetLine[]): string[] {
   }
   return out;
 }
+
+const MAJOR_FAMILY = [
+  [0, ""], [2, "m"], [4, "m"], [5, ""], [7, ""], [9, "m"], [11, "dim"],
+] as const;
+const MINOR_FAMILY = [
+  [0, "m"], [2, "dim"], [3, ""], [5, "m"], [7, "m"], [8, ""], [10, ""],
+] as const;
+
+export function getChordFamily(key: string): { label: string; chords: string[] } {
+  const trimmed = key.trim();
+  const isMinor = /^[A-G][#b]?m$/i.test(trimmed);
+  const rootPc = noteToPitchClass(trimmed.replace(/m$/i, ""));
+  if (rootPc === null) return { label: "", chords: [] };
+  const prefFlat = keyPrefersFlat(trimmed);
+  const family = isMinor ? MINOR_FAMILY : MAJOR_FAMILY;
+  return {
+    label: isMinor ? "Minor" : "Major",
+    chords: family.map(([offset, suffix]) => `${pitchClassToNote(rootPc + offset, prefFlat)}${suffix}`),
+  };
+}
