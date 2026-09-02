@@ -253,7 +253,7 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
           </header>
 
-          <section className="card" aria-labelledby="chord-family" style={{ paddingTop: "var(--s3)", paddingBottom: "var(--s3)" }}>
+          <section aria-labelledby="chord-family" style={{ marginTop: "var(--s3)" }}>
             <button
               type="button"
               className="section-toggle"
