@@ -50,16 +50,10 @@ export default function ChordViewer({
 
   const copyChordContent = async () => {
     const sheet = document.querySelector("[data-chord-sheet]");
-    const family = document.querySelector("[data-chord-family]");
-    const used = document.querySelector("[data-used-chords]");
-    const familyText = family?.textContent?.replace(/\n/g, "  ");
-    const usedText = used?.textContent?.replace(/\n/g, "  ");
     const sheetText = sheet?.textContent;
     const text = [
       `${title} - ${artist}`,
       `Key: ${currentKey}`,
-      familyText && `Chord Family: ${familyText}`,
-      usedText && `Chords Used: ${usedText}`,
       sheetText,
     ].filter(Boolean).join("\n\n");
     const credit = `Credit: ${window.location.origin}`;
