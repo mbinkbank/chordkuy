@@ -52,8 +52,26 @@ export default function ChordViewer({
     const sheet = document.querySelector("[data-chord-sheet]");
     const family = document.querySelector("[data-chord-family]");
     const used = document.querySelector("[data-used-chords]");
-    const text = [`Title: ${title} - ${artist}`, `Key: ${currentKey}`, family?.textContent, used?.textContent, sheet?.textContent].filter(Boolean).join("\n\n");
-    const html = `<h2>${title} - ${artist}</h2><p>Key: ${currentKey}</p>${family?.outerHTML || ""}${used?.outerHTML || ""}${sheet?.outerHTML || ""}`;
+    const mono = `font-family: monospace, 'Courier New', monospace; white-space: pre;`;
+    const style = `font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4;`;
+    const familyText = family?.textContent?.replace(/\n/g, "  ");
+    const usedText = used?.textContent?.replace(/\n/g, "  ");
+    const sheetText = sheet?.textContent;
+    const text = [
+      `${title} - ${artist}`,
+      `Key: ${currentKey}`,
+      familyText && `Chord Family: ${familyText}`,
+      usedText && `Chords Used: ${usedText}`,
+      sheetText,
+    ].filter(Boolean).join("\n\n");
+    const familyHtml = family?.outerHTML
+      ? `<div style="${mono}margin: 6px 0;">${family.innerHTML.replace(/<div/g, "<span").replace(/<\/div>/g, "</span>")}</div>`
+      : "";
+    const usedHtml = used?.outerHTML
+      ? `<div style="${mono}margin: 6px 0;">${used.innerHTML.replace(/<div/g, "<span").replace(/<\/div>/g, "</span>")}</div>`
+      : "";
+    const sheetHtml = sheet?.outerHTML ? `<div style="${mono}">${sheet.innerHTML}</div>` : "";
+    const html = `<div style="${style}"><strong style="font-size: 14px;">${title} - ${artist}</strong><div style="${mono}">Key: ${currentKey}</div>${familyHtml}${usedHtml}${sheetHtml}</div>`;
     if (sheet) {
       try {
         const CI = (window as any).ClipboardItem;
