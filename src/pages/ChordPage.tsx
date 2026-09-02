@@ -14,7 +14,7 @@ import { useAutoScroll, useShortcuts, useStoredState } from "../lib/hooks";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, useSeo, webPageSchema } from "../lib/seo";
 import { SITE, absoluteUrl } from "../lib/site";
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Settings, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronRight, ChevronUp, Settings, Star } from "lucide-react";
 
 function isoDuration(value?: string): string | undefined {
   if (!value) return undefined;
@@ -55,6 +55,7 @@ export default function ChordPage({ song }: { song: Song }) {
   const [related, setRelated] = useState<Song[]>([]);
   const [popular, setPopular] = useState<Song[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [familyOpen, setFamilyOpen] = useState(true);
   const { playing, toggle, stop } = useAutoScroll(speed);
 
   useEffect(() => {
@@ -253,17 +254,28 @@ export default function ChordPage({ song }: { song: Song }) {
           </header>
 
           <section className="card" aria-labelledby="chord-family" style={{ paddingTop: "var(--s3)", paddingBottom: "var(--s3)" }}>
-            <h2 id="chord-family" className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              {t("chordFamily")}
-            </h2>
-            <p className="small muted" style={{ marginTop: 0, marginBottom: "var(--s2)" }}>
-              {t("chordFamilyDesc")}
-            </p>
-            <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
-              {family.chords.map((chord) => (
-                <span key={chord} className="badge badge-muted">{chord}</span>
-              ))}
-            </div>
+            <button
+              type="button"
+              className="section-toggle"
+              onClick={() => setFamilyOpen((v) => !v)}
+              aria-expanded={familyOpen}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", textAlign: "left" }}
+            >
+              <span className="eyebrow" id="chord-family" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                {familyOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                {t("chordFamily")}
+              </span>
+            </button>
+            {familyOpen && (
+              <div style={{ display: "flex", gap: 10, overflowX: "auto", marginTop: "var(--s2)", paddingBottom: "var(--s1)" }}>
+                {family.chords.map((chord) => (
+                  <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
+                    <ChordDiagram chord={chord} size={52} />
+                    <span className="caption" style={{ fontSize: 9, fontWeight: 600, display: "block", marginTop: 2 }}>{chord}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
 
           <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s2)" }}>
