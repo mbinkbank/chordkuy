@@ -81,9 +81,39 @@ export function songLang(song: { title?: string; content?: string; lyrics?: stri
   return detectWordLang(`${song.title || ""} ${text}`);
 }
 
-// Tag manual admin menang; "-" = belum ditag; sisanya deteksi otomatis.
+const LANG_BADGE: Record<string, string> = {
+  Indonesia: "ID",
+  English: "EN",
+  Korea: "KR",
+  "Korea Selatan": "KR",
+  Jepang: "JP",
+  Mandarin: "CN",
+  "Tiongkok (China)": "CN",
+  Rusia: "RU",
+  Thailand: "TH",
+  Kamboja: "KH",
+  Laos: "LA",
+  Myanmar: "MM",
+  India: "IN",
+  Bangladesh: "BD",
+  "Sri Lanka": "LK",
+  Maladewa: "MV",
+  Ibrani: "IL",
+  Armenia: "AM",
+  Georgia: "GE",
+  Siprus: "GR",
+  Mongolia: "MN",
+  Arab: "SA",
+  Vietnam: "VN",
+  Filipina: "PH",
+  Turki: "TR",
+  Minang: "ID",
+  "-": "-",
+};
+
 export function songLangLabel(song: { title?: string; content?: string; lyrics?: string; language?: string }): string {
   const l = (song.language || "").trim();
-  if (l && l !== "ID" && l !== "EN" && l !== "-") return l;
-  return langLabel(songLang(song));
+  if (l && l !== "ID" && l !== "EN") return LANG_BADGE[l] || l;
+  const detected = langLabel(songLang(song));
+  return LANG_BADGE[detected] || detected;
 }
