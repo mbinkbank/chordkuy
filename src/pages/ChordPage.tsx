@@ -252,6 +252,20 @@ export default function ChordPage({ song }: { song: Song }) {
             </div>
           </header>
 
+          <section className="card" aria-labelledby="chord-family" style={{ paddingTop: "var(--s3)", paddingBottom: "var(--s3)" }}>
+            <h2 id="chord-family" className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
+              {t("chordFamily")}
+            </h2>
+            <p className="small muted" style={{ marginTop: 0, marginBottom: "var(--s2)" }}>
+              {t("chordFamilyDesc")}
+            </p>
+            <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+              {family.chords.map((chord) => (
+                <span key={chord} className="badge badge-muted">{chord}</span>
+              ))}
+            </div>
+          </section>
+
           <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s2)" }}>
             {chordList.map((chord) => (
               <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
@@ -302,20 +316,6 @@ export default function ChordPage({ song }: { song: Song }) {
         <aside className="sidebar" aria-label={t("songInfo")}>
           <div className="detail-card-sidebar">
             {detailCard}
-          </div>
-
-          <div className="card">
-            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              {t("chordFamily")}
-            </h2>
-            <p className="caption" style={{ marginTop: 0, marginBottom: "var(--s2)" }}>
-              {t("chordFamilyDesc")}
-            </p>
-            <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
-              {family.chords.map((chord) => (
-                <span key={chord} className="badge badge-muted">{chord}</span>
-              ))}
-            </div>
           </div>
 
           <div className="card">
