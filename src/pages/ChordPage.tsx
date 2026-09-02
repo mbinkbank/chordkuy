@@ -267,7 +267,7 @@ export default function ChordPage({ song }: { song: Song }) {
               </span>
             </button>
             {familyOpen && (
-              <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: "var(--s1)" }}>
+              <div data-chord-family style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: "var(--s1)" }}>
                 {family.chords.map((chord) => (
                   <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
                     <ChordDiagram chord={chord} size={60} />
@@ -278,7 +278,7 @@ export default function ChordPage({ song }: { song: Song }) {
             )}
             <div style={{ borderTop: "1px solid var(--border)", margin: "var(--s3) 0 var(--s2)", opacity: .8 }} />
             <h3 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>{t("usedChords")}</h3>
-            <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s1)" }}>
+            <div data-used-chords style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: "var(--s1)" }}>
               {chordList.map((chord) => (
                 <div key={chord} style={{ flex: "0 0 auto", textAlign: "center" }}>
                   <ChordDiagram chord={chord} size={60} />
@@ -301,6 +301,8 @@ export default function ChordPage({ song }: { song: Song }) {
               transpose={transpose}
               onTransposeChange={setTranspose}
               currentKey={currentKey}
+              title={song.title}
+              artist={song.artist}
             />
           </section>
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import type { SheetLine } from "../lib/chords";
 import { useI18n } from "../lib/i18n";
 import ChordDiagram from "./ChordDiagram";
+import { Copy, Check } from "lucide-react";
 
 interface ChordViewerProps {
   lines: SheetLine[];
@@ -15,6 +16,8 @@ interface ChordViewerProps {
   transpose: number;
   onTransposeChange: (v: number) => void;
   currentKey: string;
+  title: string;
+  artist: string;
 }
 
 interface PopoverState {
@@ -38,9 +41,35 @@ export default function ChordViewer({
   transpose,
   onTransposeChange,
   currentKey,
+  title,
+  artist,
 }: ChordViewerProps) {
   const { t } = useI18n();
   const [pop, setPop] = useState<PopoverState | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const copyChordContent = async () => {
+    const sheet = document.querySelector("[data-chord-sheet]");
+    const family = document.querySelector("[data-chord-family]");
+    const used = document.querySelector("[data-used-chords]");
+    const text = [`Title: ${title} - ${artist}`, `Key: ${currentKey}`, family?.textContent, used?.textContent, sheet?.textContent].filter(Boolean).join("\n\n");
+    const html = `<h2>${title} - ${artist}</h2><p>Key: ${currentKey}</p>${family?.outerHTML || ""}${used?.outerHTML || ""}${sheet?.outerHTML || ""}`;
+    if (sheet) {
+      try {
+        const CI = (window as any).ClipboardItem;
+        if (typeof CI !== "undefined") {
+          const item = new CI({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) });
+          await navigator.clipboard.write([item] as any);
+        } else {
+          await navigator.clipboard.writeText(text);
+        }
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1600);
+      } catch {
+        setCopied(false);
+      }
+    }
+  };
   const hoverTimer = useRef<number | null>(null);
 
   const clearTimer = () => {
@@ -100,11 +129,23 @@ export default function ChordViewer({
 
   return (
     <>
-      <div
-        className={`sheet${lyricsOnly ? " sheet-plain" : ""}`}
-        style={{ ["--sheet-size" as string]: `${fontSize}px` }}
-        data-chord-sheet=""
-      >
+      <div data-chord-copy-wrap style={{ position: "relative" }}>
+        <button
+          type="button"
+          className="btn btn-sm btn-icon"
+          onClick={copyChordContent}
+          title="Salin chord beserta kunci, family chord, dan chord yang digunakan"
+          aria-label="Salin chord"
+          style={{ position: "absolute", top: 0, right: 0, zIndex: 2 }}
+        >
+          {copied ? <Check size={15} /> : <Copy size={15} />}
+        </button>
+
+        <div
+          className={`sheet${lyricsOnly ? " sheet-plain" : ""}`}
+          style={{ ["--sheet-size" as string]: `${fontSize}px` }}
+          data-chord-sheet=""
+        >
         {filteredLines.map((line, i) => {
           if (line.type === "blank") return <div key={i} className="blank-line" />;
           if (line.type === "section") {
@@ -167,7 +208,8 @@ export default function ChordViewer({
           );
         })}
 
-        {/* Toolbar removed - now in ChordPage header */}
+          {/* Toolbar removed - now in ChordPage header */}
+        </div>
       </div>
 
       {pop && (
