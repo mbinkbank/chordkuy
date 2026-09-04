@@ -63,8 +63,34 @@ async function main() {
 
   xml += "\n</urlset>\n";
 
+  const llmsLines = [
+    "# Chordkuy.id — Katalog Chord Gitar",
+    "",
+    "> Katalog chord gitar dan lirik lagu dengan kunci dasar, capo, transpose, diagram chord, dan auto scroll.",
+    "",
+    "## Panduan Penggunaan",
+    "",
+    "Gunakan halaman chord sebagai referensi belajar gitar. Setiap halaman memiliki judul lagu, artis, kunci dasar, capo, serta chord dan lirik.",
+    "",
+    "## Halaman Katalog",
+    "",
+    `- [Daftar artis](${DOMAIN}/artists): katalog artis yang tersedia`,
+    `- [Chord trending](${DOMAIN}/): lagu yang paling banyak dilihat dalam periode terbaru`,
+    `- [Pencarian](${DOMAIN}/search): pencarian lagu dan artis`,
+    "",
+    "## Contoh Halaman Chord",
+    "",
+  ];
+  for (const s of songs) {
+    const songSlug = s.slug || `${slugify(s.artist)}-${slugify(s.title)}`;
+    llmsLines.push(`- [${s.title} — ${s.artist}](${DOMAIN}/chord/${songSlug})`);
+  }
+  llmsLines.push("", "## Catatan", "", "Katalog ini diperbarui berkala. Gunakan URL canonical pada setiap halaman sebagai referensi utama.", "");
+
   writeFileSync("dist/sitemap.xml", xml, "utf-8");
+  writeFileSync("dist/llms-full.txt", llmsLines.join("\n"), "utf-8");
   console.log(`Sitemap written to dist/sitemap.xml (${songs.length} songs, ${seenArtists.size} artists)`);
+  console.log(`llms-full.txt written to dist/llms-full.txt (${songs.length} song links)`);
 }
 
 main().catch((err) => {
