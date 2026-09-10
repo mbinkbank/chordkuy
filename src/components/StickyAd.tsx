@@ -60,11 +60,20 @@ export default function StickyAd() {
         }}
       />
       <style>{`
+        .chordkuy-sticky-ad {
+          height: ${DESKTOP_SIZE.h}px;
+          padding: 0;
+          overflow: hidden;
+        }
         .chordkuy-sticky-ad iframe {
+          display: block;
           width: ${DESKTOP_SIZE.w}px;
           height: ${DESKTOP_SIZE.h}px;
         }
         @media (max-width: 480px) {
+          .chordkuy-sticky-ad {
+            height: ${MOBILE_SIZE.h}px;
+          }
           .chordkuy-sticky-ad iframe {
             width: ${MOBILE_SIZE.w}px;
             height: ${MOBILE_SIZE.h}px;
