@@ -1779,6 +1779,17 @@ a.card:focus-visible {
 }
 
 /* ---------- Print: clean chord sheet on paper ---------- */
+.chord-settings-trigger {
+  bottom: 109px;
+  right: 8px;
+}
+@media (max-width: 860px) {
+  .chord-settings-trigger {
+    bottom: 71px;
+    right: 8px;
+  }
+}
+
 @media print {
   .site-header,
   .site-footer,
