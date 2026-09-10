@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRoute } from "../lib/router";
 
 const MOBILE_SIZE = { w: 320, h: 50 };
 const DESKTOP_SIZE = { w: 728, h: 90 };
 
 export default function StickyAd() {
   const [closed, setClosed] = useState(false);
+  const route = useRoute();
+
+  useEffect(() => {
+    setClosed(false);
+  }, [route.pathname]);
 
   if (closed) return null;
 
