@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { I18nProvider } from "./lib/i18n";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import StickyAd from "./components/StickyAd";
 import { getArtistBySlug, getSongBySlug } from "./lib/api";
 import { useRoute } from "./lib/router";
 import HomePage from "./pages/HomePage";
@@ -101,6 +102,7 @@ export default function App() {
         <View />
       </div>
       <Footer />
+      <StickyAd />
     </I18nProvider>
   );
 }
