@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const AD_KEY = "chordkuy:sticky-ad:closed";
 const MOBILE_SIZE = { w: 320, h: 50 };
 const DESKTOP_SIZE = { w: 728, h: 90 };
 
 export default function StickyAd() {
   const [closed, setClosed] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.localStorage.getItem(AD_KEY) === "1") setClosed(true);
-  }, []);
 
   if (closed) return null;
 
@@ -32,14 +26,8 @@ export default function StickyAd() {
     >
       <button
         type="button"
-        data-sticky-ad-close
         aria-label="Tutup iklan"
-        onClick={() => {
-          setClosed(true);
-          try {
-            window.localStorage.setItem(AD_KEY, "1");
-          } catch {}
-        }}
+        onClick={() => setClosed(true)}
         style={{
           position: "absolute",
           right: 8,
@@ -63,7 +51,6 @@ export default function StickyAd() {
           padding: 0,
           background: "transparent",
           overflow: "hidden",
-          maxWidth: "100%",
         }}
       />
       <style>{`
