@@ -1792,7 +1792,7 @@ a.card:focus-visible {
   [aria-labelledby="chord-family"],
   section[aria-labelledby="related"],
   .btn.btn-sm.btn-icon,
-  .chord-settings {
+  .chord-settings-trigger {
     display: none !important;
   }
   body {
