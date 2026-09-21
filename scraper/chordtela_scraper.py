@@ -591,6 +591,7 @@ def _run():
                         "artist": artist,
                         "slug": f"{slugify(artist)}-{slugify(title)}",
                         "artist_slug": slugify(artist),
+                        "source_url": song_url,
                         **parsed,
                     }
 

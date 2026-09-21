@@ -51,6 +51,23 @@ def load_existing_slugs() -> set[str]:
     return slugs
 
 
+def load_existing_source_urls() -> set[str]:
+    urls = set()
+    offset = 0
+    while True:
+        rows = supabase.table("chords").select("source_url").range(offset, offset + 999).execute().data
+        if not rows:
+            break
+        for r in rows:
+            u = r.get("source_url", "")
+            if u:
+                urls.add(u)
+        offset += len(rows)
+        if len(rows) < 1000:
+            break
+    return urls
+
+
 def load_queue() -> list[dict]:
     items = []
     with open(QUEUE, encoding="utf-8") as f:
@@ -100,7 +117,8 @@ def build_scan_order(queue: list[dict], last_song_url: str) -> list[dict]:
 def main():
     print("Memuat data existing dari Supabase...", flush=True)
     existing_slugs = load_existing_slugs()
-    print(f"Sudah ada di DB: {len(existing_slugs)} lagu", flush=True)
+    existing_urls = load_existing_source_urls()
+    print(f"Sudah ada di DB: {len(existing_slugs)} lagu, {len(existing_urls)} URL", flush=True)
 
     queue = load_queue()
     print(f"Total antrian sensus: {len(queue)} lagu", flush=True)
@@ -125,6 +143,10 @@ def main():
             break
         url = item["song_url"]
         checked += 1
+
+        if url in existing_urls:
+            print(f"[SKIP URL SAMA] {url}", flush=True)
+            continue
 
         predicted = get_slug_from_url(url, item.get("artist", ""))
         if predicted in existing_slugs:
@@ -161,12 +183,14 @@ def main():
             "artist": artist,
             "slug": song_slug,
             "artist_slug": art_slug,
+            "source_url": url,
             **parsed,
         }
 
         try:
             supabase.table("chords").insert(record).execute()
             existing_slugs.add(song_slug)
+            existing_urls.add(url)
             done += 1
             last_inserted_url = url
             save_cursor(last_inserted_url, done)

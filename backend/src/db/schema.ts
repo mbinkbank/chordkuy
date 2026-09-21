@@ -18,6 +18,7 @@ export const tbChord = pgTable("chords", {
   views_7d: bigint("views_7d", { mode: "number" }).default(0).notNull(),
   lastmod: text("lastmod").default("").notNull(),
   youtube_url: text("youtube_url").default("").notNull(),
+  source_url: text("source_url").default("").notNull(),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
