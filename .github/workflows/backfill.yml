@@ -31,6 +31,7 @@ jobs:
           SCRAPE_PROXY_URL: "https://chordkuy.id"
           SCRAPE_PROXY_TOKEN: ${{ secrets.SCRAPE_PROXY_TOKEN }}
           BACKFILL_LIMIT: "800"
+          MAX_RUNTIME_SEC: "9000"
         run: python backfill.py
 
       - name: Commit backfill cursor

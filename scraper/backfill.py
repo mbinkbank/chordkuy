@@ -17,6 +17,7 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 QUEUE = os.path.join(DIR, "census_songs.jsonl")
 CURSOR = os.path.join(DIR, "backfill_cursor.json")
 LIMIT = int(os.getenv("BACKFILL_LIMIT", "800"))
+MAX_RUNTIME_SEC = int(os.getenv("MAX_RUNTIME_SEC", str(150 * 60)))  # 150 menit max (agar tidak kena hard timeout 180m GH Actions)
 
 
 def slugify(text: str) -> str:
@@ -26,13 +27,19 @@ def slugify(text: str) -> str:
     return t.strip("-")
 
 
-def get_slug_from_url(url: str, default_artist: str) -> str:
+def get_candidate_slugs(url: str, default_artist: str) -> list[str]:
     filename = url.rstrip("/").split("/")[-1].replace(".html", "")
     filename_slug = slugify(filename)
+    candidates = []
+    if filename_slug:
+        candidates.append(filename_slug)
     art_slug = slugify(default_artist)
-    if art_slug and filename_slug.startswith(art_slug + "-"):
-        return filename_slug
-    return f"{art_slug}-{filename_slug}" if art_slug else filename_slug
+    if art_slug:
+        if filename_slug.startswith(art_slug + "-"):
+            candidates.append(filename_slug)
+        else:
+            candidates.append(f"{art_slug}-{filename_slug}")
+    return list(dict.fromkeys(candidates))
 
 
 def load_existing_slugs() -> set[str]:
@@ -141,6 +148,9 @@ def main():
     for item in scan_order:
         if done >= LIMIT:
             break
+        if time.time() - t0 >= MAX_RUNTIME_SEC:
+            print(f"\n[STOP] Batas waktu {MAX_RUNTIME_SEC // 60} menit tercapai, berhenti rapi.", flush=True)
+            break
         url = item["song_url"]
         checked += 1
 
@@ -148,9 +158,9 @@ def main():
             print(f"[SKIP URL SAMA] {url}", flush=True)
             continue
 
-        predicted = get_slug_from_url(url, item.get("artist", ""))
-        if predicted in existing_slugs:
-            print(f"[SKIP PREDIKSI DUPLIKAT] {predicted}", flush=True)
+        candidates = get_candidate_slugs(url, item.get("artist", ""))
+        if any(c in existing_slugs for c in candidates):
+            print(f"[SKIP PREDIKSI DUPLIKAT] {candidates[0]}", flush=True)
             continue
 
         try:
