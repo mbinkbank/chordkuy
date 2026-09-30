@@ -1,5 +1,4 @@
 import Breadcrumb from "../components/Breadcrumb";
-import { getStats } from "../lib/api";
 import { useI18n } from "../lib/i18n";
 import { Link } from "../lib/router";
 import { breadcrumbSchema, organizationSchema, useSeo, webPageSchema } from "../lib/seo";
@@ -7,7 +6,6 @@ import { SITE } from "../lib/site";
 
 export default function AboutPage() {
   const { t } = useI18n();
-  const stats = getStats();
   const description = `${SITE.name} adalah platform chord gitar yang mengutamakan kecepatan, keterbacaan, dan pengalaman membaca chord tanpa gangguan.`;
 
   useSeo({

@@ -17,7 +17,7 @@ export default function HeaderStats() {
   useEffect(() => {
     getStats()
       .then((s) => {
-        if (s.songCount && s.artistCount) {
+        if (s && s.songCount && s.artistCount) {
           setStats({ songCount: s.songCount, artistCount: s.artistCount });
         }
       })

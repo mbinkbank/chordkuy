@@ -27,6 +27,25 @@ async function main() {
   if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
   const rows = await res.json();
 
+  // Hitung asli via RPC — rows.length tercap max_rows (1000), bukan total sebenarnya
+  let songCount = rows.length;
+  let artistCount = 0;
+  try {
+    const sr = await fetch(`${SUPABASE_URL}/rest/v1/rpc/catalog_stats`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+    });
+    if (sr.ok) {
+      const s = (await sr.json())[0];
+      if (s) {
+        songCount = Number(s.song_count) || songCount;
+        artistCount = Number(s.artist_count) || 0;
+      }
+    }
+  } catch {
+    // fallback: hitung dari rows di bawah
+  }
+
   const seen = new Set();
   const artists = [];
   for (const r of rows) {
@@ -37,13 +56,14 @@ async function main() {
     }
   }
   artists.sort((a, b) => a.localeCompare(b));
+  if (!artistCount) artistCount = artists.length;
 
   const out = {
     popularRows: rows.slice(0, 8),
     artistNames: artists.slice(0, 6),
     recentRows: rows.slice(0, PER_PAGE),
-    songCount: rows.length,
-    artistCount: artists.length,
+    songCount,
+    artistCount,
   };
   writeFileSync("src/data/build-data.json", JSON.stringify(out));
   console.log(

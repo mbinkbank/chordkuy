@@ -241,30 +241,38 @@ export async function getPopularArtists(limit = 6): Promise<Artist[]> {
   }
 }
 
-export async function getStats() {
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/rpc/catalog_stats`, {
-      method: "POST",
-      headers: {
-        apikey: SB_KEY,
-        Authorization: `Bearer ${SB_KEY}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (res.ok) {
-      const rows = await res.json();
-      if (Array.isArray(rows) && rows[0]) {
-        return {
-          songCount: Number(rows[0].song_count || 0),
-          artistCount: Number(rows[0].artist_count || 0),
-          genreCount: 2,
-        };
+export async function getStats(): Promise<{
+  songCount: number;
+  artistCount: number;
+  genreCount: number;
+} | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/rpc/catalog_stats`, {
+        method: "POST",
+        headers: {
+          apikey: SB_KEY,
+          Authorization: `Bearer ${SB_KEY}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows[0]) {
+          return {
+            songCount: Number(rows[0].song_count || 0),
+            artistCount: Number(rows[0].artist_count || 0),
+            genreCount: 2,
+          };
+        }
       }
+    } catch {
+      // retry sekali di iterasi berikutnya
     }
-  } catch {
-    // fallback
+    await new Promise((r) => setTimeout(r, 600));
   }
-  return { songCount: 3200, artistCount: 1600, genreCount: 2 };
+  // ponytail: gagal → null, caller pakai data build (angka asli dari build-time) — jangan tampilkan angka palsu
+  return null;
 }
 
 export function formatDate(iso: string): string {
