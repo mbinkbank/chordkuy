@@ -12,15 +12,6 @@ const slugify = (text) =>
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-const STATIC_PAGES = `
-  <url><loc>${DOMAIN}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>${DOMAIN}/artists</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>${DOMAIN}/search</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>${DOMAIN}/about</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>${DOMAIN}/contact</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>${DOMAIN}/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>${DOMAIN}/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`;
-
 async function main() {
   console.log("Generating sitemap from Supabase...");
 
@@ -44,24 +35,46 @@ async function main() {
   console.log(`Found ${songs.length} songs`);
 
   const today = new Date().toISOString().split("T")[0];
-  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
-  xml += STATIC_PAGES;
+
+  // Kumpulkan semua URL sebagai entry <url>, lalu pecah per 2500 (sitemap index)
+  const PER_PAGE = 2500;
+  const entries = [];
+
+  entries.push(`<url><loc>${DOMAIN}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/artists</loc><changefreq>daily</changefreq><priority>0.8</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/search</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/about</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/contact</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`);
+  entries.push(`<url><loc>${DOMAIN}/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`);
 
   const seenArtists = new Set();
   for (const s of songs) {
     const aSlug = s.artist_slug || slugify(s.artist);
     if (aSlug && !seenArtists.has(aSlug)) {
       seenArtists.add(aSlug);
-      xml += `\n  <url><loc>${DOMAIN}/artist/${aSlug}</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>`;
+      entries.push(`<url><loc>${DOMAIN}/artist/${aSlug}</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>`);
     }
   }
 
   for (const s of songs) {
     const songSlug = s.slug || `${slugify(s.artist)}-${slugify(s.title)}`;
-    xml += `\n  <url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`;
+    entries.push(`<url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`);
   }
 
-  xml += "\n</urlset>\n";
+  const totalPages = Math.ceil(entries.length / PER_PAGE);
+  for (let p = 1; p <= totalPages; p++) {
+    const chunk = entries.slice((p - 1) * PER_PAGE, p * PER_PAGE);
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${chunk.join("\n")}\n</urlset>\n`;
+    writeFileSync(`dist/sitemap-page-${p}.xml`, xml, "utf-8");
+  }
+
+  const indexItems = Array.from({ length: totalPages }, (_, i) => {
+    const p = i + 1;
+    return `  <sitemap><loc>${DOMAIN}/sitemap.xml?page=${p}</loc><lastmod>${today}</lastmod></sitemap>`;
+  }).join("\n");
+  const indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexItems}\n</sitemapindex>\n`;
+  writeFileSync("dist/sitemap.xml", indexXml, "utf-8");
 
   const llmsLines = [
     "# Chordkuy.id — Katalog Chord Gitar",
@@ -87,9 +100,8 @@ async function main() {
   }
   llmsLines.push("", "## Catatan", "", "Katalog ini diperbarui berkala. Gunakan URL canonical pada setiap halaman sebagai referensi utama.", "");
 
-  writeFileSync("dist/sitemap.xml", xml, "utf-8");
   writeFileSync("dist/llms-full.txt", llmsLines.join("\n"), "utf-8");
-  console.log(`Sitemap written to dist/sitemap.xml (${songs.length} songs, ${seenArtists.size} artists)`);
+  console.log(`Sitemap index written to dist/sitemap.xml (${totalPages} pages x ${PER_PAGE} = ${entries.length} URLs)`);
   console.log(`llms-full.txt written to dist/llms-full.txt (${songs.length} song links)`);
 
   // artists.json untuk halaman daftar artis (paging 40/halaman, sekali fetch)

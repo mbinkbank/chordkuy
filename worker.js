@@ -267,6 +267,22 @@ export default {
       return Response.redirect(corrected.toString(), 301);
     }
 
+    // Sitemap: selalu lewat worker (run_worker_first) — index tanpa query dari asset,
+    // ?page=N map ke file chunk (sebelum blok crawler, karena path tak dikenal = 404)
+    if (url.pathname === "/sitemap.xml") {
+      if (!url.searchParams.has("page")) return env.ASSETS.fetch(request);
+      const p = url.searchParams.get("page");
+      if (!/^\d+$/.test(p) || Number(p) < 1) {
+        return new Response("Not Found", { status: 404 });
+      }
+      const res = await env.ASSETS.fetch(new Request(`${url.origin}/sitemap-page-${p}.xml`));
+      // asset hilang jatuh ke SPA fallback (200 + html) -> paksa 404
+      if (res.status === 404 || (res.headers.get("content-type") || "").includes("text/html")) {
+        return new Response("Not Found", { status: 404 });
+      }
+      return res;
+    }
+
     // ---------- Dynamic rendering untuk crawler ----------
     if (isCrawler(request)) {
       let html = null;
