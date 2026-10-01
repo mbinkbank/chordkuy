@@ -181,33 +181,31 @@ export async function getRelatedSongs(song: Song, limit = 5): Promise<Song[]> {
   return rows.map(mapDbRowToSong);
 }
 
+let artistsCache: Artist[] | null = null;
+
+/** Daftar artis dari artists.json (di-generate saat build, 1 fetch kecil). */
 export async function getAllArtists(): Promise<Artist[]> {
+  if (artistsCache) return artistsCache;
   try {
-    const rows = await restAll(`chords?select=artist,title&order=id.desc`);
-    const map = new Map<string, { name: string; titles: string[] }>();
-    for (const row of rows) {
-      const name = row.artist || "";
-      if (!name) continue;
-      const artistSlug = slugify(name);
-      const entry = map.get(artistSlug) || { name, titles: [] };
-      if (row.title) entry.titles.push(row.title);
-      map.set(artistSlug, entry);
-    }
-    return Array.from(map.entries())
-      .map(([artistSlug, e]) => ({
-        id: artistSlug,
-        name: e.name,
-        slug: artistSlug,
-        bio: `Kumpulan chord gitar dari ${e.name}.`,
-        country: langLabel(detectScriptLang(...e.titles)),
-        genres: ["Pop"],
-        thumbnail: null,
-        createdAt: new Date().toISOString(),
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const res = await fetch("/artists.json");
+    if (!res.ok) throw new Error(String(res.status));
+    const rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error("bad shape");
+    artistsCache = rows.map(([name, slug, n]: [string, string, number]) => ({
+      id: slug,
+      name,
+      slug,
+      songCount: n,
+      bio: `Kumpulan chord gitar dari ${name}.`,
+      country: "",
+      genres: ["Pop"],
+      thumbnail: null,
+      createdAt: "",
+    }));
   } catch {
-    return [];
+    artistsCache = [];
   }
+  return artistsCache;
 }
 
 export async function getArtistBySlug(slug: string): Promise<Artist | null> {

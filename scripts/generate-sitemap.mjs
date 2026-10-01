@@ -91,6 +91,22 @@ async function main() {
   writeFileSync("dist/llms-full.txt", llmsLines.join("\n"), "utf-8");
   console.log(`Sitemap written to dist/sitemap.xml (${songs.length} songs, ${seenArtists.size} artists)`);
   console.log(`llms-full.txt written to dist/llms-full.txt (${songs.length} song links)`);
+
+  // artists.json untuk halaman daftar artis (paging 40/halaman, sekali fetch)
+  const artistMap = new Map(); // slug -> [name, count]
+  for (const s of songs) {
+    const aSlug = s.artist_slug || slugify(s.artist);
+    const name = (s.artist || "").trim();
+    if (!aSlug || !name) continue;
+    const e = artistMap.get(aSlug);
+    if (e) e[1] += 1;
+    else artistMap.set(aSlug, [name, 1]);
+  }
+  const artistsOut = [...artistMap.entries()]
+    .map(([slug, [name, n]]) => [name, slug, n])
+    .sort((a, b) => String(a[0]).localeCompare(String(b[0]), "id"));
+  writeFileSync("dist/artists.json", JSON.stringify(artistsOut), "utf-8");
+  console.log(`artists.json written (${artistsOut.length} artists)`);
 }
 
 main().catch((err) => {

@@ -53,6 +53,8 @@ export interface Artist {
   genres: string[];
   thumbnail: string | null;
   createdAt: string;
+  /** Jumlah lagu artis (dari artists.json build-time). */
+  songCount?: number;
 }
 
 export interface Genre {
