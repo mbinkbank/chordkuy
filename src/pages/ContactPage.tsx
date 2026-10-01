@@ -159,16 +159,6 @@ export default function ContactPage() {
         <aside className="sidebar" aria-label="Informasi kontak">
           <div className="card">
             <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
-              {t("contactDirectEmail")}
-            </h2>
-            <p className="small" style={{ margin: 0 }}>
-              <a href={`mailto:${SITE.email}`} style={{ color: "var(--accent)" }}>
-                {SITE.email}
-              </a>
-            </p>
-          </div>
-          <div className="card">
-            <h2 className="eyebrow" style={{ marginBottom: "var(--s2)" }}>
               {t("contactBeforeSending")}
             </h2>
             <ul className="stack stack-1 small" style={{ listStyle: "none", padding: 0, margin: 0 }}>
