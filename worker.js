@@ -285,6 +285,12 @@ export default {
 
     // ---------- Dynamic rendering untuk crawler ----------
     if (isCrawler(request)) {
+      // asset ber-extension (favicon, robots.txt, gambar, js/css) -> serahkan ke ASSETS,
+      // jangan kena 404 (dengan run_worker_first=true semua request lewat worker dulu)
+      const seg = url.pathname.split("/").pop() || "";
+      if (seg.includes(".") && !url.pathname.startsWith("/chord/") && !url.pathname.startsWith("/artist/")) {
+        return env.ASSETS.fetch(request);
+      }
       let html = null;
 
       if (url.pathname.startsWith("/chord/")) {
