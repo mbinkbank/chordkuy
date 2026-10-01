@@ -300,7 +300,35 @@ export default {
           headers: { "Content-Type": "text/html; charset=utf-8" },
         });
       }
-      // fallback ke SPA kalau bukan halaman yang bisa di-render
+
+      // Halaman statis: sajikan shell SPA dengan canonical + title yang benar
+      // (shell default selalu canonical-kan ke homepage — bikin Google anggap halaman ini duplikat)
+      const STATIC_SEO = {
+        "/artists": {
+          title: "Daftar artis | Chordkuy",
+          desc: "Daftar artis chord gitar. Pilih artis untuk melihat seluruh chord lagu yang tersedia.",
+        },
+        "/about": { title: "Tentang Kami | Chordkuy", desc: "Tentang Chordkuy — platform chord gitar yang mengutamakan kecepatan dan keterbacaan." },
+        "/contact": { title: "Kontak | Chordkuy", desc: "Hubungi tim Chordkuy melalui email atau WhatsApp." },
+        "/privacy": { title: "Kebijakan Privasi | Chordkuy", desc: "Kebijakan privasi situs Chordkuy.id." },
+        "/terms": { title: "Syarat & Ketentuan | Chordkuy", desc: "Syarat dan ketentuan penggunaan situs Chordkuy.id." },
+      };
+      const staticSeo = STATIC_SEO[url.pathname];
+      if (staticSeo) {
+        const res = await env.ASSETS.fetch(request);
+        let shell = await res.text();
+        shell = shell
+          .replace(`<link rel="canonical" href="${SITE_URL}" />`, `<link rel="canonical" href="${SITE_URL}${url.pathname}" />`)
+          .replace("<title>Chordkuy — Chord Gitar Indonesia Lengkap dan Terupdate</title>", `<title>${staticSeo.title}</title>`)
+          .replace(/<meta\s+name="description"\s+content="[^"]*"\s*\/>/, `<meta name="description" content="${staticSeo.desc}" />`);
+        return new Response(shell, {
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        });
+      }
+      if (url.pathname === "/") return env.ASSETS.fetch(request);
+
+      // Path tak dikenal → 404 nyata (hindari soft-404: shell homepage dengan 200)
+      return new Response("Not Found", { status: 404 });
     }
 
     // ---------- API endpoints ----------
