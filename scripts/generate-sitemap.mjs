@@ -17,7 +17,7 @@ async function main() {
 
   const songs = [];
   for (let offset = 0; ; offset += 1000) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,slug,artist_slug&order=id.asc&limit=1000&offset=${offset}`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,slug,artist_slug,updated_at&order=id.asc&limit=1000&offset=${offset}`, {
       headers: {
         apikey: SUPABASE_KEY,
         Authorization: `Bearer ${SUPABASE_KEY}`,
@@ -42,7 +42,7 @@ async function main() {
 
   entries.push(`<url><loc>${DOMAIN}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`);
   entries.push(`<url><loc>${DOMAIN}/artists</loc><changefreq>daily</changefreq><priority>0.8</priority></url>`);
-  entries.push(`<url><loc>${DOMAIN}/search</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>`);
+  // /search sengaja tidak dimasukkan — halamannya noindex
   entries.push(`<url><loc>${DOMAIN}/about</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
   entries.push(`<url><loc>${DOMAIN}/contact</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
   entries.push(`<url><loc>${DOMAIN}/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`);
@@ -59,7 +59,9 @@ async function main() {
 
   for (const s of songs) {
     const songSlug = s.slug || `${slugify(s.artist)}-${slugify(s.title)}`;
-    entries.push(`<url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`);
+    // lastmod = updated_at asli dari DB (bukan tanggal build — freshness palsu diabaikan Google)
+    const lastmod = s.updated_at ? String(s.updated_at).slice(0, 10) : today;
+    entries.push(`<url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`);
   }
 
   const totalPages = Math.ceil(entries.length / PER_PAGE);

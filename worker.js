@@ -57,7 +57,7 @@ async function getSongMap() {
 
 async function getSongById(id) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language&id=eq.${id}`,
+    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug&id=eq.${id}`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   );
   const rows = await res.json();
@@ -66,7 +66,7 @@ async function getSongById(id) {
 
 async function getSongBySlug(slug) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug&slug=eq.${encodeURIComponent(slug)}&limit=1`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   );
   if (!res.ok) return null;
@@ -74,9 +74,107 @@ async function getSongBySlug(slug) {
   return rows[0] || null;
 }
 
+async function getArtistSongs(artistSlug, excludeSlug) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/chords?select=slug,title,key_name&artist_slug=eq.${encodeURIComponent(artistSlug)}&order=id.asc&limit=15`,
+    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+  );
+  if (!res.ok) return [];
+  const rows = await res.json();
+  return rows.filter((r) => r.slug && r.slug !== excludeSlug).slice(0, 10);
+}
+
 // ---------- HTML rendering untuk crawler ----------
 function escapeHtml(s) {
   return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Bentuk kunci terbuka (low E -> high E); sisanya derivasi barre E-shape/A-shape
+const OPEN_SHAPES = {
+  C: [null, 3, 2, 0, 1, 0], Cmaj7: [null, 3, 2, 0, 0, 0], C7: [null, 3, 2, 3, 1, 0],
+  Cadd9: [null, 3, 2, 0, 3, 0], Csus4: [null, 3, 3, 0, 1, 1], "C/G": [3, 3, 2, 0, 1, 0],
+  D: [null, null, 0, 2, 3, 2], Dm: [null, null, 0, 2, 3, 1], D7: [null, null, 0, 2, 1, 2],
+  Dmaj7: [null, null, 0, 2, 2, 2], Dm7: [null, null, 0, 2, 1, 1], Dsus4: [null, null, 0, 2, 3, 3],
+  Dsus2: [null, null, 0, 2, 3, 0], "D/F#": [2, 0, 0, 2, 3, 2],
+  E: [0, 2, 2, 1, 0, 0], Em: [0, 2, 2, 0, 0, 0], E7: [0, 2, 0, 1, 0, 0],
+  Em7: [0, 2, 2, 0, 3, 0], Emaj7: [0, 2, 1, 1, 0, 0], Esus4: [0, 2, 2, 2, 0, 0],
+  F: [1, 3, 3, 2, 1, 1], Fmaj7: [null, null, 3, 2, 1, 0], Fm: [1, 3, 3, 1, 1, 1],
+  "F#m": [2, 4, 4, 2, 2, 2],
+  G: [3, 2, 0, 0, 0, 3], G7: [3, 2, 0, 0, 0, 1], Gmaj7: [3, 2, 0, 0, 0, 2],
+  Gsus4: [3, 3, 0, 0, 1, 3], "G/B": [null, 2, 0, 0, 0, 3],
+  A: [null, 0, 2, 2, 2, 0], Am: [null, 0, 2, 2, 1, 0], A7: [null, 0, 2, 0, 2, 0],
+  Am7: [null, 0, 2, 0, 1, 0], Amaj7: [null, 0, 2, 1, 2, 0], Asus4: [null, 0, 2, 2, 3, 0],
+  Asus2: [null, 0, 2, 2, 0, 0],
+  B7: [null, 2, 1, 2, 0, 2], Bm: [null, 2, 4, 4, 3, 2], Bm7: [null, 2, 0, 2, 0, 2],
+  Bb: [null, 1, 3, 3, 3, 1],
+};
+const PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+function parseChordName(name) {
+  const m = String(name).match(/^([A-G])([#b]?)(.*)$/);
+  if (!m) return null;
+  return { root: m[1] + m[2], rest: m[3] };
+}
+
+function chordToFrets(name) {
+  const p = parseChordName(name);
+  if (!p) return null;
+  if (OPEN_SHAPES[name]) return OPEN_SHAPES[name];
+  // derivasi barre: E-shape (root di fret root, bentuk 022100) / A-shape (bentuk x02220)
+  const pc = PC[p.root[0]] + (p.root[1] === "#" ? 1 : p.root[1] === "b" ? -1 : 0);
+  const root = ((pc % 12) + 12) % 12;
+  let q = p.rest;
+  if (q === "maj") q = "";
+  if (q === "min") q = "m";
+  const eVariant = ["", "7", "m", "m7", "maj7", "sus4"].includes(q);
+  const aVariant = ["", "7", "m", "m7", "maj7", "sus4", "sus2"].includes(q);
+  if (eVariant) { // E-shape: fret barre = pitch class root
+    const b = root === 0 ? 12 : root;
+    return [b, b + 2, b + 2, b + 1, b, b].map((f) => (f > 16 ? null : f));
+  }
+  if (aVariant) { // A-shape: fret barre = (root - 9) mod 12
+    const b = ((root - 9 + 12) % 12) || 12;
+    return [null, b, b + 2, b + 2, b + 2, b].map((f) => (f > 16 ? null : f));
+  }
+  return null;
+}
+
+function chordSvg(name, size = 70) {
+  const frets = chordToFrets(name);
+  if (!frets) return "";
+  const played = frets.filter((f) => f !== null && f > 0);
+  const minF = played.length ? Math.min(...played) : 1;
+  const baseFret = minF > 4 ? minF : 1;
+  const W = 66, H = 82, top = 16, rowH = 14, colW = 12;
+  let marks = "";
+  let lines = "";
+  for (let i = 0; i <= 5; i++) {
+    const x = 6 + i * colW;
+    lines += `<line x1="${x}" y1="${top}" x2="${x}" y2="${top + 4 * rowH}" stroke="#555" stroke-width="1"/>`;
+  }
+  for (let r = 0; r <= 4; r++) {
+    const y = top + r * rowH;
+    lines += `<line x1="6" y1="${y}" x2="${6 + 5 * colW}" y2="${y}" stroke="${r === 0 ? "#999" : "#555"}" stroke-width="${r === 0 ? 2 : 1}"/>`;
+  }
+  // barre: fret dasar muncul di >=2 senar -> gambar batang horizontal
+  const barreIdx = frets.map((f, i) => (f === minF && f > 0 ? i : -1)).filter((i) => i >= 0);
+  if (barreIdx.length >= 2) {
+    const y = top + (minF - baseFret + 0.5) * rowH;
+    const x1 = 6 + Math.min(...barreIdx) * colW;
+    const x2 = 6 + Math.max(...barreIdx) * colW;
+    marks += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#4ade80" stroke-width="8" stroke-linecap="round"/>`;
+  }
+  frets.forEach((f, s) => {
+    const x = 6 + s * colW;
+    if (f === null) marks += `<text x="${x}" y="${top - 5}" fill="#777" font-size="8" text-anchor="middle">x</text>`;
+    else if (f === 0) marks += `<circle cx="${x}" cy="${top - 7}" r="3" fill="none" stroke="#4ade80" stroke-width="1.2"/>`;
+    else if (f !== minF || barreIdx.length < 2) {
+      const y = top + (f - baseFret + 0.5) * rowH;
+      marks += `<circle cx="${x}" cy="${y}" r="4.5" fill="#4ade80"/>`;
+    }
+  });
+  if (baseFret > 1) marks += `<text x="${6 + 5 * colW + 2}" y="${top + rowH * 0.9}" fill="#777" font-size="8">${baseFret}</text>`;
+  return `<div class="chip"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="Diagram kunci ${name}">${lines}${marks}</svg><small>${name}</small></div>`;
 }
 
 function renderContentHtml(content) {
@@ -112,10 +210,14 @@ function baseHead(title, description, canonicalPath, ogImage) {
 <meta name="twitter:description" content="${escapeHtml(description)}">`;
 }
 
-function renderChordHtml(song) {
+function renderChordHtml(song, artistSongs) {
+  // canonical WAJIB pakai slug asli DB — reconstruct slugify(artist)-slugify(title)
+  // menghasilkan URL 404 untuk ~161 lagu (mis. "mulakma ho amang" -> "mulak-maho-amang")
+  const songSlug = song.slug || `${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
+  const artistSlug = song.artist_slug || slugifyJs(song.artist);
+  const canonical = `/chord/${songSlug}`;
   const title = `Chord Gitar ${song.title} - ${song.artist} | ${SITE_NAME}`;
-  const desc = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.key_name}${song.capo ? `, capo fret ${song.capo}` : ""}. Lengkap dengan lirik dan diagram chord.`;
-  const canonical = `/chord/${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
+  const desc = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.key_name}${song.capo ? `, capo fret ${song.capo}` : ""}, diagram chord, transpose, dan auto scroll gratis di Chordkuy.`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
   const clean = langText.replace(/[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]/g, "");
@@ -169,6 +271,13 @@ function renderChordHtml(song) {
     inLanguage: inLang || (song.language === "EN" ? "en" : "id"),
   });
 
+  // diagram kunci + jumlah kunci unik (pembeda vs chordtela)
+  const used = [...new Set((song.content || "").match(/\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)?(?:\/[A-G][#b]?)?\b/g) || [])]
+    .filter((c) => !/^(E|A|D|G|B)$/.test(c) || true)
+    .slice(0, 12);
+  const chordCount = used.length;
+  const chordChips = used.map((c) => chordSvg(c)).filter(Boolean).join("\n");
+
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -177,20 +286,35 @@ ${baseHead(title, desc, canonical)}
 <style>
 body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.6;color:#f1f1f3;background:#101014}
 h1{font-size:22px;margin:12px 0}
+h2{font-size:16px;margin:20px 0 8px}
 .badge{display:inline-block;border:1px solid #444;border-radius:999px;padding:2px 12px;font-size:13px;margin-right:4px}
 .cl{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:14px}
 strong{color:#4ade80;font-weight:700}
 a{color:#4ade80}
 .meta{color:#9b9ba6;font-size:13px;margin:8px 0}
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+.chip{text-align:center}
+.chip svg{display:block}
+.chip small{font-size:11px;color:#4ade80;font-weight:600}
 </style>
 </head>
 <body>
 <h1>Chord Gitar ${escapeHtml(song.title)} — ${escapeHtml(song.artist)}</h1>
 <p><span class="badge">Key ${escapeHtml(song.key_name)}</span>${song.capo ? `<span class="badge">Capo fret ${escapeHtml(song.capo)}</span>` : ""}<span class="badge">${escapeHtml(song.difficulty)}</span>${rating ? `<span class="badge">★ ${rating}</span>` : ""}</p>
+<p class="meta">Chord ${escapeHtml(song.title)} kunci ${escapeHtml(song.key_name)} cocok untuk pemula${song.capo ? ` dengan capo di fret ${escapeHtml(song.capo)}` : ""}. Semua ${chordCount} kunci digambar lengkap dengan diagram fret di bawah — tersedia juga versi interaktif dengan transpose 12 nada dan auto scroll.</p>
+<div class="chips">
+${chordChips}
+</div>
+<h2>Chord & Lirik ${escapeHtml(song.title)}</h2>
 <div style="margin:16px 0">
 ${renderContentHtml(song.content)}
 </div>
-<p><a href="${SITE_URL}/chord/${canonical}">Lihat versi interaktif dengan transpose & auto scroll →</a></p>
+${artistSongs && artistSongs.length ? `<h2>Lagu lain dari ${escapeHtml(song.artist)}</h2>
+<ul>
+${artistSongs.map((s) => `<li><a href="${SITE_URL}/chord/${escapeHtml(s.slug)}">${escapeHtml(s.title)}</a> (${escapeHtml(s.key_name)})</li>`).join("\n")}
+</ul>` : ""}
+<p><a href="${SITE_URL}/chord/${songSlug}">Lihat versi interaktif dengan transpose & auto scroll →</a></p>
+<p><a href="${SITE_URL}/artist/${artistSlug}">Semua chord ${escapeHtml(song.artist)} →</a></p>
 </body>
 </html>`;
 }
@@ -216,7 +340,7 @@ async function renderArtistHtml(artistSlug, env) {
   const canonical = `/artist/${artistSlug}`;
 
   const listHtml = songs
-    .map((s) => `<li><a href="${SITE_URL}/chord/${slugifyJs(s.artist)}-${slugifyJs(s.title)}">${escapeHtml(s.title)}</a> <span style="color:#888">(${escapeHtml(s.key_name)})</span></li>`)
+    .map((s) => `<li><a href="${SITE_URL}/chord/${escapeHtml(s.slug || `${slugifyJs(s.artist)}-${slugifyJs(s.title)}`)}">${escapeHtml(s.title)}</a> <span style="color:#888">(${escapeHtml(s.key_name)})</span></li>`)
     .join("\n");
 
   const jsonLd = JSON.stringify({
@@ -302,7 +426,11 @@ export default {
             const mapped = map[slug];
             if (mapped) song = await getSongById(mapped.id);
           }
-          if (song) html = renderChordHtml(song);
+          if (song) {
+            const artistSlugForSongs = song.artist_slug || slugifyJs(song.artist);
+            const artistSongs = await getArtistSongs(artistSlugForSongs, song.slug).catch(() => []);
+            html = renderChordHtml(song, artistSongs);
+          }
           else return new Response("Not Found", { status: 404 });
         } catch {
           return new Response("Not Found", { status: 404 });
