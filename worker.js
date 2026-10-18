@@ -353,8 +353,9 @@ ${chordChips}
 <div style="margin:16px 0">
 ${renderContentHtml(song.content)}
 </div>
-${seoNote ? `<h2>Tentang lagu ${escapeHtml(song.title)}</h2>
-<p>${escapeHtml(seoNote)}</p>` : ""}
+${seoNote ? `<hr style="border:none;border-top:1px solid #444;margin:24px 0">
+<h2>Tentang lagu</h2>
+<p style="margin-bottom:24px">${escapeHtml(seoNote)}</p>` : ""}
 <h2>Cara memainkan</h2>
 <p class="meta">Pasang ${hasCapo ? "capo di fret " + escapeHtml(capoFret) : "gitar tanpa capo"}, lalu mainkan ${chordCount} kunci di atas mengikuti lirik. Gunakan tombol transpose di versi interaktif untuk menaikkan atau menurunkan nada tanpa mengubah bentuk kunci, dan aktifkan auto scroll agar halaman bergulir mengikuti tempo.</p>
 ${artistSongs && artistSongs.length ? `<h2>Lagu lain dari ${escapeHtml(song.artist)}</h2>

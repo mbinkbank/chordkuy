@@ -316,8 +316,12 @@ export default function ChordPage({ song }: { song: Song }) {
           </section>
 
           {song.seoNote && (
-            <section className="section" aria-label={`Tentang lagu ${song.title}`}>
-              <h2 className="h-section">{t("aboutSong", { title: song.title })}</h2>
+            <section
+              className="section"
+              aria-label={`Tentang lagu ${song.title}`}
+              style={{ borderTop: "1px solid var(--border)", paddingTop: "var(--s4)", marginTop: "var(--s4)" }}
+            >
+              <h2 className="h-section" style={{ marginBottom: "var(--s3)" }}>{t("aboutSong")}</h2>
               <p style={{ maxWidth: "65ch", color: "var(--muted)" }}>{song.seoNote}</p>
             </section>
           )}
