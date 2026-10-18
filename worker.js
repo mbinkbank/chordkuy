@@ -57,7 +57,7 @@ async function getSongMap() {
 
 async function getSongById(id) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug&id=eq.${id}`,
+    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug,seo_note&id=eq.${id}`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   );
   const rows = await res.json();
@@ -66,7 +66,7 @@ async function getSongById(id) {
 
 async function getSongBySlug(slug) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    `${SUPABASE_URL}/rest/v1/chords?select=id,title,artist,content,key_name,capo,tuning,difficulty,rating,language,slug,artist_slug,seo_note&slug=eq.${encodeURIComponent(slug)}&limit=1`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   );
   if (!res.ok) return null;
@@ -307,6 +307,7 @@ function renderChordHtml(song, artistSongs) {
   const used = extractChords(song.content).slice(0, 12);
   const chordCount = used.length;
   const chordChips = used.map((c) => chordSvg(c)).filter(Boolean).join("\n");
+  const seoNote = String(song.seo_note || "").trim();
   const diffLabel = song.difficulty === "novice" ? "pemula" : song.difficulty === "advanced" ? "mahir" : "menengah";
 
   // variasi kalimat deterministik dari song.id — 38K halaman tidak satu pola
@@ -352,6 +353,8 @@ ${chordChips}
 <div style="margin:16px 0">
 ${renderContentHtml(song.content)}
 </div>
+${seoNote ? `<h2>Tentang lagu ${escapeHtml(song.title)}</h2>
+<p>${escapeHtml(seoNote)}</p>` : ""}
 <h2>Cara memainkan</h2>
 <p class="meta">Pasang ${hasCapo ? "capo di fret " + escapeHtml(capoFret) : "gitar tanpa capo"}, lalu mainkan ${chordCount} kunci di atas mengikuti lirik. Gunakan tombol transpose di versi interaktif untuk menaikkan atau menurunkan nada tanpa mengubah bentuk kunci, dan aktifkan auto scroll agar halaman bergulir mengikuti tempo.</p>
 ${artistSongs && artistSongs.length ? `<h2>Lagu lain dari ${escapeHtml(song.artist)}</h2>
