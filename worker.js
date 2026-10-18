@@ -177,6 +177,32 @@ function chordSvg(name, size = 70) {
   return `<div class="chip"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="Diagram kunci ${name}">${lines}${marks}</svg><small>${name}</small></div>`;
 }
 
+// Ekstrak kunci dari baris chord (bukan seluruh lirik — regex global pada lirik
+// Inggris menangkap kata "A", "E", "D", "G" sebagai kunci palsu)
+function extractChords(content) {
+  const CHORD_TOKEN = /^([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|m7|maj7|7|9|11|13)*)(?:\/[A-G][#b]?)?$/;
+  const out = [];
+  const seen = new Set();
+  for (const raw of String(content || "").split("\n")) {
+    const line = raw.trim();
+    if (!line || line.length > 60) continue;
+    const tokens = line.split(/\s+/);
+    if (tokens.length > 8) continue;
+    const h = tokens.filter((t) => CHORD_TOKEN.test(t)).length;
+    // baris chord: mayoritas token kunci, hampir tanpa kata lirik
+    if (h >= 1 && h >= tokens.length * 0.6) {
+      for (const t of tokens) {
+        const base = t.split("/")[0];
+        if (!CHORD_TOKEN.test(t) || seen.has(base)) continue;
+        seen.add(base);
+        out.push(base);
+      }
+    }
+    if (out.length >= 16) break;
+  }
+  return out;
+}
+
 function renderContentHtml(content) {
   const CHORD_RE = /\b([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)?(?:\/[A-G][#b]?)?)\b/g;
   const lines = String(content || "").split("\n");
@@ -216,8 +242,14 @@ function renderChordHtml(song, artistSongs) {
   const songSlug = song.slug || `${slugifyJs(song.artist)}-${slugifyJs(song.title)}`;
   const artistSlug = song.artist_slug || slugifyJs(song.artist);
   const canonical = `/chord/${songSlug}`;
+  // DB kadang menyimpan "fret 5" atau "No capo" di kolom capo — normalisasi di sini
+  const capoRaw = String(song.capo || "").trim();
+  const hasCapo = capoRaw && !/^(no|none|tanpa)/i.test(capoRaw);
+  const capoFret = hasCapo ? capoRaw.replace(/^fret\s*/i, "") : "";
+  const capoText = hasCapo ? `dengan capo di fret ${escapeHtml(capoFret)}` : "tanpa capo";
+  const capoBadge = hasCapo ? `<span class="badge">Capo fret ${escapeHtml(capoFret)}</span>` : "";
   const title = `Chord Gitar ${song.title} - ${song.artist} | ${SITE_NAME}`;
-  const desc = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.key_name}${song.capo ? `, capo fret ${song.capo}` : ""}, diagram chord, transpose, dan auto scroll gratis di Chordkuy.`;
+  const desc = `Chord gitar ${song.title} — ${song.artist}. Kunci dasar ${song.key_name}${hasCapo ? `, capo fret ${capoFret}` : ""}, diagram chord, transpose, dan auto scroll gratis di Chordkuy.`;
   const rating = song.rating ? Number(song.rating).toFixed(1) : null;
   const langText = `${song.title} ${(song.content || "").slice(0, 3000)}`;
   const clean = langText.replace(/[\u0430\u0435\u043E\u0440\u0441\u0443\u0445\u0456\u0455\u0458\u0410\u0415\u041E\u0420\u0421\u0423\u0425]/g, "");
@@ -271,12 +303,22 @@ function renderChordHtml(song, artistSongs) {
     inLanguage: inLang || (song.language === "EN" ? "en" : "id"),
   });
 
-  // diagram kunci + jumlah kunci unik (pembeda vs chordtela)
-  const used = [...new Set((song.content || "").match(/\b[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d+)?(?:\/[A-G][#b]?)?\b/g) || [])]
-    .filter((c) => !/^(E|A|D|G|B)$/.test(c) || true)
-    .slice(0, 12);
+  // diagram kunci + fakta data dari baris chord (bukan seluruh lirik)
+  const used = extractChords(song.content).slice(0, 12);
   const chordCount = used.length;
   const chordChips = used.map((c) => chordSvg(c)).filter(Boolean).join("\n");
+  const diffLabel = song.difficulty === "novice" ? "pemula" : song.difficulty === "advanced" ? "mahir" : "menengah";
+
+  // variasi kalimat deterministik dari song.id — 38K halaman tidak satu pola
+  const seed = Number(song.id) || 0;
+  const introPool = [
+    `Chord ${escapeHtml(song.title)} dari ${escapeHtml(song.artist)} dimainkan di kunci dasar ${escapeHtml(song.key_name)}, ${capoText}. Tingkat kesulitan ${diffLabel}, cocok untuk latihan ${diffLabel === "pemula" ? "awal" : diffLabel === "mahir" ? "barre chord dan perpindahan cepat" : "pergantian kunci"}.`,
+    `Lagu ${escapeHtml(song.title)} — ${escapeHtml(song.artist)} ini memakai kunci ${escapeHtml(song.key_name)} ${capoText}. Dengan ${chordCount} kunci utama, lagu ini tergolong ${diffLabel} dan enak dimainkan sambil menyanyi.`,
+    `${escapeHtml(song.artist)} membawakan ${escapeHtml(song.title)} dengan progresi kunci ${escapeHtml(song.key_name)} ${capoText}. Pola ${chordCount} kunci yang dipakai membuatnya ${diffLabel} untuk dimainkan pemula maupun pemain berpengalaman.`,
+    `Ingin memainkan ${escapeHtml(song.title)}? Chord lagu ${escapeHtml(song.artist)} ini berada di kunci ${escapeHtml(song.key_name)} ${capoText}. ${chordCount} kunci yang muncul digambar lengkap di bawah, dengan tingkat kesulitan ${diffLabel}.`,
+  ];
+  const intro = introPool[seed % introPool.length];
+  const chordNames = used.join(", ");
 
   return `<!DOCTYPE html>
 <html lang="id">
@@ -300,8 +342,9 @@ a{color:#4ade80}
 </head>
 <body>
 <h1>Chord Gitar ${escapeHtml(song.title)} — ${escapeHtml(song.artist)}</h1>
-<p><span class="badge">Key ${escapeHtml(song.key_name)}</span>${song.capo ? `<span class="badge">Capo fret ${escapeHtml(song.capo)}</span>` : ""}<span class="badge">${escapeHtml(song.difficulty)}</span>${rating ? `<span class="badge">★ ${rating}</span>` : ""}</p>
-<p class="meta">Chord ${escapeHtml(song.title)} kunci ${escapeHtml(song.key_name)} cocok untuk pemula${song.capo ? ` dengan capo di fret ${escapeHtml(song.capo)}` : ""}. Semua ${chordCount} kunci digambar lengkap dengan diagram fret di bawah — tersedia juga versi interaktif dengan transpose 12 nada dan auto scroll.</p>
+<p><span class="badge">Key ${escapeHtml(song.key_name)}</span>${capoBadge}<span class="badge">${escapeHtml(song.difficulty)}</span>${rating ? `<span class="badge">★ ${rating}</span>` : ""}</p>
+<p class="meta">${intro}</p>
+${chordNames ? `<p class="meta">Kunci yang dipakai: <strong>${escapeHtml(chordNames)}</strong>.</p>` : ""}
 <div class="chips">
 ${chordChips}
 </div>
@@ -309,6 +352,8 @@ ${chordChips}
 <div style="margin:16px 0">
 ${renderContentHtml(song.content)}
 </div>
+<h2>Cara memainkan</h2>
+<p class="meta">Pasang ${hasCapo ? "capo di fret " + escapeHtml(capoFret) : "gitar tanpa capo"}, lalu mainkan ${chordCount} kunci di atas mengikuti lirik. Gunakan tombol transpose di versi interaktif untuk menaikkan atau menurunkan nada tanpa mengubah bentuk kunci, dan aktifkan auto scroll agar halaman bergulir mengikuti tempo.</p>
 ${artistSongs && artistSongs.length ? `<h2>Lagu lain dari ${escapeHtml(song.artist)}</h2>
 <ul>
 ${artistSongs.map((s) => `<li><a href="${SITE_URL}/chord/${escapeHtml(s.slug)}">${escapeHtml(s.title)}</a> (${escapeHtml(s.key_name)})</li>`).join("\n")}
@@ -336,12 +381,28 @@ async function renderArtistHtml(artistSlug, env) {
     .map(([slug, s]) => ({ ...s, slug }));
 
   const title = `${artistName} — Chord Gitar | ${SITE_NAME}`;
-  const desc = `Kumpulan chord gitar ${artistName} — ${songs.length} lagu lengkap dengan lirik, transpose, dan auto scroll.`;
+  const desc = `Kumpulan ${songs.length} chord gitar ${artistName} lengkap dengan lirik, kunci dasar, diagram chord, transpose, dan auto scroll. Cari lagu ${artistName} favoritmu di sini.`;
   const canonical = `/artist/${artistSlug}`;
 
   const listHtml = songs
     .map((s) => `<li><a href="${SITE_URL}/chord/${escapeHtml(s.slug || `${slugifyJs(s.artist)}-${slugifyJs(s.title)}`)}">${escapeHtml(s.title)}</a> <span style="color:#888">(${escapeHtml(s.key_name)})</span></li>`)
     .join("\n");
+
+  // ringkasan kunci & variasi kalimat dari hash slug
+  const keysTally = {};
+  for (const s of songs) {
+    if (s.key_name) keysTally[s.key_name] = (keysTally[s.key_name] || 0) + 1;
+  }
+  const topKeys = Object.entries(keysTally).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([k]) => k);
+  let hash = 0;
+  for (const ch of artistSlug) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  const artistIntroPool = [
+    `Chord gitar ${escapeHtml(artistName)} berjumlah ${songs.length} lagu di Chordkuy, semuanya lengkap dengan lirik dan kunci. Kunci yang paling sering dipakai: ${topKeys.map((k) => escapeHtml(k)).join(", ")}.`,
+    `Total ${songs.length} lagu ${escapeHtml(artistName)} tersedia. Setiap lagu punya kunci dasar, diagram chord, dan tombol transpose — mulai dari ${songs.slice(0, 3).map((s) => escapeHtml(s.title)).join(", ")}.`,
+    `${songs.length} chord ${escapeHtml(artistName)} siap dimainkan. Mayoritas berada di kunci ${topKeys.map((k) => escapeHtml(k)).join(", ")} — pilih lagunya, lalu sesuaikan nada dengan transpose bila perlu.`,
+    `Di halaman ini ada ${songs.length} chord lagu ${escapeHtml(artistName)}. Kunci dominannya ${topKeys.map((k) => escapeHtml(k)).join(", ")}, pas untuk yang baru belajar maupun yang sudah lancar.`,
+  ];
+  const artistIntro = artistIntroPool[hash % artistIntroPool.length];
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
@@ -355,11 +416,12 @@ async function renderArtistHtml(artistSlug, env) {
 <head>
 ${baseHead(title, desc, canonical)}
 <script type="application/ld+json">${jsonLd}</script>
-<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.6;color:#f1f1f3;background:#101014}h1{font-size:20px;margin:12px 0}li{margin:6px 0}a{color:#4ade80}</style>
+<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.6;color:#f1f1f3;background:#101014}h1{font-size:20px;margin:12px 0}h2{font-size:15px;margin:18px 0 8px}li{margin:6px 0}a{color:#4ade80}</style>
 </head>
 <body>
-<h1>${escapeHtml(artistName)}</h1>
-<p>${songs.length} chord tersedia</p>
+<h1>Chord Gitar ${escapeHtml(artistName)}</h1>
+<p>${artistIntro}</p>
+<h2>Daftar lagu (${songs.length})</h2>
 <ul>
 ${listHtml}
 </ul>
