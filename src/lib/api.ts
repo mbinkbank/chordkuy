@@ -99,6 +99,7 @@ export function mapDbRowToSong(row: any): Song {
     views: actualViews,
     rating: typeof row.rating === "number" ? row.rating : undefined,
     language: row.language || "ID",
+    seoNote: row.seo_note || undefined,
   };
 }
 

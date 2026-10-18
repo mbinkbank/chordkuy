@@ -42,6 +42,8 @@ export interface Song {
   views?: number;
   rating?: number;
   language?: string;
+  /** Catatan unik per lagu (SEO/konten orisinal), diisi manual untuk lagu populer. */
+  seoNote?: string;
 }
 
 export interface Artist {
