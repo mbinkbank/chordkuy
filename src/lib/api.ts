@@ -209,19 +209,29 @@ export async function getAllArtists(): Promise<Artist[]> {
   return artistsCache;
 }
 
+/**
+ * Detail artis dari artist_slug asli DB (bukan ilike atas nama).
+ * Jalur ilike lama: scan penuh 38K baris -> statement timeout (~9% artis 404)
+ * dan slug hasil rekonstruksi sering beda dari artist_slug DB.
+ */
 export async function getArtistBySlug(slug: string): Promise<Artist | null> {
   try {
-    const pattern = encodeURIComponent(slug.replace(/-/g, "%"));
-    const { rows } = await rest(`chords?select=artist,title&artist=ilike.${pattern}`);
-    const filtered = rows.filter((r) => slugify(r.artist) === slug);
-    const match = filtered[0];
+    const { rows } = await rest(
+      `chords?select=artist,artist_slug&artist_slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    );
+    const match = rows[0];
     if (!match) return null;
+    const count = await rest(
+      `chords?select=id&artist_slug=eq.${encodeURIComponent(slug)}`,
+      true,
+    );
     return {
       id: slug,
       name: match.artist,
       slug,
+      songCount: count.total ?? undefined,
       bio: `Kumpulan chord gitar dari ${match.artist}.`,
-      country: langLabel(detectScriptLang(...filtered.map((r) => r.title || ""))),
+      country: langLabel(detectScriptLang(match.artist || "")),
       genres: ["Pop"],
       thumbnail: null,
       createdAt: new Date().toISOString(),
@@ -313,20 +323,46 @@ export interface SearchResult {
 export async function searchCatalogue(query: string, limit = 40): Promise<SearchResult> {
   if (!query.trim()) return { songs: [], artists: [] };
 
-  try {
-    const q = query.toLowerCase().trim();
-    const enc = encodeURIComponent(q);
-    const { rows } = await rest(
-      `chords?select=${LIGHT_COLS}&or=(title.ilike.*${enc}*,artist.ilike.*${enc}*)&limit=${limit}`,
-    );
+  const q = query.toLowerCase().trim();
+  const enc = encodeURIComponent(q);
+  // leading wildcard supaya "kanzer" match "Kanzer PMC" & ilike tidak case-sensitive-tergantung
+  const { rows } = await rest(
+    `chords?select=${LIGHT_COLS}&or=(title.ilike.*${enc}*,artist.ilike.*${enc}*,artist_slug.ilike.*${enc}*)&limit=${limit}`,
+  );
+  const songs = rows.map(mapDbRowToSong);
 
-    if (!rows.length) return { songs: [], artists: [] };
-    const songs = rows.map(mapDbRowToSong);
-    const artists = await getAllArtists();
-    const filteredArtists = artists.filter((a) => a.name.toLowerCase().includes(q));
-
-    return { songs, artists: filteredArtists };
-  } catch {
-    return { songs: [], artists: [] };
+  // artis dari hasil lagu (artist_slug asli, tanpa fetch artists.json 600KB)
+  const seen = new Set<string>();
+  const artists: Artist[] = [];
+  for (const row of rows) {
+    const aSlug = row.artist_slug;
+    if (!aSlug || seen.has(aSlug)) continue;
+    seen.add(aSlug);
+    artists.push({
+      id: aSlug,
+      name: row.artist,
+      slug: aSlug,
+      bio: `Kumpulan chord gitar dari ${row.artist}.`,
+      country: "",
+      genres: ["Pop"],
+      thumbnail: null,
+      createdAt: "",
+    });
   }
+
+  // tambah artis dari artists.json yang namanya cocok (untuk artis tanpa lagu di hasil)
+  try {
+    const all = await getAllArtists();
+    for (const a of all) {
+      if (seen.has(a.slug)) continue;
+      if (a.name.toLowerCase().includes(q)) {
+        seen.add(a.slug);
+        artists.push(a);
+      }
+    }
+  } catch {
+    // artists.json gagal — artis dari hasil lagu sudah cukup
+  }
+
+  return { songs, artists };
 }
