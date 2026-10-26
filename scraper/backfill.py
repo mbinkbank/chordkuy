@@ -1,6 +1,7 @@
 """
 Langkah 1 - BACKFILL DENGAN CURSOR FILE
-- Membaca antrian `census_songs.jsonl`
+- Membaca antrian `census_pending.jsonl` (hasil build_pending_queue.py —
+  hanya URL yang belum ada di DB). Fallback ke `census_songs.jsonl`.
 - Melanjutkan dari URL terakhir yang berhasil di-insert
 - Tetap memeriksa slug existing di Supabase agar aman
 - Menargetkan tepat BACKFILL_LIMIT lagu baru tersimpan per run (selama stok masih ada)
@@ -14,7 +15,8 @@ from datetime import datetime, timezone
 from chordtela_scraper import fetch, parse_detail, supabase
 
 DIR = os.path.dirname(os.path.abspath(__file__))
-QUEUE = os.path.join(DIR, "census_songs.jsonl")
+QUEUE = os.path.join(DIR, "census_pending.jsonl")
+QUEUE_FALLBACK = os.path.join(DIR, "census_songs.jsonl")
 CURSOR = os.path.join(DIR, "backfill_cursor.json")
 LIMIT = int(os.getenv("BACKFILL_LIMIT", "800"))
 MAX_RUNTIME_SEC = int(os.getenv("MAX_RUNTIME_SEC", str(150 * 60)))  # 150 menit max (agar tidak kena hard timeout 180m GH Actions)
@@ -76,8 +78,10 @@ def load_existing_source_urls() -> set[str]:
 
 
 def load_queue() -> list[dict]:
+    path = QUEUE if os.path.exists(QUEUE) else QUEUE_FALLBACK
+    print(f"Antrian: {os.path.basename(path)}", flush=True)
     items = []
-    with open(QUEUE, encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             s = line.strip()
             if s:
@@ -119,6 +123,56 @@ def build_scan_order(queue: list[dict], last_song_url: str) -> list[dict]:
     if idx == -1:
         return queue
     return queue[idx + 1 :] + queue[: idx + 1]
+
+
+def discover_new_from_sitemap(existing_urls: set[str], max_items: int = 2000) -> list[dict]:
+    """Ambil lagu baru dari sitemap chordtela (post build sensus 25/08).
+
+    Sitemap index -> sub-sitemap post terbaru; URL yang belum ada di DB
+    dimasukkan ke census_pending.jsonl untuk diproses run ini/berikutnya.
+    """
+    import urllib.request
+
+    sitemap_urls = []
+    try:
+        req = urllib.request.Request(
+            "https://www.chordtela.com/sitemap.xml",
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/127.0.0.0 Safari/537.36"},
+        )
+        with urllib.request.urlopen(req, timeout=60) as r:
+            index_xml = r.read().decode("utf-8", "replace")
+    except Exception as e:
+        print(f"[DISCOVERY] Gagal baca sitemap index: {e}", flush=True)
+        return []
+
+    sitemap_urls = re.findall(r"<loc>([^<]+)</loc>", index_xml)
+    # sub-sitemap terakhir biasanya berisi post terbaru
+    fresh = []
+    for sm_url in sitemap_urls[-3:]:
+        try:
+            req = urllib.request.Request(sm_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                xml = r.read().decode("utf-8", "replace")
+        except Exception as e:
+            print(f"[DISCOVERY] Gagal baca {sm_url}: {e}", flush=True)
+            continue
+        for loc in re.findall(r"<loc>([^<]+)</loc>", xml):
+            if ".html" in loc and loc not in existing_urls:
+                fresh.append(loc)
+    fresh = list(dict.fromkeys(fresh))[:max_items]
+
+    out = []
+    for url in fresh:
+        # artis dari nama file (diperbaiki saat parse_detail)
+        fn = url.rstrip("/").split("/")[-1].replace(".html", "")
+        out.append({"artist": fn.split("-")[0].title() if fn else "Unknown", "song_url": url})
+
+    if out:
+        with open(os.path.join(DIR, "census_pending.jsonl"), "a", encoding="utf-8") as f:
+            for it in out:
+                f.write(json.dumps(it, ensure_ascii=False) + "\n")
+    print(f"[DISCOVERY] {len(out)} URL baru dari sitemap chordtela -> census_pending.jsonl", flush=True)
+    return out
 
 
 def main():
@@ -212,8 +266,15 @@ def main():
             print(f"[GAGAL INSERT] {song_slug} :: {e}", flush=True)
 
     if done == 0 and checked >= len(scan_order):
-        print("BACKFILL SELESAI. Semua lagu sensus sudah masuk database.", flush=True)
-        return
+        print("Antrian pending habis. Mencari lagu baru dari sitemap chordtela...", flush=True)
+        new_items = discover_new_from_sitemap(existing_urls)
+        if new_items:
+            queue = new_items
+            scan_order = queue
+            print(f"Memproses {len(new_items)} URL baru...", flush=True)
+        else:
+            print("BACKFILL SELESAI. Tidak ada lagu baru.", flush=True)
+            return
 
     print(f"\nSesi selesai: +{done} lagu baru tersimpan, {failed} gagal, {checked} URL diperiksa.", flush=True)
     print(f"Cursor baru: {last_inserted_url}", flush=True)
