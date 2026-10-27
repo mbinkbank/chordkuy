@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Ambil data ringan untuk homepage SEKALI saat build,
  * ditulis ke src/data/build-data.json supaya halaman utama
  * tidak perlu fetch ke Supabase saat dikunjungi.
@@ -27,23 +27,35 @@ async function main() {
   if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
   const rows = await res.json();
 
-  // Hitung asli via RPC — rows.length tercap max_rows (1000), bukan total sebenarnya
-  let songCount = rows.length;
+  // Hitung asli via RPC; fallback = count=exact dari header content-range
+  // (rows.length terjebak max_rows 1000 â€” jangan pernah dipakai sbg total)
+  let songCount = 0;
+  {
+    const cr = await fetch(
+      `${SUPABASE_URL}/rest/v1/chords?select=id&limit=1`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, Prefer: "count=exact", Range: "0-0" } },
+    );
+    const range = cr.headers.get("content-range") || "";
+    songCount = range.includes("/") ? parseInt(range.split("/")[1], 10) || 0 : 0;
+  }
   let artistCount = 0;
-  try {
-    const sr = await fetch(`${SUPABASE_URL}/rest/v1/rpc/catalog_stats`, {
-      method: "POST",
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
-    });
-    if (sr.ok) {
-      const s = (await sr.json())[0];
-      if (s) {
-        songCount = Number(s.song_count) || songCount;
-        artistCount = Number(s.artist_count) || 0;
+  for (let attempt = 0; attempt < 3 && !artistCount; attempt++) {
+    try {
+      const sr = await fetch(`${SUPABASE_URL}/rest/v1/rpc/catalog_stats`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+      });
+      if (sr.ok) {
+        const s = (await sr.json())[0];
+        if (s) {
+          songCount = Number(s.song_count) || songCount;
+          artistCount = Number(s.artist_count) || 0;
+        }
       }
+    } catch {
+      // retry
     }
-  } catch {
-    // fallback: hitung dari rows di bawah
+    if (!artistCount && attempt < 2) await new Promise((r) => setTimeout(r, 2000));
   }
 
   const seen = new Set();
@@ -56,7 +68,26 @@ async function main() {
     }
   }
   artists.sort((a, b) => a.localeCompare(b));
-  if (!artistCount) artistCount = artists.length;
+  if (!artistCount) {
+    // RPC timeout -> hitung distinct artist_slug via paging (39 request, aman di build)
+    try {
+      const set = new Set();
+      for (let off = 0; ; off += 1000) {
+        const pr = await fetch(
+          `${SUPABASE_URL}/rest/v1/chords?select=artist_slug&order=id.asc&limit=1000&offset=${off}`,
+          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+        );
+        if (!pr.ok) break;
+        const batch = await pr.json();
+        if (!Array.isArray(batch) || !batch.length) break;
+        for (const b of batch) if (b.artist_slug) set.add(b.artist_slug);
+        if (batch.length < 1000) break;
+      }
+      artistCount = set.size;
+    } catch {
+      artistCount = 0;
+    }
+  }
 
   const out = {
     popularRows: rows.slice(0, 8),
@@ -75,3 +106,4 @@ main().catch((e) => {
   console.error("fetch-build-data gagal:", e.message);
   process.exit(1);
 });
+
