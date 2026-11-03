@@ -515,10 +515,35 @@ export default {
         }
       }
 
+      // Cache edge 1 jam untuk HTML bot (SSR chord/artis = 1-2 query DB tiap request).
+      // caches.default tidak tersedia di workers.dev -> dibungkus try/catch (fallback: selalu render).
+      const cacheable = url.pathname.startsWith("/chord/") || url.pathname.startsWith("/artist/");
+      let cacheKey = null;
+      if (cacheable) {
+        try {
+          cacheKey = new Request(url.toString(), { method: "GET" });
+          const hit = await caches.default.match(cacheKey);
+          if (hit) return hit;
+        } catch {
+          cacheKey = null;
+        }
+      }
+
       if (html) {
-        return new Response(html, {
-          headers: { "Content-Type": "text/html; charset=utf-8" },
+        const res = new Response(html, {
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            ...(cacheKey ? { "Cache-Control": "public, max-age=3600" } : {}),
+          },
         });
+        if (cacheKey) {
+          try {
+            ctx.waitUntil(caches.default.put(cacheKey, res.clone()));
+          } catch {
+            // cache put gagal -> tidak fatal
+          }
+        }
+        return res;
       }
 
       // Halaman statis: sajikan shell SPA dengan canonical + title yang benar
