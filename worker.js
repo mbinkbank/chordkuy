@@ -688,6 +688,91 @@ export default {
       });
     }
 
+    // ---------- Pinterest OAuth (setup sekali untuk auto-pin harian) ----------
+    if (url.pathname === "/api/pinterest/login" && request.method === "GET") {
+      const appId = env.PINTEREST_APP_ID;
+      if (!appId) return new Response("PINTEREST_APP_ID tidak di-set di worker secrets", { status: 500 });
+      const redirect = encodeURIComponent("https://chordkuy.id/api/pinterest/callback");
+      const scopes = encodeURIComponent("boards:read,pins:read,pins:write,user_accounts:read");
+      return Response.redirect(
+        `https://www.pinterest.com/oauth/?response_type=code&client_id=${appId}&redirect_uri=${redirect}&scope=${scopes}&state=chordkuy`,
+        302,
+      );
+    }
+
+    if (url.pathname === "/api/pinterest/callback" && request.method === "GET") {
+      const code = url.searchParams.get("code");
+      if (!code) return new Response("kode OAuth tidak ada: " + url.search, { status: 400 });
+      const basic = btoa(`${env.PINTEREST_APP_ID}:${env.PINTEREST_APP_SECRET}`);
+      try {
+        const tokenRes = await fetch("https://api.pinterest.com/v5/oauth/token", {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${basic}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            code,
+            redirect_uri: "https://chordkuy.id/api/pinterest/callback",
+          }).toString(),
+        });
+        if (!tokenRes.ok) {
+          return new Response(`Gagal tukar token: ${tokenRes.status} ${await tokenRes.text()}`, { status: 502 });
+        }
+        const tok = await tokenRes.json();
+
+        // simpan token ke app_settings (butuh service role — RLS blokir anon write)
+        const svc = env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_KEY;
+        const upsert = async (key, value) => {
+          await fetch(`${SUPABASE_URL}/rest/v1/app_settings`, {
+            method: "POST",
+            headers: {
+              apikey: svc,
+              Authorization: `Bearer ${svc}`,
+              "Content-Type": "application/json",
+              Prefer: "resolution=merge-duplicates",
+            },
+            body: JSON.stringify({ key, value, updated_at: new Date().toISOString() }),
+          });
+        };
+        await upsert("pinterest_access_token", tok.access_token);
+        await upsert("pinterest_refresh_token", tok.refresh_token);
+        await upsert("pinterest_expires_at", String(Date.now() + (tok.expires_in || 0) * 1000));
+        await upsert("pinterest_refresh_expires_at", String(Date.now() + (tok.refresh_token_expires_in || 0) * 1000));
+
+        // ambil daftar board untuk pengaturan distribusi
+        let boardsHtml = "";
+        try {
+          const bRes = await fetch("https://api.pinterest.com/v5/boards", {
+            headers: { Authorization: `Bearer ${tok.access_token}` },
+          });
+          if (bRes.ok) {
+            const bData = await bRes.json();
+            const rows = (bData.items || [])
+              .map((b) => `<tr><td>${escapeHtml(b.name)}</td><td><code>${escapeHtml(b.id)}</code></td></tr>`)
+              .join("");
+            boardsHtml = `<h2>Board Anda (ID tersimpan otomatis)</h2><table border="1" cellpadding="6" style="border-collapse:collapse">
+              <tr><th>Nama</th><th>Board ID</th></tr>${rows}</table>`;
+            await upsert("pinterest_boards", JSON.stringify(bData.items || []));
+          }
+        } catch {}
+
+        return new Response(
+          `<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title> Pinterest terhubung</title></head>
+<body style="font-family:system-ui;max-width:720px;margin:40px auto;padding:0 16px">
+<h1>✅ Pinterest terhubung</h1>
+<p>Token tersimpan di Supabase (app_settings). Scraper harian tinggal jalan.</p>
+${boardsHtml}
+<p><small>Halaman ini boleh ditutup.</small></p>
+</body></html>`,
+          { headers: { "Content-Type": "text/html; charset=utf-8" } },
+        );
+      } catch (e) {
+        return new Response("Error: " + e.message, { status: 500 });
+      }
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
