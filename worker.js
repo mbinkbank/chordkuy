@@ -457,17 +457,21 @@ export default {
       return Response.redirect(corrected.toString(), 301);
     }
 
-    // Sitemap: selalu lewat worker (run_worker_first) — index tanpa query dari asset,
-    // ?page=N map ke file chunk (sebelum blok crawler, karena path tak dikenal = 404)
+    // Sitemap: index dari asset; ?page=N (format lama) diarahkan ke index baru
     if (url.pathname === "/sitemap.xml") {
-      if (!url.searchParams.has("page")) return env.ASSETS.fetch(request);
-      const p = url.searchParams.get("page");
-      if (!/^\d+$/.test(p) || Number(p) < 1) {
-        return new Response("Not Found", { status: 404 });
+      if (url.searchParams.has("page")) {
+        const corrected = new URL(request.url);
+        corrected.search = "";
+        return Response.redirect(corrected.toString(), 301);
       }
-      const res = await env.ASSETS.fetch(new Request(`${url.origin}/sitemap-page-${p}.xml`));
-      // asset hilang jatuh ke SPA fallback (200 + html) -> paksa 404
-      if (res.status === 404 || (res.headers.get("content-type") || "").includes("text/html")) {
+      return env.ASSETS.fetch(request);
+    }
+
+    // File anak sitemap yang tidak ada jangan jatuh ke SPA fallback (200 + HTML)
+    if (/^\/sitemap-(main|artists-\d+|songs-\d+)\.xml$/.test(url.pathname)) {
+      const res = await env.ASSETS.fetch(request);
+      const ct = res.headers.get("content-type") || "";
+      if (res.status === 404 || ct.includes("text/html")) {
         return new Response("Not Found", { status: 404 });
       }
       return res;

@@ -36,45 +36,63 @@ async function main() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Kumpulkan semua URL sebagai entry <url>, lalu pecah per 2500 (sitemap index)
-  const PER_PAGE = 2500;
-  const entries = [];
+  // Struktur seperti chordtela.web.id:
+  //   sitemap.xml (index) -> sitemap-main.xml + sitemap-artists-1..N + sitemap-songs-1..N
+  // 1000 URL per file, URL bersih (tanpa query string)
+  const PER_FILE = 1000;
+  const HEAD = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+  const TAIL = `\n</urlset>\n`;
 
-  entries.push(`<url><loc>${DOMAIN}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`);
-  entries.push(`<url><loc>${DOMAIN}/artists</loc><changefreq>daily</changefreq><priority>0.8</priority></url>`);
-  // /search sengaja tidak dimasukkan — halamannya noindex
-  entries.push(`<url><loc>${DOMAIN}/about</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
-  entries.push(`<url><loc>${DOMAIN}/contact</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>`);
-  entries.push(`<url><loc>${DOMAIN}/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`);
-  entries.push(`<url><loc>${DOMAIN}/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>`);
+  const writeChunks = (prefix, entries) => {
+    const pages = Math.max(1, Math.ceil(entries.length / PER_FILE));
+    for (let p = 1; p <= pages; p++) {
+      const chunk = entries.slice((p - 1) * PER_FILE, p * PER_FILE);
+      writeFileSync(`dist/${prefix}-${p}.xml`, HEAD + chunk.join("\n") + TAIL, "utf-8");
+    }
+    return pages;
+  };
 
+  // --- main: halaman statis ---
+  const mainEntries = [
+    `<url><loc>${DOMAIN}/</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`,
+    `<url><loc>${DOMAIN}/artists</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
+    // /search sengaja tidak dimasukkan — halamannya noindex
+    `<url><loc>${DOMAIN}/about</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>`,
+    `<url><loc>${DOMAIN}/contact</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>`,
+    `<url><loc>${DOMAIN}/privacy</loc><lastmod>${today}</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>`,
+    `<url><loc>${DOMAIN}/terms</loc><lastmod>${today}</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>`,
+  ];
+  writeFileSync("dist/sitemap-main.xml", HEAD + mainEntries.join("\n") + TAIL, "utf-8");
+
+  // --- artists ---
+  const artistEntries = [];
   const seenArtists = new Set();
   for (const s of songs) {
     const aSlug = s.artist_slug || slugify(s.artist);
     if (aSlug && !seenArtists.has(aSlug)) {
       seenArtists.add(aSlug);
-      entries.push(`<url><loc>${DOMAIN}/artist/${aSlug}</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>`);
+      artistEntries.push(
+        `<url><loc>${DOMAIN}/artist/${aSlug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>`,
+      );
     }
   }
+  const artistPages = writeChunks("sitemap-artists", artistEntries);
 
-  for (const s of songs) {
+  // --- songs ---
+  const songEntries = songs.map((s) => {
     const songSlug = s.slug || `${slugify(s.artist)}-${slugify(s.title)}`;
     // lastmod = updated_at asli dari DB (bukan tanggal build — freshness palsu diabaikan Google)
     const lastmod = s.updated_at ? String(s.updated_at).slice(0, 10) : today;
-    entries.push(`<url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`);
-  }
+    return `<url><loc>${DOMAIN}/chord/${songSlug}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>`;
+  });
+  const songPages = writeChunks("sitemap-songs", songEntries);
 
-  const totalPages = Math.ceil(entries.length / PER_PAGE);
-  for (let p = 1; p <= totalPages; p++) {
-    const chunk = entries.slice((p - 1) * PER_PAGE, p * PER_PAGE);
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${chunk.join("\n")}\n</urlset>\n`;
-    writeFileSync(`dist/sitemap-page-${p}.xml`, xml, "utf-8");
-  }
-
-  const indexItems = Array.from({ length: totalPages }, (_, i) => {
-    const p = i + 1;
-    return `  <sitemap><loc>${DOMAIN}/sitemap.xml?page=${p}</loc><lastmod>${today}</lastmod></sitemap>`;
-  }).join("\n");
+  // --- index ---
+  const indexItems = [
+    `  <sitemap><loc>${DOMAIN}/sitemap-main.xml</loc><lastmod>${today}</lastmod></sitemap>`,
+    ...Array.from({ length: artistPages }, (_, i) => `  <sitemap><loc>${DOMAIN}/sitemap-artists-${i + 1}.xml</loc><lastmod>${today}</lastmod></sitemap>`),
+    ...Array.from({ length: songPages }, (_, i) => `  <sitemap><loc>${DOMAIN}/sitemap-songs-${i + 1}.xml</loc><lastmod>${today}</lastmod></sitemap>`),
+  ].join("\n");
   const indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexItems}\n</sitemapindex>\n`;
   writeFileSync("dist/sitemap.xml", indexXml, "utf-8");
 
@@ -103,7 +121,9 @@ async function main() {
   llmsLines.push("", "## Catatan", "", "Katalog ini diperbarui berkala. Gunakan URL canonical pada setiap halaman sebagai referensi utama.", "");
 
   writeFileSync("dist/llms-full.txt", llmsLines.join("\n"), "utf-8");
-  console.log(`Sitemap index written to dist/sitemap.xml (${totalPages} pages x ${PER_PAGE} = ${entries.length} URLs)`);
+  console.log(
+    `Sitemap index written to dist/sitemap.xml (main + ${artistPages} artists + ${songPages} songs = ${artistEntries.length + songEntries.length + mainEntries.length} URLs)`,
+  );
   console.log(`llms-full.txt written to dist/llms-full.txt (${songs.length} song links)`);
 
   // artists.json untuk halaman daftar artis (paging 40/halaman, sekali fetch)
