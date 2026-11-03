@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/fetch-build-data.mjs && vite build && node scripts/generate-sitemap.mjs",
+    "build": "node scripts/fetch-build-data.mjs && vite build && node scripts/generate-sitemap.mjs && node scripts/generate-pin-images.mjs 500",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "puppeteer": "^25.8.0",
+    "sharp": "^0.35.5",
     "tailwindcss": "4.1.17",
     "typescript": "5.9.3",
     "vite": "7.3.2"

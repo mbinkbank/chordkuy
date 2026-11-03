@@ -324,7 +324,7 @@ function renderChordHtml(song, artistSongs) {
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
-${baseHead(title, desc, canonical)}
+${baseHead(title, desc, canonical, `${SITE_URL}/pin/${songSlug}.png`)}
 <script type="application/ld+json">${jsonLd}</script>
 <style>
 body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.6;color:#f1f1f3;background:#101014}
